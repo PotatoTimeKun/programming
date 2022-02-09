@@ -65,7 +65,7 @@ class speed{
 };
 const map<string,double> TEMP_TANNI_p={{"K",0},{"C",237.15},{"F",459.67},{"Ra",0}};
 const map<string,double> TEMP_TANNI_m={{"K",1},{"C",1},{"F",5/9},{"Ra",5/9}};
-class mass{
+class temperature{
     public:
         static double change(double from,string kigou,string to_kigou){
             double to;
