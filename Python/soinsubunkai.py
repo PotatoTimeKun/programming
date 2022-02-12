@@ -1,34 +1,23 @@
-import sys
-def soi(i):
+def prime_fact(i):
     if float(i).is_integer():
         i=int(i)
     else:
-        print('error')
-        sys.exit()
+        return [-1]
     if i<2:
-        print('error')
-        sys.exit()
+        return [-1]
     res=[]
-    bo=0
-    while bo==0:
-        for co in range(2,i):
-            ch=divmod(i,co)
-            if ch[1]==0:
-                res.append(co)
-                i=ch[0]
+    doing=True
+    while doing:
+        for n in range(2,i):
+            check=divmod(i,n)
+            if check[1]==0:
+                res.append(n)
+                i=check[0]
                 break
         else:
             res.append(i)
-            bo=1
-    ress=""
-    for t in range(len(res)-1):
-        ress=ress+str(res[t])+'*'
-    else:
-        try:
-            ress=ress+str(res[t+1])
-        except:
-            ress=str(i)
-    return ress
+            doing=False
+    return res
 if __name__=="__main__":
-    a=input()
-    print(soi(a))
+    inp=input()
+    print(prime_fact(inp))
