@@ -1,4 +1,4 @@
-def revij(key,ang):
+def read_vij(key,ang):
     x=0
     y=0
     sente=""
@@ -13,8 +13,9 @@ def revij(key,ang):
         y+=1
         x=x%len(key)
     return sente
-print("ウィジュネル暗号解読ツール\n鍵=",end='')
-key=input()
-print("文字列=",end='')
-sen=input()
-print("->"+revij(key,sen))
+if __name__=="__main__":
+    print("ウィジュネル暗号解読ツール\n鍵=",end='')
+    key=input()
+    print("文字列=",end='')
+    sen=input()
+    print("->"+read_vij(key,sen))

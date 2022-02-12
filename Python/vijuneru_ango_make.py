@@ -1,4 +1,4 @@
-def vij(key,sent):
+def make_vij(key,sent):
     x,y=0,0
     ang=""
     key=key.lower()
@@ -12,8 +12,9 @@ def vij(key,sent):
         y+=1
         x%=len(key)
     return ang
-print("ウィジュネル暗号生成ツール\n鍵=",end='')
-key=input()
-print("文字列=",end='')
-sen=input()
-print("->"+vij(key,sen))
+if __name__=="__main__":
+    print("ウィジュネル暗号生成ツール\n鍵=",end='')
+    key=input()
+    print("文字列=",end='')
+    sen=input()
+    print("->"+make_vij(key,sen))
