@@ -6,10 +6,10 @@ public class RPN{
         System.out.println("you can use \"1~9.()+-*/\"\nwrite formula");
         BufferedReader read=new BufferedReader(new InputStreamReader(System.in));
         String form=read.readLine();
-        System.out.println("="+rp(form));
-        System.out.println("="+String.valueOf(rpcal(rp(form))));
+        System.out.println("="+makeRPN(form));
+        System.out.println("="+String.valueOf(RPN_cal(makeRPN(form))));
     }
-    static String rp(String form){
+    static String makeRPN(String form){
         form="("+form+")";
         Pattern mi=Pattern.compile("\\((-\\d+\\.?\\d*)\\)");
         Matcher mat=mi.matcher(form);
@@ -82,7 +82,7 @@ public class RPN{
         form=ret.toString();
         return form;
     }
-    static Double rpcal(String form){
+    static Double RPN_cal(String form){
         char[] formc=form.toCharArray();
         double ret,val,valf,vall;
         String keep="";
