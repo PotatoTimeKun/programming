@@ -67,7 +67,7 @@ public class RPN{
                     case ')':
                         kaknow--;
                         if(kaknow==0){
-                            String kakret=rp(kakst.toString());
+                            String kakret=makeRPN(kakst.toString());
                             ret.append(kakret);
                             stop=false;
                         }else kakst.append(c);
