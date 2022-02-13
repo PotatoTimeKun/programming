@@ -147,6 +147,7 @@ def main():
             keyy=0
             ind='s'
             co=0
+            pi=0
     co+=1
     w.after(100,main)
 main()
