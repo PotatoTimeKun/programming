@@ -1,13 +1,16 @@
 int x,y,pw=1,xp=1,yp=1,ex,ey;
+float xo=300,yo=300;
 void setup(){
   size(600,650);
 }
 void draw(){
+  xo=300;
+  yo=300;
   if(keyPressed && keyCode==UP){
-    yp+=100;
+    yp+=1000000;
   }
   if(keyPressed && keyCode==DOWN){
-    yp-=100;
+    yp-=1000000;
     if(yp<1){yp=1;}
   }
   ex=300*xp;
@@ -29,9 +32,13 @@ void draw(){
   else{
     ypp=yp;
   }
-  for(x=-300;x<301;x++){
+  for(x=-300;x<300;x++){
     y=int(pow(x,pw));
-    ellipse(x/xpp+300,-y/ypp+300,3,3);
+    if(x!=-300 && y!=int(pow(300,10)) && y!=int(pow(-300,5)) ){
+      if(yo!=300)line(x/xpp+300,-y/ypp+300,xo,yo);
+      xo=x/xpp+300;
+      yo=-y/ypp+300;
+    }
   }
   fill(255);
   for(int i=0;i<6;i++){
