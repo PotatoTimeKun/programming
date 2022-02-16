@@ -12,7 +12,7 @@ def even_parity(value):
             i+=1
     if(i%2==0):return "0"
     return "1"
-def odd_v_L_parity(value):
+def odd_v_l_parity(value):
     valueList=[]
     ret=["",""]
     for i in range((int)((len(value)+5)/6)):
@@ -30,7 +30,7 @@ def odd_v_L_parity(value):
             l+=valueList[j][i]
         ret[1]+=odd_parity(l)
     return ret
-def even_v_L_parity(value):
+def even_v_l_parity(value):
     valueList=[]
     ret=["",""]
     for i in range((int)((len(value)+5)/6)):
