@@ -1,11 +1,18 @@
 def odd_parity(value):
+    if not isinstance(value,str) and not isinstance(value,int):return "-1"
+    if isinstance(value,int):
+        value=bin(value)
     i=0
     for c in value:
         if(c=="1"):
             i+=1
-    if(i%2==0):return "1"
+    if(i%2==0):
+        return "1"
     return "0"
 def even_parity(value):
+    if not isinstance(value,str) and not isinstance(value,int):return "-1"
+    if isinstance(value,int):
+        value=bin(value)
     i=0
     for c in value:
         if(c=="1"):
@@ -13,6 +20,9 @@ def even_parity(value):
     if(i%2==0):return "0"
     return "1"
 def odd_v_l_parity(value):
+    if not isinstance(value,str) and not isinstance(value,int):return "-1"
+    if isinstance(value,int):
+        value=bin(value)
     valueList=[]
     ret=["",""]
     for i in range((int)((len(value)+5)/6)):
@@ -31,6 +41,9 @@ def odd_v_l_parity(value):
         ret[1]+=odd_parity(l)
     return ret
 def even_v_l_parity(value):
+    if not isinstance(value,str) and not isinstance(value,int):return "-1"
+    if isinstance(value,int):
+        value=bin(value)
     valueList=[]
     ret=["",""]
     for i in range((int)((len(value)+5)/6)):
