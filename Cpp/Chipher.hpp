@@ -11,7 +11,7 @@ class Chipher{
         if(mode[0]=='m'){
             if(shift<0)return ceaser("r",sentence,-shift);
             for(int i=0;i<sentence.length();i++){
-                if(sentence[i]>='A' && sentence[i]<='z')ret[i]='a'+(sentence[i]-'a'+shift)%26;
+                if(sentence[i]>='a' && sentence[i]<='z')ret[i]='A'+(sentence[i]-'a'+shift)%26;
                 else ret[i]=sentence[i];
             }
         }
