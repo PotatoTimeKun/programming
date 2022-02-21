@@ -1,10 +1,31 @@
+/**
+ * @file Chipher.hpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 暗号を扱うクラスChipherが入っています。
+ * 
+ */
 #ifndef CHIPHER_HPP_INCLUDED
 #define CHIPHER_HPP_INCLUDED
 #include <algorithm>
 #include <cctype>
 #include <string>
 using namespace std;
+/**
+ * 暗号を扱うstaticな関数が入っています。
+ * 関数一覧
+ * string ceaser(string mode,string sentence,int shift)
+ * string vigenere(string mode,string sentence,string key)
+ * string substitution(string mode,string sentence,string key)
+ */
 class Chipher{
+    /**
+     * シーザー暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param shift シフトする数
+     * @return string 暗号文または平文
+     */
     public:static string ceaser(string mode,string sentence,int shift){
         string ret(sentence);
         for(int i=0;i<sentence.length();i++)sentence[i]=tolower(sentence[i]);
@@ -28,6 +49,14 @@ class Chipher{
         }
         return ret;
     };
+    /**
+     * ヴィジュネル暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param key 鍵
+     * @return string 暗号文または平文
+     */
     public:static string vigenere(string mode,string sentence,string key){
         string ret(sentence);
         int i_k=0,sl=sentence.length(),kl=key.length();
@@ -55,6 +84,14 @@ class Chipher{
         }
         return ret;
     };
+    /**
+     * 単一換字式暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param key 鍵(a-zに対応した文字列)
+     * @return string 暗号文または平文
+     */
     public:static string substitution(string mode,string sentence,string key){
         string abc="abcdefghijklmnopqrstuvwxyz";
         string ret(sentence);
