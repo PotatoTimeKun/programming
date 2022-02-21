@@ -1,3 +1,9 @@
+/**
+ * @file tousasuretu.c
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 標準入出力で等差数列を扱います。
+ * 
+ */
 #include <stdio.h>
 int sum_tousa(int a1,int d,int n){
     return n*(2*a1+(n-1)*d)/2;

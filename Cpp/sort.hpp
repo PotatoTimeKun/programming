@@ -1,9 +1,30 @@
+/**
+ * @file sort.hpp
+ * @brief 整列を行う関数が入っています。
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ * @details 関数一覧
+ * void bubble(int array[],int array_size)
+ * void select(int array[],int array_size)
+ * void insert(int array[],int array_size)
+ * void shell(int array[],int array_size)
+ * void quick(int array[],int array_size)
+ * void heap(int array[],int array_size)
+ * void marge(int array[],int array_size)
+ * 
+ */
 #ifndef SORT
 #define SORT
 #include <vector>
 #include <algorithm>
 #include <iostream>
 using namespace std;
+/**
+ * @brief バブルソート(基本交換法)で昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void bubble(int array[],int array_size){
     int sw;
     for(int i=array_size;i>1;i--){
@@ -16,6 +37,12 @@ void bubble(int array[],int array_size){
         }
     }
 }
+/**
+ * @brief 基本選択法で昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void select(int array[],int array_size){
     int sw,min;
     for(int i=0;i<array_size-1;i++){
@@ -26,6 +53,12 @@ void select(int array[],int array_size){
         array[min]=sw;
     }
 }
+/**
+ * @brief 基本挿入法で昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void insert(int array[],int array_size){
     int sw;
     for(int i=2;i<array_size;i++){
@@ -39,6 +72,12 @@ void insert(int array[],int array_size){
         }
     }
 }
+/**
+ * @brief シェルソート(改良挿入法)で昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void shell(int array[],int array_size){
     int sw;
     for(int c=3;c>0;c--){
@@ -56,6 +95,12 @@ void shell(int array[],int array_size){
         }
     }
 }
+/**
+ * @brief クイックソートで昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void quick(int array[],int array_size){
     struct func{
         int *array,array_size;
@@ -85,12 +130,24 @@ void quick(int array[],int array_size){
     a.array_size=array_size;
     a.sort(0,a.array_size-1);
 }
+/**
+ * @brief ヒープソートで昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void heap(int array[],int array_size){
     vector<int> v(&array[0],&array[array_size]);
     make_heap(v.begin(),v.end());
     sort_heap(v.begin(),v.end());
     copy(v.begin(),v.end(),array);
 }
+/**
+ * @brief マージソートで昇順に整列を行います。
+ * 
+ * @param array 整列を行う変数
+ * @param array_size arrayの要素数
+ */
 void marge(int array[],int array_size){
     struct func{
         int *array,array_size;

@@ -1,3 +1,9 @@
+/**
+ * @file touhisuretu.c
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 標準入出力で等比数列を扱います。
+ * 
+ */
 #include <stdio.h>
 #include <math.h>
 int sum_touhi(int a1,int r,int n){
