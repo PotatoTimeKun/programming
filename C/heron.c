@@ -1,3 +1,9 @@
+/**
+ * @file heron.c
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief ヘロンの公式によって三角形の面積を求めるプログラムです。
+ * 
+ */
 #include <stdio.h>
 #include <math.h>
 int main(){
