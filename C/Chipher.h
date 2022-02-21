@@ -1,8 +1,26 @@
+/**
+ * @file Chipher.h
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 暗号を扱う関数が入っています。
+ * 
+ * @details 関数一覧
+ * void ceaser(char mode, char *sentence, int sen_size, int shift)
+ * void vegenere(char mode, char *sentence, int sen_size, char *key, int key_size)
+ * void substitution(char mode, char *sentence, int sen_size, char *key)
+ */
 #ifndef CHIPHER_H_INCLUDE
 #define CHIPHER_H_INCLUDE
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+/**
+ * シーザー暗号を扱います。
+ * 
+ * @param mode "m":暗号化モード，"r":復号化モード
+ * @param sentence 変換する文字列(かつ暗号を格納する配列)
+ * @param sen_size sentenceの要素数
+ * @param shift シフトする数
+ */
 void ceaser(char mode, char *sentence, int sen_size, int shift)
 {
     for (int i = 0; i < sen_size; i++)
@@ -41,6 +59,15 @@ void ceaser(char mode, char *sentence, int sen_size, int shift)
         }
     }
 }
+/**
+ * ヴィジュネル暗号を扱います。
+ * 
+ * @param mode "m":暗号化モード，"r":復号化モード
+ * @param sentence 変換する文字列(かつ暗号を格納する配列)
+ * @param sen_size sentenceの要素数
+ * @param key 鍵
+ * @param key_size 鍵の文字数(keyの要素数ではない)
+ */
 void vegenere(char mode, char *sentence, int sen_size, char *key, int key_size)
 {
     int key_index = 0, i;
@@ -78,6 +105,14 @@ void vegenere(char mode, char *sentence, int sen_size, char *key, int key_size)
         }
     }
 }
+/**
+ * 単一換字式暗号を扱います。
+ * 
+ * @param mode "m":暗号化モード，"r":復号化モード
+ * @param sentence 変換する文字列(かつ暗号を格納する配列)
+ * @param sen_size sentenceの要素数
+ * @param key 鍵(a-zに対応した文字列)
+ */
 void substitution(char mode, char *sentence, int sen_size, char *key)
 {
     char abc[] = "abcdefghijklmnopqrstuvwxyz", *p;

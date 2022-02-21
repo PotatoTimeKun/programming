@@ -1,4 +1,8 @@
+"""素数を扱います。"""
 def prime_num(start,end):
+    """
+    第一引数から第二引数-1までの素数をリストで返します。
+    """
     numlist=[]
     for i in range(start,end):
         is_sosu=True
