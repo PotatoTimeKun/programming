@@ -1,6 +1,18 @@
+/**
+ * @file math_C_P.cpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 数学の順列・組み合わせの計算を行います。
+ * 
+ */
 #include <iostream>
 #include <string>
 using namespace std;
+/**
+ * @brief 階乗を返します。
+ * 
+ * @param n 値
+ * @return long long 演算結果
+ */
 long long kaij(int n){
     long long ret=1;
     if(n>0){
@@ -8,6 +20,13 @@ long long kaij(int n){
     }
     return ret;
 }
+/**
+ * @brief n個からr個選んだ順列の総数を返します。
+ * 
+ * @param n nPrのn
+ * @param r nPrのr
+ * @return long long 演算結果
+ */
 long long per(int n,int r){
     long long ret=1;
     for(int i=n;i>n-r;i--){
@@ -15,6 +34,13 @@ long long per(int n,int r){
     }
     return ret;
 }
+/**
+ * @brief n個からr個選んだ組み合わせの総数を返します。
+ * 
+ * @param n nCrのn
+ * @param r nCrのr
+ * @return long long 演算結果
+ */
 long long com(int n,int r){
     long long ret=1;
     if(n==r){return 1;}

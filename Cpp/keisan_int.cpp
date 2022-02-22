@@ -1,3 +1,10 @@
+/**
+ * @file keisan_int.cpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 文字列として式を与えると、値を多倍長整数として演算して結果を返します。
+ * 必須:newint.h
+ * 
+ */
 #include <iostream>
 #include <string>
 #include <regex>
@@ -12,6 +19,12 @@ main(){
     cout<<"="<<cou.str()<<endl<<endl;
     main();
 }
+/**
+ * @brief 式から値を多倍長整数として演算して結果を返します。
+ * 
+ * @param si 式
+ * @return string 演算結果
+ */
 string kei(string si){
     bool fin=false;
     regex kam("\\((-?+?\\d+)\\)");

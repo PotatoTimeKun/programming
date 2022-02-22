@@ -1,9 +1,20 @@
+/**
+ * @file babanuki.cpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief CUI‚Åƒoƒo”²‚«‚ª‚Å‚«‚Ü‚·B
+ * 
+ */
 #include <iostream>
 #include <random>
 #include <ctime>
 #include <string>
 #include <windows.h>
 using namespace std;
+/**
+ * @brief èD‚Ì®—
+ * 
+ * @param a èD‚Ì”z—ñ
+ */
 void drop(int *a){
     for(int i=0;i<11;i++){
         for(int j=i+1;j<12;j++){
@@ -14,6 +25,13 @@ void drop(int *a){
         }
     }
 }
+/**
+ * @brief èD‚ª‘S‚Ä‚È‚­‚È‚Á‚½‚©‚Ç‚¤‚©‚Ì”»’f
+ * 
+ * @param a èD‚Ì”z—ñ
+ * @return true èD‚È‚µ
+ * @return false èD‚ ‚è
+ */
 bool win(int *a){
     bool res=true;
     for(int i=0;i<12;i++){
