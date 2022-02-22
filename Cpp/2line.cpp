@@ -1,0 +1,2 @@
+#include <iostream>
+long long factorial(int i){if(i<=0){return 1;}else{return i*factorial(i-1);}}long long power2(int i){int returnValue=1;for(int j;j<2;j++){returnValue*=i;}return returnValue;}int main(){int i;std::cin>>i;std::cout<<factorial(i)<<std::endl;std::cout<<power2(i)<<std::endl;}
