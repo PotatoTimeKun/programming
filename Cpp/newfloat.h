@@ -1,3 +1,10 @@
+/**
+ * @file newfloat.h
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief newint.hを小数に対応させました。
+ * 必須:newint.h
+ * 
+ */
 #ifndef   A_HPP
 #define   A_HPP
 #include <string>
@@ -5,6 +12,11 @@
 #include <regex>
 #include "newint.h"
 using namespace std;
+/**
+ * @brief 多倍長小数?を扱います。
+ * 演算子は四則演算子・比較演算子・単項演算子(++,--,-)・剰余演算子に対応しています。
+ * 
+ */
 class newfloat
 {
 private:
@@ -26,13 +38,27 @@ private:
     }
 
 public:
+    /**
+     * @brief 値が空のnewfloatインスタンスを作成します。
+     * 
+     */
     newfloat() {}
+    /**
+     * @brief 値渡しでコピーしたnewfloatインスタンスを作成します。
+     * 
+     * @param a newfloatインスタンス
+     */
     newfloat(newfloat *a)
     {
         val = a->val;
         under = a->under;
         mi = a->mi;
     }
+    /**
+     * @brief 渡した値を表すnewfloatインスタンスを作成します。
+     * 
+     * @param newv 値を表す文字列
+     */
     newfloat(string newv)
     {
         newv+=".0";
@@ -49,6 +75,11 @@ public:
         reverse(val.begin(), val.end());
         reverse(under.begin(), under.end());
     }
+    /**
+     * @brief 渡した値でインスタンスが表す値を設定します。
+     * 
+     * @param newv 値を表す文字列
+     */
     void set(string newv)
     {
         newv+=".0";
@@ -65,6 +96,12 @@ public:
         reverse(val.begin(), val.end());
         reverse(under.begin(), under.end());
     }
+    /**
+     * @brief インスタンスが表す値を文字列で返します。
+     * 
+     * @param z trueにすると絶対値を返します。
+     * @return string インスタンスが表す値
+     */
     string str(bool z = false)
     {
         string v(val);
@@ -88,6 +125,12 @@ public:
         }
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を2進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string bin()
     {
         string v;
@@ -105,6 +148,12 @@ public:
         }
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を16進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string hex()
     {
         string v;
@@ -145,6 +194,12 @@ public:
         }
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を8進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string oct()
     {
         string v;
