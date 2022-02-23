@@ -1,7 +1,26 @@
+/**
+ * 暗号を扱います。
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ */
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 暗号を扱うクラスです。
+ * シーザー暗号・ヴィジュネル暗号・単一換字式暗号に対応しています。
+ * いずれもstaticな関数として入っています。
+ */
 public class Cipher {
+    /**
+     * シーザー暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param shift シフトする数
+     * @return String 暗号文または平文
+     */
     static public String ceasar(String mode, String sentence, int shift) {
         sentence = sentence.toLowerCase();
         int a = 'a', z = 'z';
@@ -35,6 +54,14 @@ public class Cipher {
         return "error";
     }
 
+    /**
+     * ヴィジュネル暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param key 鍵
+     * @return String 暗号文または平文
+     */
     static public String vigenere(String mode, String sentence, String key) {
         int a = 'a', z = 'z';
         key = key.toLowerCase();
@@ -74,6 +101,14 @@ public class Cipher {
         return "error";
     }
 
+    /**
+     * 単一換字式暗号を扱います。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @param key 鍵(a-zに対応した文字列)
+     * @return String 暗号文または平文
+     */
     static public String substitution(String mode, String sentence, String key) {
         String abc = "abcdefghijklmnopqrstuvwxyz";
         String ret = "";

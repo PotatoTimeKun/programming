@@ -1,3 +1,9 @@
+/**
+ * マインクラフトのエンド要塞の位置をエンダーパールの動きから推測します。
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ */
+
 import java.io.*;
 class yosai {
     public static void main(String[] args) {
