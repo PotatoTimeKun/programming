@@ -1,9 +1,22 @@
-import java.io.*;
+/**
+ * 数式を扱うクラスが入っています。
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ */
+
 import java.util.regex.*;
-import java.util.*;
-import java.lang.*;
 import java.math.*;
+/**
+ * 数式を扱うクラスです。
+ * 四則演算はnormal関数,数学関数はadvance関数で行えます。
+ * 
+ */
 public class calculate{
+    /**
+     * 引数の数式から四則演算を行います。
+     * @param formula 数式
+     * @return double 計算結果
+     */
     static public double normal(String formula){
         Pattern kak=Pattern.compile("\\(([^\\(\\)]+)\\)");
         Matcher mat;
@@ -32,6 +45,17 @@ public class calculate{
         }
         return Double.valueOf(formula);
     }
+    /**
+     * 引数の数式から演算を行います。
+     * 対応関数
+     * sin()，
+        cos()，
+        tan()，
+        javaの乗算記号を2つ(Docstring上で表示されないため間接的に記号を説明しました) :累乗，
+        root() :√
+     * @param formula 数式
+     * @return 計算結果
+     */
     static public double advance(String formula){
         Pattern pat[]=new Pattern[6];
         pat[0]=Pattern.compile("sin\\(([\\+\\-\\*/\\.0-9]+)\\)");

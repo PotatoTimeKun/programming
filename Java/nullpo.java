@@ -1,3 +1,9 @@
+/**
+ * ぬるぽ
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ */
+
 public class nullpo {
     public static void main(String[] args){
         try{

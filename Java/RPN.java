@@ -1,6 +1,15 @@
+/**
+ * 逆ポーランド記法を扱います。
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * 
+ */
+
 import java.io.*;
 import java.util.regex.*;
 import java.util.*;
+/**
+ * RPN(逆ポーランド記法)を扱うクラスです。makeRPN関数とRPN_cal関数が入っています。(どちらもstatic)
+ */
 public class RPN{
     public static void main(String[] args) throws IOException{
         System.out.println("you can use \"1~9.()+-*/\"\nwrite formula");
@@ -9,6 +18,12 @@ public class RPN{
         System.out.println("="+makeRPN(form));
         System.out.println("="+String.valueOf(RPN_cal(makeRPN(form))));
     }
+    /**
+     * 中置記法の数式をRPNに変換します。
+     * 数字は[]で囲んで返されます。
+     * @param form 数式
+     * @return String RPN
+     */
     static String makeRPN(String form){
         form="("+form+")";
         Pattern mi=Pattern.compile("\\((-\\d+\\.?\\d*)\\)");
@@ -82,6 +97,12 @@ public class RPN{
         form=ret.toString();
         return form;
     }
+    /**
+     * RPNを計算した結果を返します。
+     * 文字式には対応していません。
+     * @param form RPN
+     * @return Double 計算結果
+     */
     static Double RPN_cal(String form){
         char[] formc=form.toCharArray();
         double ret,val,valf,vall;
