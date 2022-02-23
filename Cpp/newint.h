@@ -1,13 +1,39 @@
+/**
+ * @file newint.h
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 多倍長整数を扱うnewintクラスが入っています。
+ *
+ * 
+ */
 #ifndef Include_newint
 #define Include_newint
 #include <string>
 #include <algorithm>
 using namespace std;
+/**
+ * @brief 多倍長整数を扱います。
+ * 演算子は四則演算子・比較演算子・単項演算子(++,--,-)・剰余演算子に対応しています。
+ * 
+ */
 class newint
 {
 private:
+    /**
+     * @brief インスタンスが表す絶対値
+     * 
+     */
     string val = "";
+    /**
+     * @brief インスタンスが表す値の符号
+     * True:負数 , False:正の数
+     * 
+     */
     bool mi = false;
+    /**
+     * @brief valをi桁に0で合わせます。
+     * 
+     * @param i 
+     */
     void keta(int i)
     {
         int cou = i - val.size();
@@ -18,12 +44,26 @@ private:
     }
 
 public:
+    /**
+     * @brief 値が空のnewintインスタンスを作成します。
+     * 
+     */
     newint() {}
-    newint(newint *a)
+    /**
+     * @brief 値渡しでコピーしたnewintインスタンスを作成します。
+     * 
+     * @param newint_inst newintインスタンス
+     */
+    newint(newint *newint_inst)
     {
-        val = a->val;
-        mi = a->mi;
+        val = newint_inst->val;
+        mi = newint_inst->mi;
     }
+    /**
+     * @brief 渡した値を表すnewintインスタンスを作成します。
+     * 
+     * @param newv 値を表す文字列
+     */
     newint(string newv)
     {
         if (newv[0] == '-')
@@ -37,6 +77,11 @@ public:
         }
         reverse(val.begin(), val.end());
     }
+    /**
+     * @brief 渡した値でインスタンスが表す値を設定します。
+     * 
+     * @param newv 値を表す文字列
+     */
     void set(string newv)
     {
         if (newv[0] == '-')
@@ -50,6 +95,12 @@ public:
         }
         reverse(val.begin(), val.end());
     }
+    /**
+     * @brief インスタンスが表す値を文字列で返します。
+     * 
+     * @param z trueにすると絶対値を返します。
+     * @return string インスタンスが表す値
+     */
     string str(bool z = false)
     {
         string v(val);
@@ -64,6 +115,12 @@ public:
         }
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を2進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string bin()
     {
         string v;
@@ -78,6 +135,12 @@ public:
         if (mi) return "-" + v;
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を16進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string hex()
     {
         string v;
@@ -115,6 +178,12 @@ public:
         if (mi) return "-" + v;
         return v;
     }
+    /**
+     * @brief インスタンスが表す値を8進数に変換して返します。
+     * 値が負数の時は"-"をつけて返します。
+     * 
+     * @return string 
+     */
     string oct()
     {
         string v;

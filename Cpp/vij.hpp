@@ -1,3 +1,9 @@
+/**
+ * @file vij.hpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief ヴィジュネル暗号を扱う関数vijとreadvijが入っています。
+ * 
+ */
 #ifndef VIJ_HPP_INCLUDED
 #define VIJ_HPP_INCLUDED
 #include <iostream>
@@ -5,6 +11,13 @@
 #include <cctype>
 #include <string>
 using namespace std;
+/**
+ * @brief 平文をヴィジュネル暗号に変換します。
+ * 
+ * @param sen 平文
+ * @param key 鍵
+ * @return string 暗号
+ */
 string vij(string sen,string key){
     string ang(sen);
     int s=0,k=0,sl=sen.length(),kl=key.length();
@@ -23,6 +36,13 @@ string vij(string sen,string key){
     }
     return ang;
 }
+/**
+ * @brief ヴィジュネル暗号を平文に変換します。
+ * 
+ * @param ang 暗号
+ * @param key 鍵
+ * @return string 平文
+ */
 string readvij(string ang,string key){
     string sen(ang);
     int a=0,k=0,al=ang.length(),kl=key.length();
