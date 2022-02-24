@@ -288,3 +288,54 @@ void hyperbola_focus(double a, double b, int n, double *return_array)
         return_array[i] = ret[i];
     return;
 }
+/**
+ * @brief 三角形の2辺とその間の角から、余剰定理により残りの1辺を求めます。
+ * 
+ * @param b 辺1
+ * @param c 辺2
+ * @param A その間の角(ラジアン値)
+ * @return double 辺3
+ */
+double cos_theorem(double b,double c,double A){
+    return pow(a,2)+pow(b,2)-2*a*b*cos(A);
+}
+/**
+ * @brief 三角形ABC(角A,B,Cに対する位置の辺をa,b,cとする)のaとA,Bから、正弦定理によりbを求めます。
+ * 
+ * @param A 角A(ラジアン値)
+ * @param B 角B(ラジアン値)
+ * @param a 辺a
+ * @return double 辺b
+ */
+double sin_theorem(double A,double B,double a){
+    return a/sin(A)*sin(B);
+}
+/**
+ * @brief MATH_PIを使って60分法の角度をラジアンに変換します。
+ * 
+ * @param arc 
+ * @return double 
+ */
+double rad(double arc){
+    return arc/180*MATH_PI;
+}
+/**
+ * @brief MATH_PIを使ってラジアンを60分法に変換します。
+ * 
+ * @param rad 
+ * @return double 
+ */
+double arc(double rad){
+    return rad*180/MATH_PI
+}
+/**
+ * @brief 三角形の2辺とその間の角から三角形の面積を求めます。
+ * 
+ * @param b 辺1
+ * @param c 辺2
+ * @param A その間の角(ラジアン値)
+ * @return double 面積S
+ */
+double tri_S(double b,double c,double A){
+    return 1/2*b*c*sin(A);
+}
