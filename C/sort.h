@@ -2,7 +2,6 @@
  * @file sort.h
  * @brief 整列を行う関数が入っています。
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
- * 
  * @details 関数一覧
  * void bubble(int array[],int array_size)
  * void select(int array[],int array_size)

@@ -2,7 +2,6 @@
  * @file newmath.h
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
  * @brief 数学関係の関数が入っています。
- * 
  * @details 関数一覧
  * double heron(double a, double b, double c)
  * long long factorial(int n)
