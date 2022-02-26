@@ -2,7 +2,6 @@
  * @file Chipher.h
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
  * @brief 暗号を扱う関数が入っています。
- * 
  * @details 関数一覧
  * void ceaser(char mode, char *sentence, int sen_size, int shift)
  * void vegenere(char mode, char *sentence, int sen_size, char *key, int key_size)
