@@ -14,7 +14,6 @@
 #include <ctype.h>
 /**
  * シーザー暗号を扱います。
- * 
  * @param mode "m":暗号化モード，"r":復号化モード
  * @param sentence 変換する文字列(かつ暗号を格納する配列)
  * @param sen_size sentenceの要素数
@@ -60,7 +59,6 @@ void ceaser(char mode, char *sentence, int sen_size, int shift)
 }
 /**
  * ヴィジュネル暗号を扱います。
- * 
  * @param mode "m":暗号化モード，"r":復号化モード
  * @param sentence 変換する文字列(かつ暗号を格納する配列)
  * @param sen_size sentenceの要素数
@@ -106,7 +104,6 @@ void vegenere(char mode, char *sentence, int sen_size, char *key, int key_size)
 }
 /**
  * 単一換字式暗号を扱います。
- * 
  * @param mode "m":暗号化モード，"r":復号化モード
  * @param sentence 変換する文字列(かつ暗号を格納する配列)
  * @param sen_size sentenceの要素数
