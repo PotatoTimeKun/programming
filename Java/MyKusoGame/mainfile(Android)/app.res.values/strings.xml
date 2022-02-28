@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">やろうぜクソゲー</string>
+    <string name="title">やろうぜクソゲー</string>
+    <string name="howto">遊び方</string>
+    <string name="play">スタート</string>
+    <string name="chara">クソ図鑑</string>
+    <string name="detail">まず最初に初期値として10が与えられます\nボタンを押すと値に対してランダムに変更が行われます。
+        \nボタンは何回でも押すことができ、値はそのまま点数となります。
+        \n好きなところで終了を押してください。
+        \n1ゲーム終了時には、その点数に応じてアイテムとキャラクターをランダムにゲットできます。
+        \nアイテムはゲーム中に上のアイコンを押すことで使用でき、右からそれぞれ
+        \nじゃがいも、お茶、シャー芯、金の髪の毛
+        \nとなります。それぞれ効果は
+        \n現在の点数を+1、負効果のボタンを1つ無効化、現在の値を2倍、ボタンの効果を全体的に良くする
+        \nとなります。
+        \nキャラクターはクソ図鑑で設定すると1体ゲームに連れていけます。
+        \nキャラクターはゲーム中にそのキャラが持つ効果を発揮します。
+    </string>
+    <string name="back">戻る</string>
+    <string name="set">このキャラをセットする</string>
+    <string name="end">終了</string>
+</resources>
