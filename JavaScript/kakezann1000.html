@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>掛け算千千</title>
+        <script>alert('実行が完了するまで時間がかかります。');</script>
+    </head>
+    <body>
+        <table border="1" id="tb"></table>
+        <script>
+            let e=document.getElementById('tb');
+            let s='<thead><tr><th> </th>';
+            for(let n=1;n<=1000;n++){s+='<th>'+n+'</th>'}
+            s+='</tr></thead><tbody>';
+            for(let i=1;i<=1000;i++){
+                s+='<tr align="center"><td>'+i+'</td>';
+                for(let j=1;j<=1000;j++){
+                    s+='<td class="t">'+(i*j)+'</td>';
+                }
+                s+='</tr></tbody>';
+            }
+            e.innerHTML=s;
+            let t=document.querySelectorAll('.t');
+            for(let i=0;i<t.length;i++){
+                t[i].addEventListener("click",function(){
+                    alert(Math.floor(i/1000+1)+'*'+(i%1000+1));
+                })
+            }
+        </script>
+    </body>
+</html>
