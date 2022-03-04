@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>sum</title>
+    </head>
+    <body onload="alert('onload do');">
+        <h1>Option</h1>
+        <form onchange="getsum();">
+            <label><input type="checkbox" id="c1">5</label><br>
+            <label><input type="checkbox" id="c2">10</label><br>
+            <label><input type="checkbox" id="c3">200</label><br>
+        </form>
+        <p>total <span id="t">0</span></p>
+        <h3 onclick="alert('onclick do');">onclick</h3>
+        <h3 ondblclick="alert('ondblclick do');">ondblclick</h3>
+        <h3 onmouseover="alert('onmouseover do');">onmouseover</h3>
+        <h3 onmouseout="alert('onmouseout do');">onmouseout</h3>
+        <h3 onmousemove="alert('onmousemove do');">onmousemove</h3>
+        <script>
+            function getsum(){
+                let i=0;
+                if(document.getElementById("c1").checked==true){
+                    i+=5;
+                }
+                if(document.getElementById("c2").checked==true){
+                    i+=10;
+                }
+                if(document.getElementById("c3").checked==true){
+                    i+=200;
+                }
+                document.getElementById("t").textContent=i;
+            }
+        </script>
+    </body>
+</html>

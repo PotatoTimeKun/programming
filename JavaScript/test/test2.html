@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>console</title>
+    </head>
+    <body>
+        <h3 onclick="console.log('clicked');">onclick</h3>
+        <h3 onclick="alart('a');">(onclick)spell error</h3>
+        <div id="p" onclick="console.log(document.getElementById('p').textContent);">send this text to console</div>
+        <p onclick="settxt();">add text</p>
+        <p onclick="getall();">print h3 text to console</p>
+        <button onclick="addel();">add h3 element</button><br>
+        <button onclick="document.getElementById('bt').remove();" id="bt">remove this button</button><br>
+        <button onclick="prn();">show prompt and print text to console</button><br>
+        <button id="tx" onclick="document.getElementById('tx').style.fontSize='30px';">change font size</button>
+        <script>
+            function settxt(){
+                let e=document.getElementById('p');
+                e.innerHTML=e.innerHTML+'<br>text'; 
+            }
+            function getall(){
+                let l=document.querySelectorAll("h3");
+                for(let i=0;i<l.length;i++){console.log(l[i].textContent);}
+            }
+            function addel(){
+                let e=document.querySelector("h3");
+                e.insertAdjacentHTML('afterend','<h3>added h3</h3>');
+            }
+            function prn(){
+                console.log(prompt("input","default text"));
+            }
+        </script>
+    </body>
+</html>
