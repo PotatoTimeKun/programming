@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>game</title>
+    </head>
+    <body>
+        <div id="t">
+        </div>
+        <button id="ans">Finish</button>
+        <script>
+            let point=[[5,1,5],[1,3,1],[5,1,5]];
+            function setbutton(){
+                let s='';
+                for(let i=0;i<point.length;i++){
+                    s+='<div class="l">'
+                    for(let j=0;j<point[i].length;j++){
+                        s+='<button id="'+(i*point[i].length+j)+'">'+point[i][j]+'</button>';
+                    }
+                    s+='</div>'
+                }
+                let e=document.getElementById('t');
+                e.innerHTML=s;
+                for(let i=0;i<point.length;i++){
+                for(let j=0;j<point[i].length;j++){
+                    let bt=document.getElementById(String(i*point[i].length+j));
+                    if(i==0 && j==0){
+                        bt.addEventListener('click',function(){
+                            point[0][1]++;
+                            point[1][0]++;
+                            point[0][0]-=2;
+                            setbutton();
+                        });
+                    }
+                    if(j>0 && j<point[0].length-1 && i==0){
+                        bt.addEventListener('click',function(){
+                            point[i][j-1]++;
+                            point[i][j+1]++;
+                            point[i+1][j]++;
+                            point[i][j]-=3;
+                            setbutton();
+                        });
+                    }
+                    if(j==point[0].length-1 && i==0){
+                        bt.addEventListener('click',function(){
+                            point[i][j-1]++;
+                            point[i+1][j]++;
+                            point[i][j]-=2;
+                            setbutton();
+                        });
+                    }
+                    if(i>0 && i<point.length-1 && j==0){
+                        bt.addEventListener('click',function(){
+                            point[i+1][j]++;
+                            point[i-1][j]++;
+                            point[i][j+1]++;
+                            point[i][j]-=3;
+                            setbutton();
+                        });
+                    }
+                    if(i>0 && i<point.length-1 && j>0 && j<point[0].length-1){
+                        bt.addEventListener('click',function(){
+                            point[i+1][j]++;
+                            point[i-1][j]++;
+                            point[i][j+1]++;
+                            point[i][j-1]++;
+                            point[i][j]-=4;
+                            setbutton();
+                        });
+                    }
+                    if(i>0 && i<point.length-1 && j==point[0].length-1){
+                        bt.addEventListener('click',function(){
+                            point[i+1][j]++;
+                            point[i-1][j]++;
+                            point[i][j-1]++;
+                            point[i][j]-=3;
+                            setbutton();
+                        });
+                    }
+                    if(i==point.length-1 && j==0){
+                        bt.addEventListener('click',function(){
+                            point[i-1][j]++;
+                            point[i][j+1]++;
+                            point[i][j]-=2;
+                            setbutton();
+                        });
+                    }
+                    if(i==point.length-1 && j>0 && j<point[0].length-1){
+                        bt.addEventListener('click',function(){
+                            point[i-1][j]++;
+                            point[i][j-1]++;
+                            point[i][j+1]++;
+                            point[i][j]-=3;
+                            setbutton();
+                        });
+                    }
+                    if(i==point.length-1 && j==point[0].length-1){
+                        bt.addEventListener('click',function(){
+                            point[i-1][j]++;
+                            point[i][j-1]++;
+                            point[i][j]-=2;
+                            setbutton();
+                        });
+                    }
+                }
+            }
+            }
+            setbutton();
+            document.getElementById('ans').addEventListener('click',function(){
+                let mistake=false;
+                for(let i=0;i<point.length;i++){
+                    for(let j=0;j<point[i].length;j++){
+                        if(point[0][0]!=point[i][j])mistake=true;
+                    }
+                }
+                if(!mistake){alert('Good');}
+            });
+        </script>
+    </body>
+</html>
