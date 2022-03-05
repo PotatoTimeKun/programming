@@ -1,0 +1,10 @@
+@media screen and (min-width:801px){
+    table{width: 50%;}
+    td{font-size: 40px;}
+    button{width: 50%;font-size: 2vw;}
+}
+@media screen and (max-width:800px){
+    table{width: 99%;}
+    td{font-size: 80px;}
+    button{width: 99%;font-size: 7vw;}
+}
