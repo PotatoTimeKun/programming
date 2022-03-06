@@ -32,11 +32,44 @@ let stage=[
     [[3, 4, 3, 3, 3],[4, -2, 4, 3, 4],[1, 7, 2, 4, 0],[4, 4, 2, 3, 4]],
     [[5, 1, 5, 5, 4],[3, 2, 2, -3, 3],[-2, 6, 5, 7, 1],[5, 4, 0, 1, 5],[3, 3, 5, 1, 4]],
     [[8, 4, 8],[5, 6, 4],[6, 5, 8]],
-    [[9, 8, 9, 9],[5, 11, 6, 6],[11, 5, 7, 10],[6, 11, 6, 9]]
+    [[9, 8, 9, 9],[5, 11, 6, 6],[11, 5, 7, 10],[6, 11, 6, 9]],
+    [[14, 9, 14, 8],[7, 11, 15, 11],[11, 13, 7, 12],[15, 7, 9, 12],[10, 12, 12, 11]],
+    [[28, 32, 28, 29, 31],[32, 32, 32, 34, 25],[29, 24, 30, 29, 33],[32, 34, 29, 25, 33],[29, 28, 33, 30, 29]],
+    [[-2, 2, -2, 1, 1, 1, -2],[1, 1, -1, 3, -4, 1, 2],[1, 2, -5, -1, 2, 1, -2],[-3, 2, 0, -2, 2, 1, -2],[1, 2, -3, 3, -4, 1, 1],[2, -4, 3, 0, 1, 2, 0],[-2, 3, -3, 1, 2, -6, 2]],
+    [[49, 54, 49, 51],[53, 48, 56, 49],[54, 51, 45, 55],[48, 52, 52, 50]],
+    [[62, 62, 64],[64, 68, 58],[67, 55, 68],[58, 68, 61],[63, 67, 62],[64, 59, 64]],
+    [[6, 1, 7, 2],[2, 7, 0, 6],[4, 6, 5, 5],[2, 3, 6, 2]],
+    [[61, 79, 59],[80, 65, 75],[57, 76, 69]],
+    [[10, 8, 12, 9, 8],[8, 13, 10, 13, 9],[13, 6, 12, 6, 13],[8, 12, 11, 13, 8],[9, 12, 8, 9, 10]],
+    [[6, 9, 9, 5, 11, 6],[10, 8, 9, 11, 4, 11],[5, 11, 5, 6, 11, 5],[11, 4, 12, 5, 9, 10],[6, 11, 5, 10, 9, 6]],
+    [[-1, 3, -1, -1, 3, 0],[3, 1, 2, 3, 2, -1],[-2, 3, 4, -3, 3, 4],[3, -1, -6, 5, -1, -4],[3, 3, 4, 2, 3, 3],[-4, 1, -1, -1, -2, 3],[5, -2, 3, 4, 3, -2],[-2, 4, 4, -6, 3, 3],[3, -1, 0, 1, 3, -1]],
+    [[0, 4, 0, 1],[4, 3, 4, 4],[0, 0, 0, 0],[4, 3, 4, 4],[0, 4, 0, 1]],
+    [[2, 2, -1, 3, 1],[-2, 4, -1, -2, 3],[4, -2, 3, 4, -2],[0, 0, 3, -2, 3]],
+    [[3, 8, 4, 4],[8, 3, 3, 7],[4, 3, 8, 6],[4, 8, 3, 4]],
+    [[17, 15, 18, 19, 15],[14, 16, 15, 10, 16],[13, 19, 18, 20, 18],[17, 19, 15, 10, 16],[14, 16, 15, 20, 15]],
+    [[-3, 0, 0, 0, 1, -2],[0, 1, -4, -3, -2, -2],[1, -5, 1, 2, -2, 1],[-4, 1, 1, -3, -5, 1],[0, 2, -5, 4, -5, 1],[1, -7, 3, -2, -4, 1]],
+    [[30, 38, 28],[37, 21, 37],[31, 34, 33],[32, 28, 35],[35, 29, 32]]
 ]
-let point=stage[Math.floor(Math.random()*(33+1))];
-document.getElementById('set').addEventListener('click',function(){point=stage[Math.floor(Math.random()*(33+1))];setbutton();})
-document.getElementById('howto').addEventListener('click',function(){alert('数字を押すと周りの数字に1が分けられます。全てのマスを同じ数字にして「回答」を押しましょう。')})
+let nowstage=Math.floor(Math.random()*stage.length),corrected=0,finished=[];
+for(let i=0;i<stage.length;i++)finished[i]=false;
+let point=stage[nowstage];
+document.getElementById('now').textContent='stage '+nowstage;
+document.getElementById('cor').textContent+=String(stage.length);
+let point_old=[];
+for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
+document.getElementById('set').addEventListener('click',function(){
+    nowstage=Math.floor(Math.random()*(33+1));
+    point=stage[nowstage];
+    setbutton();
+    point_old=[];
+    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
+    document.getElementById('now').textContent='stage '+nowstage;
+});
+document.getElementById('howto').addEventListener('click',function(){alert('数字を押すと周りの数字に1が分けられます。全てのマスを同じ数字にして「回答」を押しましょう。')});
+document.getElementById('back').addEventListener('click',function (){
+    for(let i=0;i<point_old.length;i++){point[i]=point_old[i].slice(0,point_old[i].length);}
+    setbutton();
+});
 function setbutton(){
     let s='<table border="1">';
     for(let i=0;i<point.length;i++){
@@ -54,6 +87,7 @@ function setbutton(){
             let bt=document.getElementById(String(i*point[i].length+j));
             if(i==0 && j==0){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[0][1]++;
                     point[1][0]++;
                     point[0][0]-=2;
@@ -62,6 +96,7 @@ function setbutton(){
             }
             if(j>0 && j<point[0].length-1 && i==0){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i][j-1]++;
                     point[i][j+1]++;
                     point[i+1][j]++;
@@ -71,6 +106,7 @@ function setbutton(){
             }
             if(j==point[0].length-1 && i==0){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i][j-1]++;
                     point[i+1][j]++;
                     point[i][j]-=2;
@@ -79,6 +115,7 @@ function setbutton(){
             }
             if(i>0 && i<point.length-1 && j==0){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i+1][j]++;
                     point[i-1][j]++;
                     point[i][j+1]++;
@@ -88,6 +125,7 @@ function setbutton(){
             }
             if(i>0 && i<point.length-1 && j>0 && j<point[0].length-1){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i+1][j]++;
                     point[i-1][j]++;
                     point[i][j+1]++;
@@ -98,6 +136,7 @@ function setbutton(){
             }
             if(i>0 && i<point.length-1 && j==point[0].length-1){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i+1][j]++;
                     point[i-1][j]++;
                     point[i][j-1]++;
@@ -107,6 +146,7 @@ function setbutton(){
             }
             if(i==point.length-1 && j==0){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i-1][j]++;
                     point[i][j+1]++;
                     point[i][j]-=2;
@@ -115,6 +155,7 @@ function setbutton(){
             }
             if(i==point.length-1 && j>0 && j<point[0].length-1){
                 bt.addEventListener('click',function(){
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
                     point[i-1][j]++;
                     point[i][j-1]++;
                     point[i][j+1]++;
@@ -124,7 +165,8 @@ function setbutton(){
             }
             if(i==point.length-1 && j==point[0].length-1){
                 bt.addEventListener('click',function(){
-                        point[i-1][j]++;
+                    for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
+                    point[i-1][j]++;
                     point[i][j-1]++;
                     point[i][j]-=2;
                     setbutton();
@@ -141,5 +183,10 @@ document.getElementById('ans').addEventListener('click',function(){
             if(point[0][0]!=point[i][j])mistake=true;
         }
     }
-    if(!mistake){alert('正解!');}
+    if(!mistake){
+        alert('正解!');
+        if(!finished[nowstage])corrected++;
+        finished[nowstage]=true;
+        document.getElementById('cor').textContent='クリア '+corrected+'/'+stage.length;
+    }
 });
