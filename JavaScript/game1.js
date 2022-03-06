@@ -58,7 +58,7 @@ document.getElementById('cor').textContent+=String(stage.length);
 let point_old=[];
 for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
 document.getElementById('set').addEventListener('click',function(){
-    nowstage=Math.floor(Math.random()*(33+1));
+    nowstage=Math.floor(Math.random()*stage.length);
     point=stage[nowstage];
     setbutton();
     point_old=[];
