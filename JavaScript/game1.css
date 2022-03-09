@@ -1,8 +1,14 @@
-table{width: 99%;}
-td{font-size: 80px;}
-button{width: 99%;font-size: 7vw;}
+body{background-color:#fff5b1 ;}
+button{background-color: rgb(253, 214, 107);}
+table{background-color: rgb(122, 255, 255);}
+td{background-color:#ff9767 ;}
+@media screen and (max-width:800px) {
+    table{width: 99%;}
+    td{font-size: 80px;text-align: center;}
+    button{width: 99%;font-size: 7vw;}
+}
 @media screen and (min-width:801px){
     table{width: 50%;}
-    td{font-size: 40px;}
+    td{font-size: 40px;text-align: center;}
     button{width: 50%;font-size: 2vw;}
 }
