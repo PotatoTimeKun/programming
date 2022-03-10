@@ -1,3 +1,7 @@
+/**
+ * 全ステージを扱う3次元配列
+ * 変更の内容は保存する
+ */
 let stage=[
     [[5, 1, 5],[1, 3, 1],[5, 1, 5]],
     [[3, 4, 3],[4, 0, 4],[4, 1, 4]],
@@ -50,11 +54,30 @@ let stage=[
     [[-3, 0, 0, 0, 1, -2],[0, 1, -4, -3, -2, -2],[1, -5, 1, 2, -2, 1],[-4, 1, 1, -3, -5, 1],[0, 2, -5, 4, -5, 1],[1, -7, 3, -2, -4, 1]],
     [[30, 38, 28],[37, 21, 37],[31, 34, 33],[32, 28, 35],[35, 29, 32]]
 ]
-let nowstage=Math.floor(Math.random()*stage.length),corrected=0,finished=[];
+/**
+ * 現在表示中のステージ
+ */
+let nowstage=Math.floor(Math.random()*stage.length);
+/**
+ * 現在の正解数
+ */
+let corrected=0;
+/**
+ * 全ステージ毎に既に正解したかどうかを記録する配列
+ * 正解したらそのステージに対応するインデックスにtrueを格納する
+ * ステージnの情報はインデックスnに格納する(n<stage.length)
+ */
+let finished=[];
 for(let i=0;i<stage.length;i++)finished[i]=false;
+/**
+ * 現在表示中のステージの配列
+ */
 let point=stage[nowstage];
 document.getElementById('now').textContent='stage '+nowstage;
 document.getElementById('cor').textContent+=String(stage.length);
+/**
+ * 1つ前のステージの状態
+ */
 let point_old=[];
 for(let i=0;i<point.length;i++){point_old[i]=point[i].slice(0,point[i].length);}
 document.getElementById('set').addEventListener('click',function(){
@@ -70,6 +93,9 @@ document.getElementById('back').addEventListener('click',function (){
     for(let i=0;i<point_old.length;i++){point[i]=point_old[i].slice(0,point_old[i].length);}
     setbutton();
 });
+/**
+ * table要素の作成(td要素のイベントリスナー(クリック)を含む)
+ */
 function setbutton(){
     let s='<table border="1">';
     for(let i=0;i<point.length;i++){
