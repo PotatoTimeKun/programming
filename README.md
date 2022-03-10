@@ -134,10 +134,12 @@ doxygen追加済み
 * double uniform_acceleration_linear_a_3(double v0,double t,double x)
 
 自由落下運動
-* double free_fall_v(double t,double g=_g_)
-* double free_fall_v_2(double y,double g=_g_)
-* double free_fall_y(double t,double g=_g_)
-* double free_fall_y_2(double v,double g=_g_)
+* double free_fall_v(double t,double g=\_g\_)
+* double free_fall_v_2(double y,double g=\_g\_)
+* double free_fall_y(double t,double g=\_g\_)
+* double free_fall_y_2(double v,double g=\_g\_)
+
+doxygen追加済み
 
 ## acceleration.h
 加速度の単位を変換するための下の関数が入っています。  
@@ -637,7 +639,7 @@ void prime_fact(int,\*int)関数が入っています。第一引数には素因
 doxygen追加済み
 
 ## 2line.cpp
-プログラムを2行にまとめてみました()
+プログラムを2行にまとめてみました()  
 2行でなくなるのでdoxygenは追加しません。
 
 # Java
@@ -770,7 +772,7 @@ unit_change.クラス名.change(引数)
 docstring追加済み
 
 ## parity.py
-odd_parityでは奇数、even_parityでは偶数のパリティビットを文字列で返します。  
+odd_parity関数では奇数、even_parity関数では偶数のパリティビットを文字列で返します。  
 引数には**データを文字列で(2進数の状態の数)渡してください。**  
 水平垂直パリティの情報があまりないので一般的な方法かどうかは怪しいですが水平垂直パリティを追加しました。  
 odd_v_l_parity (evenもあります)  
@@ -794,6 +796,7 @@ JavaScriptとHTML・CSSが入っています。
 ## game1.html
 game1.cssとgame1.jsを使っています。  
 ボタンを押して数字を揃えるゲームです。
+JSDoc追加済み
 
 ## test
 JavaScriptの機能を試すためのファイルを入れてます。
