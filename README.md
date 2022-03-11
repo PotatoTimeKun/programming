@@ -629,6 +629,9 @@ doxygen追加済み
 :ヴィジュネル暗号を扱います。
 * String Chipher::substitution(string モード，string 平文or暗号文，string 鍵)  
 :単一換字式暗号を扱います。鍵にa~zに対応した文字列を渡します。
+* String Chipher::polybius_square(string モード，string 平文or暗号文)  
+:ポリュビオスの暗号表(5\*5)を扱います。  
+5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)  
 
 doxygen追加済み
 
