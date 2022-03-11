@@ -103,6 +103,41 @@ class Chipher{
         }
         return ret;
     }
+    /**
+     * @brief ポリュビオスの暗号表(5*5)を扱います。
+     * 5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
+     * 平文ではa-z以外の文字(空白も含む)は除いてください。
+     * 暗号文では0と1以外の文字(空白も含む)は除いてください。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @return string 暗号文または平文
+     */
+    public:static string polybius_square(string mode,string sentence){
+        string ret="";
+        if(mode[0]=='m'){
+            for(int i=0;i<sentence.length();i++){
+                int c=sentence[i]-'a';
+                if(c<'j'){
+                    ret+=to_string(i/5+1);
+                    ret+=to_string(i%5+1);
+                }else{
+                    c--;
+                    ret+=to_string(i/5+1);
+                    ret+=to_string(i%5+1);
+                }
+            }
+        }
+        if(mode[0]=='r'){
+            for(int i=0;i<sentence.length()/2;i++){
+                ret+='a'+(5*((int)sentence[2*i]-(int)'0'-1)+((int)sentence[2*i+1]-(int)'0'-1));
+                if(ret[i]>='j'){
+                    ret[i]+=1;
+                }
+            }
+        }
+        return ret;
+    }
 };
 
 #endif // CHIPHER_HPP_INCLUDED
