@@ -119,12 +119,12 @@ class Chipher{
             for(int i=0;i<sentence.length();i++){
                 int c=sentence[i]-'a';
                 if(c<'j'){
-                    ret+=to_string(i/5+1);
-                    ret+=to_string(i%5+1);
+                    ret+=to_string(c/5+1);
+                    ret+=to_string(c%5+1);
                 }else{
                     c--;
-                    ret+=to_string(i/5+1);
-                    ret+=to_string(i%5+1);
+                    ret+=to_string(c/5+1);
+                    ret+=to_string(c%5+1);
                 }
             }
         }

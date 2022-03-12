@@ -124,4 +124,35 @@ public class Cipher {
             return ret;
         return "error";
     }
+    
+    /**
+     * ポリュビオスの暗号表(5*5)を扱います。
+     * 5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
+     * 平文ではa-z以外の文字(空白も含む)は除いてください。
+     * 暗号文では0と1以外の文字(空白も含む)は除いてください。
+     * 
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @return String 暗号文または平文
+     */
+    public static String polybius_square(String mode,String sentence){
+        String ret="";
+        List<Integer> list_sen = sentence.chars().boxed().collect(Collectors.toList());
+        int a='a',j='j';
+        if(mode=="m"){
+            for(int i=0;i<sentence.length();i++){
+                int c=list_sen.get(i)-a;
+                if(c>=j)c--;
+                ret+=Integer.toString(c/5+1);
+            }
+        }
+        if(mode=="r"){
+            for(int i=0;i<sentence.length()/2;i++){
+                int c=a+(5*(list_sen.get(2*i)-(int)'0'-1)+(list_sen.get(2*i+1)-(int)'0'-1));
+                if(c>=j)c++;
+                ret+=Character.toString(c);
+            }
+        }
+        return ret;
+    }
 }

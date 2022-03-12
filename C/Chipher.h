@@ -152,12 +152,12 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
         for(int i=0;i<sen_size;i++){
             int c=sentence[i]-'a';
             if(c<'j'){
-                return_array[2*i]='0'+(i/5+1);
-                return_array[2*i+1]='0'+(i%5+1);
+                return_array[2*i]='0'+(c/5+1);
+                return_array[2*i+1]='0'+(c%5+1);
             }else{
                 c--;
-                return_array[2*i]='0'+(i/5+1);
-                return_array[2*i+1]='0'+(i%5+1);
+                return_array[2*i]='0'+(c/5+1);
+                return_array[2*i+1]='0'+(c%5+1);
             }
         }
         return_array[sen_size*2]='\0';
