@@ -626,13 +626,13 @@ doxygen追加済み
 暗号を扱うChipherクラスが入っています。  
 どの関数でも**モードは"m"で暗号化、"r"で解読です**。
 以下の関数が入っています。  
-* String Cipher::ceasar(string モード,string 平文or暗号文,int シフトする数)  
+* string Cipher::ceasar(string モード,string 平文or暗号文,int シフトする数)  
 :シーザー暗号を扱います。
-* String Cipher.vigenere(string モード，string 平文or暗号文，string 鍵)
+* string Cipher.vigenere(string モード，string 平文or暗号文，string 鍵)
 :ヴィジュネル暗号を扱います。
-* String Chipher::substitution(string モード，string 平文or暗号文，string 鍵)  
+* string Chipher::substitution(string モード，string 平文or暗号文，string 鍵)  
 :単一換字式暗号を扱います。鍵にa~zに対応した文字列を渡します。
-* String Chipher::polybius_square(string モード，string 平文or暗号文)  
+* string Chipher::polybius_square(string モード，string 平文or暗号文)  
 :ポリュビオスの暗号表(5\*5)を扱います。  
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)  
 
@@ -674,9 +674,12 @@ Javadoc追加済み
 * String Cipher.vigenere(String モード，String 平文or暗号文，String 鍵)  
 :ヴィジュネル暗号を扱います。
 * String Chipher.substitution(String モード，String 平文or暗号文，String 鍵)  
-:単一換字式暗号を扱います。鍵にa~zに対応した文字列を渡します。
+:単一換字式暗号を扱います。鍵にa~zに対応した文字列を渡します。  
+* String Chipher::polybius_square(String モード，String 平文or暗号文)  
+:ポリュビオスの暗号表(5\*5)を扱います。  
+5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)  
 
-モードの文字列が間違っている場合には文字列"error"が返されます。
+モードの文字列が間違っている場合には文字列"error"が返されます。 
 Javadoc追加済み
 
 ## unit_change.java
