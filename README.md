@@ -92,6 +92,9 @@ doxygen追加済み
 ヴィジュネル暗号を扱います。modeにモード、sentenceに平文または暗号文、sen_sizeにsentenceの要素数、keyに鍵、key_sizeに鍵の文字数(char配列keyの要素数ではありません。例えば要素数xで最後まで文字が入っている場合、基本的に最後の要素はヌル文字となるのでx-1を渡すことになります)を渡してください。  
 * void substitution(char mode,char \*sentence,int sen_size,char \*key)  
 単一換字式暗号を扱います。modeにモード、sentenceに平文または暗号文、sen_sizeにsentenceの要素数、keyに鍵(a-zに対応した変換後の文字を順に並べた文字列)を渡してください。  
+* void polybius_square(char mode,char \*sentence,int sen_size,char \*return_array)  
+:ポリュビオスの暗号表(5\*5)を扱います。  
+5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)
 
 doxygen追加済み
 
