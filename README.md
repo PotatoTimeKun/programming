@@ -795,6 +795,9 @@ docstring追加済み
 2次元配列を行・列で動かします。  
 動かして't','o','p','p','o'にしてみましょう(?)
 
+## sortchar.py
+文字列をUnicodeポイントで昇順に整列し、文字列を出力します。
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
