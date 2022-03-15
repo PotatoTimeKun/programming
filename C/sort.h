@@ -96,15 +96,15 @@ void shell(int *array, int array_size)
         {
             for (int p = 0; p < c; p++)
             {
-                for (int j = i; j > 0; j -= c + p)
+                for (int j=i-(i-p)%c+c+p;j>=c+p;j-=c)
                 {
                     if (array[j - c] < array[j])
                         break;
                     else
                     {
                         sw = array[j];
-                        array[j] = array[j - 1];
-                        array[j - 1] = sw;
+                        array[j] = array[j - c];
+                        array[j - c] = sw;
                     }
                 }
             }
