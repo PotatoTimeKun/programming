@@ -124,7 +124,7 @@ public class Cipher {
             return ret;
         return "error";
     }
-    
+
     /**
      * ポリュビオスの暗号表(5*5)を扱います。
      * 5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
@@ -144,6 +144,7 @@ public class Cipher {
                 int c=list_sen.get(i)-a;
                 if(c>=j)c--;
                 ret+=Integer.toString(c/5+1);
+                ret+=Integer.toString(c%5+1);
             }
         }
         if(mode=="r"){
