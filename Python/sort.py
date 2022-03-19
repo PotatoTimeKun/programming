@@ -1,4 +1,8 @@
 def bubble(array):
+    """
+    バブルソート(基本交換法)で昇順に整列を行います。
+    array 整列を行うリスト
+    """
     for i in range(2,len(array)):
         for j in range(len(array)-i):
             if array[j]>array[j+1]:
@@ -6,6 +10,10 @@ def bubble(array):
                 array[j]=array[j+1]
                 array[j+1]=sw
 def select(array):
+    """
+    基本選択法で昇順に整列を行います。
+    array 整列を行うリスト
+    """
     for i in range(len(array)-1):
         min=i
         for j in range(i,len(array)-1):
@@ -14,6 +22,10 @@ def select(array):
         array[i]=array[min]
         array[min]=sw
 def insert(array):
+    """
+    基本挿入法で昇順に整列を行います。
+    array 整列を行うリスト
+    """
     for i in range(2,len(array)):
         for j in reversed(range(1,i)):
             if(array[j-1]<array[j]):break
@@ -22,6 +34,10 @@ def insert(array):
                 array[j]=array[j-1]
                 array[j-1]=sw
 def shell(array):
+    """
+    シェルソート(改良挿入法)で昇順に整列を行います。
+    array 整列を行うリスト
+    """
     for c in reversed(range(1,4)):
         for i in range(2,len(array),c):
             for p in range(0,c):
@@ -32,6 +48,12 @@ def shell(array):
                         array[j]=array[j-c]
                         array[j-c]=sw
 def quick(array,start=0,end=-1):
+    """
+    クイックソートで昇順に整列を行います。
+    array 整列を行うリスト
+    start 整列の開始インデックス(デフォルトで0)
+    end 整列の終了インデックス(デフォルトでリストの最後)
+    """
     if(end==-1):end=len(array)-1
     if(start<end):
         pip=start
@@ -48,6 +70,10 @@ def quick(array,start=0,end=-1):
         quick(array,start,pip-1)
         quick(array,pip+1,end)
 def marge(array):
+    """
+    ヒープソートで昇順に整列を行います。
+    array 整列を行うリスト
+    """
     def mar(st,mid,en):
         S=[]
         E=[]

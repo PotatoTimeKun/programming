@@ -1,5 +1,15 @@
 class Chipher:
+    """
+    暗号を扱うクラスです
+    """
     def ceasar(mode,sentence,shift):
+        """
+        シーザー暗号を扱います。
+        mode "m":暗号化モード,"r":復号化モード
+        sentence 変換する文字列
+        shift シフトする数
+        ->return 暗号文または平文
+        """
         sentence=sentence.lower()
         a=ord('a')
         z=ord('z')
@@ -22,6 +32,13 @@ class Chipher:
             ret=ret.lower()
         return ret
     def vigenere(mode,sentence,key):
+        """
+        ヴィジュネル暗号を扱います。
+        mode "m":暗号化モード,"r":復号化モード
+        sentence 変換する文字列
+        key 鍵
+        ->return 暗号文または平文
+        """
         a=ord('a')
         z=ord('z')
         key=key.lower()
@@ -53,6 +70,13 @@ class Chipher:
                 ret=ret.lower()
         return ret
     def substitution(mode,sentence,key):
+        """
+        単一換字式暗号を扱います。
+        mode "m":暗号化モード,"r":復号化モード
+        sentence 変換する文字列
+        key 鍵(a-zに対応した文字列)
+        ->return 暗号文または平文
+        """
         abc = "abcdefghijklmnopqrstuvwxyz"
         ret=""
         if mode=="m":
@@ -63,6 +87,15 @@ class Chipher:
                 ret+=abc[key.index(sentence[i])]
         return ret
     def polybius_square(mode,sentence):
+        """
+        ポリュビオスの暗号表(5*5)を扱います。
+        5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
+        平文ではa-z以外の文字(空白も含む)は除いてください。
+        暗号文では0と1以外の文字(空白も含む)は除いてください。
+        mode "m":暗号化モード，"r":復号化モード
+        sentence 変換する文字列
+        ->return 暗号文または平文
+        """
         ret=""
         a=ord('a')
         j=ord('j')

@@ -16,7 +16,7 @@
 /**
  * @brief バブルソート(基本交換法)で昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void bubble(int *array, int array_size)
@@ -38,7 +38,7 @@ void bubble(int *array, int array_size)
 /**
  * @brief 基本選択法で昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void select(int *array, int array_size)
@@ -60,7 +60,7 @@ void select(int *array, int array_size)
 /**
  * @brief 基本挿入法で昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void insert(int *array, int array_size)
@@ -84,7 +84,7 @@ void insert(int *array, int array_size)
 /**
  * @brief シェルソート(改良挿入法)で昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void shell(int *array, int array_size)
@@ -114,7 +114,7 @@ void shell(int *array, int array_size)
 /**
  * @brief クイックソートで昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void quick(int array[], int array_size)
@@ -183,7 +183,7 @@ void private_function_sort(int *array, int array_size, int st, int en)
 /**
  * @brief マージソートで昇順に整列を行います。
  * 
- * @param array 整列を行う変数
+ * @param array 整列を行う配列
  * @param array_size arrayの要素数
  */
 void marge(int *array,int array_size){
