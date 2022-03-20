@@ -827,6 +827,13 @@ docstring追加済み
 
 docstring追加済み
 
+## ABsize.py
+A・B判のサイズを返すABsize関数が入っています。  
+引数に("A"か"B",サイズ番号)を渡します。  
+指定したA判、B判のサイズをmmでリストを返します。  
+リストは縦長になる向きで\[縦,横\]となります。  
+docstring追加済み
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
