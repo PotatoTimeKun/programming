@@ -1,4 +1,12 @@
+/**
+ * 誕生日を表示する人の名前の配列です。
+ * localStorageの'name'に保存します。
+ */
 let nameList=[];
+/**
+ * 表示する誕生日の配列です。2次元配列になっていて[[年,月,日],[年,...],...]のようになります。
+ * localStorageの'date'に保存します。
+ */
 let dateList=[];
 if(localStorage.getItem('date')) {
     dateList=JSON.parse(localStorage.getItem('date'));
@@ -8,6 +16,10 @@ if(localStorage.getItem('name')) {
 }
 nameList[0]="ポテトタイム君";
 dateList[0]=[2005,12,20];
+/**
+ * 誕生日の表示を更新する関数です。
+ * nameList,dateListからHTMLを生成し、LocalStrageのデータの更新も行います。
+ */
 function setBirth(){
     let e=document.getElementById("birth");
     let str="";
@@ -48,5 +60,8 @@ document.getElementById("clnm").addEventListener("click",function(){
     }
 })
 setBirth();
-tom = () => (new Date().setHours(0,0,0,0)+24*60*60*1000)-new Date()
-setTimeout(() => {setBirth();},tom())
+/**
+ * 実行時の時刻から日付が変わるまでの時間(ミリ秒)を返します。
+ */
+let tom = () => (new Date().setHours(0,0,0,0)+24*60*60*1000)-new Date()
+setTimeout(() => {setBirth();},tom()) //日付が変わる際にsetBirth関数を実行します。
