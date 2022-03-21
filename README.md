@@ -846,6 +846,11 @@ game1.cssとgame1.jsを使っています。
 ボタンを押して数字を揃えるゲームです。
 JSDoc追加済み
 
+## count_birthday.html
+count_birthday.css/jsを使っています。  
+誕生日の日数をカウントするページです。  
+JSDoc追加済み
+
 ## test
 JavaScriptの機能を試すためのファイルを入れてます。
 
