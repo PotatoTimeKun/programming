@@ -49,7 +49,7 @@ double heron(double a, double b, double c)
 long long factorial(int n)
 {
     long long ret = 1;
-    for (int i = 0; i <= n; i++)
+    for (int i = 1; i <= n; i++)
         ret *= i;
     return ret;
 }
@@ -147,7 +147,7 @@ const double MATH_E = 2.718281828459045;
  */
 double circle(double r)
 {
-    return MATH_PI * r;
+    return 2 * MATH_PI * r;
 }
 /**
  * @brief 円の面積を返します。
@@ -188,7 +188,7 @@ double sphere_s(double r)
  * @param y2 
  * @return double 距離
  */
-double dintance(double x1, double y1, double x2, double y2)
+double distance(double x1, double y1, double x2, double y2)
 {
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
@@ -296,7 +296,7 @@ void hyperbola_focus(double a, double b, int n, double *return_array)
  * @return double 辺3
  */
 double cos_theorem(double b,double c,double A){
-    return pow(a,2)+pow(b,2)-2*a*b*cos(A);
+    return pow(b,2)+pow(c,2)-2*b*c*cos(A);
 }
 /**
  * @brief 三角形ABC(角A,B,Cに対する位置の辺をa,b,cとする)のaとA,Bから、正弦定理によりbを求めます。

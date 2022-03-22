@@ -834,6 +834,10 @@ A・B判のサイズを返すABsize関数が入っています。
 リストは縦長になる向きで\[縦,横\]となります。  
 docstring追加済み
 
+## my_math.py
+C\\new_math.hのpython版です。
+docstring追加済み
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
