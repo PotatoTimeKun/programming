@@ -84,7 +84,7 @@ main(){
                 for(int j=i+1;j<inp.length();j++){
                     char c2=inp[j];
                     switch (c2){
-                        case 'm':
+                        case 'a':
                             l--;
                             break;
                         case 'e':
@@ -108,7 +108,7 @@ main(){
                 for(int j=i+1;j<inp.length();j++){
                     char c2=inp[j];
                     switch (c2){
-                        case 'm':
+                        case 'a':
                             l--;
                             break;
                         default:
