@@ -10,7 +10,7 @@ main(){
     string inp;
     cin>>inp;
     if(inp=="help"){
-        cout<<"Created by PotatoTimeKun https://github.com/PotatoTimeKun/programming \n最初のポインタのアドレスより前のアドレスは使用しないことを勧めます\n命令一覧:\np:ポインタのアドレスをインクリメント(ptr++)\no:ポインタのアドレスをデクリメント(ptr--)\nt:ポインタの値をインクリメント(*ptr+=1)\nm:ポインタの値をデクリメント(*ptr-=1)\nk:ポインタの値をASCII文字として出力\nu:ポインタの値が0ならnまで飛ばす\nn:ポインタの値が0以外ならnまで戻る\ni:ポインタの値が0ならaかe(eはaで閉じる)まで飛ばす\ne:iで飛ばされた場合のみaまで実行する\nc:ポインタの値を2倍する(*ptr*=2)\nh:ポインタの値を1/2倍する(*ptr/=2)\ns:キーボード入力を1文字受け取りポインタに格納する";
+        cout<<"Created by PotatoTimeKun https://github.com/PotatoTimeKun/programming \n最初のポインタのアドレスより前のアドレスは使用しないことを勧めます\n命令一覧:\np:ポインタのアドレスをインクリメント(ptr++)\no:ポインタのアドレスをデクリメント(ptr--)\nt:ポインタの値をインクリメント(*ptr+=1)\nm:ポインタの値をデクリメント(*ptr-=1)\nk:ポインタの値をASCII文字として出力\nu:ポインタの値が0ならnまで飛ばす\nn:ポインタの値が0以外ならuまで戻る\ni:ポインタの値が0ならaかe(eはaで閉じる)まで飛ばす\ne:iで飛ばされた場合のみaまで実行する\nc:ポインタの値を2倍する(*ptr*=2)\nh:ポインタの値を1/2倍する(*ptr/=2)\ns:キーボード入力を1文字受け取りポインタに格納する";
     }
     for(int i=0;i<inp.length();i++){
         char c=inp[i];
