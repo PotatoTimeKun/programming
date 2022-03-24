@@ -933,3 +933,12 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 を渡すと文字コードを-1して返します。  
 例:"3あいう"→"ぁぃぅ"  
 "4bcde"→"abcd"
+
+## countwhile.brpt
+他のプログラムで使う関数的なプログラムとすることを想定したプログラムです。  
+インポート文なんてものはないのでコピー&ペーストです。  
+入力でwhile文をループする回数を設定します。  
+回数(複数文字化)/文字列(回数分以上)  
+で文字列を出力します。  
+例:"12/abcdefghijkl"→"abedefghijkl"  
+"5/aaaaaaaa"→"aaaaa"
