@@ -1,6 +1,6 @@
 自作プログラムを公開してます。  
 各プログラムのバージョン別等の説明はPotatoTimeKun/programmingレポジトリのWikiに書いてあります。  
-ここではver0.6対応の説明を書きます。  
+ここではver0.7対応の説明を書きます。  
 
 # C
 C言語のソースコードが入っています。
@@ -649,6 +649,7 @@ doxygen追加済み
 2行でなくなるのでdoxygenは追加しません。
 
 ## BrainPotato_language.cpp
+**GUIで使用できるC#版が別で存在します。言語の仕様上の変更点があり、C#の方が使いやすいです。**  
 Brainf\*ck系の言語を作りました。  
 Brainf\*ckより命令数を多くしました、potatotimekunとかpotatochipsみたいな単語は作れるんですけどpotatoのpo oでポインタのアドレスに問題が起きます(動かないことはないです)  
 ちなみに命令に関係ない文字は無視されます。  
@@ -887,5 +888,48 @@ C#のソースコードが入っています。
 ## unit_change.cs
 Cpp/unit_change.cppのC#版です。ただし単位の指定はC/unit_change.cの番号方式を使っています。
 
+## BrainPotato.cs
+Cpp/BrainPotato.cppのC#版です。  
+GUIとして使用でき、exeファイルにしたものがBrainPotato/BrainPotato.exeになります。  
+Brainf\*ck系の言語を作りました。  
+Brainf\*ckより命令数を多くしました、potatotimekunとかpotatochipsみたいな単語も作れます。  
+ちなみに命令に関係ない文字は無視されます。  
+C#なのでポインタではなく、リストを使用しています。  
+最初のアドレスより前のアドレスに移動しようとするとその操作は無効化されます。  
+また、おそらくUnicodeポイントを使用していて、日本語が使えます。  
+命令一覧:  
+* p:ポインタのアドレスをインクリメント(ptr++)
+* o:ポインタのアドレスをデクリメント(ptr--)
+* t:ポインタの値をインクリメント(\*ptr+=1)
+* m:ポインタの値をデクリメント(\*ptr-=1)
+* k:ポインタの値を文字として出力
+* u:ポインタの値が0ならnまで飛ばす
+* n:ポインタの値が0以外ならuまで戻る
+* i:ポインタの値が0ならaかe(eはaで閉じる)まで飛ばす
+* e:iで飛ばされた場合のみaまで実行する
+* c:ポインタの値を2倍する(\*ptr\*=2)
+* h:ポインタの値を1/2倍する(\*ptr/=2)
+* s:キーボード入力を1文字受け取りポインタに格納する
+
 ## test
 テスト用のファイルです。
+
+# BrainPotato
+BrainPotatoのソースコード等が入っています。(BrainPotato言語についてはCSharp/BrainPotato.csを参照)  
+BrainPotatoのソースコードの拡張子名はbrptです。(テキストファイルとして認識できれば別の拡張子名のものを読み込んでも構いません)  
+
+## BrainPotato.exe
+CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです。
+
+## helloworld.brpt
+"Hello World"を表示します。
+
+## helloworld_ja.brpt
+"ハローワールド"を表示します。
+
+## shift_minus1.brpt
+入力に  
+文字数(1文字)文字(文字数分)  
+を渡すと文字コードを-1して返します。  
+例:"3あいう"→"ぁぃぅ"  
+"4bcde"→"abcd"
