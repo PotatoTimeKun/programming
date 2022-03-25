@@ -942,3 +942,13 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 で文字列を出力します。  
 例:"12/abcdefghijkl"→"abedefghijkl"  
 "5/aaaaaaaa"→"aaaaa"
+
+## Unicode_print.brpt
+とにかくUnicode文字を順番に表示するだけのプログラムです。  
+理論上1～2^16のUnicode文字を出力しますが、そこまで来るとどこかの時点で文字が定められてないUnicodeポイントもでてくるような感じですね。 
+
+## Unicode_from_to.brpt
+入力で  
+数字列A/数字列B/  
+と渡すと、数字列Aから数字列BまでのUnicode文字を出力します。  
+例:"12353/12362/"→"ぁあぃいぅうぇえぉお"
