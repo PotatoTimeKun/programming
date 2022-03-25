@@ -1,3 +1,5 @@
+//CODE FROM COUNTWHILE.BRPT
+//USING 0~4(2 IS THE DATA FOR NEXT PROCESS)
 0 t
 A0u
     p 1 s
@@ -16,9 +18,13 @@ A0u
     a
     o
 A0n
+
 p 1 p 2 p 3
+//CODE FROM COUNTWHILE.BRPT
+//USING 3~7(5 IS THE DATA FOR NEXT PROCESS)
+// X + 3
 0 t
-A0u3
+A0u
     p 1 s
     mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mm
     1i
@@ -34,8 +40,11 @@ A0u3
          1 o 0 m p 1  
     a
     o
-A0n3
-2,5ー入力から得たデータ
+A0n
+
+//PROCESS FOR PRINT
+//USING 2~7
+//2,5ー入力から得たデータ
 o 2
 k
 2u m pt pt o o2n
