@@ -1,0 +1,70 @@
+0 t
+A0u
+    p 1 s
+    mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mm
+    1i
+        m 1 p 2
+        2u mp 3 tp 4 to 3 o 2n 
+        p 3
+        3u mo 2 tp 3n
+        o 2 ccc p 3 p 4
+        4u mo 3 o 2 tt p 3 p 4n
+        o 3 o 2 o 1
+        1u mp 2 to 1n
+    e
+         1 o 0 m p 1  
+    a
+    o
+A0n
+p 1 p 2 p 3
+0 t
+A0u3
+    p 1 s
+    mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mmmmm mm
+    1i
+        m 1 p 2
+        2u mp 3 tp 4 to 3 o 2n 
+        p 3
+        3u mo 2 tp 3n
+        o 2 ccc p 3 p 4
+        4u mo 3 o 2 tt p 3 p 4n
+        o 3 o 2 o 1
+        1u mp 2 to 1n
+    e
+         1 o 0 m p 1  
+    a
+    o
+A0n3
+2,5ー入力から得たデータ
+o 2
+k
+2u m pt pt o o2n
+p p 4
+4u m o o t p p 4n
+p 5
+5u m p t p t o o 5n
+p p 7
+u m o o t p p n
+o 6
+u m o o o m p p p n
+o o o 3
+3u
+    p p 5
+    5u m p t p t o o 5n
+    p p 7
+    u m o o t p p n
+    o 6
+    u m o o o t p p p n
+    o o o 3
+    o 2
+    tk
+    p 3
+    t
+    p p 5
+    5u m p t p t o o 5n
+    p p 7
+    u m o o t p p n
+    o 6
+    u m o o o m p p p n
+    o o o 3
+3n
