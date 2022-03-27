@@ -863,6 +863,10 @@ docstring追加済み
 C\\new_math.hのpython版です。
 docstring追加済み
 
+## countfilechar.py
+入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
+読み込んだファイルのパスを表示し、そのファイルを開けなかったり文字列として読めなかったときは"this file is not text"と表示します。
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
