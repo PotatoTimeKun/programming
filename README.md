@@ -884,6 +884,9 @@ count_birthday.css/jsを使っています。
 誕生日の日数をカウントするページです。  
 JSDoc追加済み
 
+## tweetdeck_gaming.js
+ChromeでTweetDeckを開いて、デベロッパーツールのコンソールでこのコードを実行するとTweetDeckがゲーミングします。
+
 ## test
 JavaScriptの機能を試すためのファイルを入れてます。
 
