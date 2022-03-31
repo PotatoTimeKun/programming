@@ -967,3 +967,7 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 数字列A/数字列B/  
 と渡すと、数字列Aから数字列BまでのUnicode文字を出力します。  
 例:"12353/12362/"→"ぁあぃいぅうぇえぉお"
+
+## helloworld2.brpt
+helloworldをできるだけコードを短く書こうと思ったのですが、helloworld.brptと大した差はありませんでした。  
+原因はc命令の存在とBrainf*ck特有のwhile文の回数制限の構文の長さがあると思います
