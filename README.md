@@ -970,4 +970,4 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 
 ## helloworld2.brpt
 helloworldをできるだけコードを短く書こうと思ったのですが、helloworld.brptと大した差はありませんでした。  
-原因はc命令の存在とBrainf*ck特有のwhile文の回数制限の構文の長さがあると思います
+原因はc命令の存在でそもそも短いのとBrainf*ck特有のwhile文の回数制限の構文の長さがあると思います

@@ -1,17 +1,48 @@
+/**
+ * @file BrainPotato_language.cpp
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief ブレインポテトをC++で実行するためのプログラムです。
+ * 
+ */
 #include <iostream>
 #include <string>
 using namespace std;
-char a=0;
-char* ptr=&a;
-int l=0;
-bool iftrue=false;
-main(){
-    cout<<"helpでヘルプを表示"<<endl;
-    string inp;
-    cin>>inp;
-    if(inp=="help"){
-        cout<<"Created by PotatoTimeKun https://github.com/PotatoTimeKun/programming \n最初のポインタのアドレスより前のアドレスは使用しないことを勧めます\n命令一覧:\np:ポインタのアドレスをインクリメント(ptr++)\no:ポインタのアドレスをデクリメント(ptr--)\nt:ポインタの値をインクリメント(*ptr+=1)\nm:ポインタの値をデクリメント(*ptr-=1)\nk:ポインタの値をASCII文字として出力\nu:ポインタの値が0ならnまで飛ばす\nn:ポインタの値が0以外ならuまで戻る\ni:ポインタの値が0ならaかe(eはaで閉じる)まで飛ばす\ne:iで飛ばされた場合のみaまで実行する\nc:ポインタの値を2倍する(*ptr*=2)\nh:ポインタの値を1/2倍する(*ptr/=2)\ns:キーボード入力を1文字受け取りポインタに格納する";
-    }
+/**
+ * @brief BrainPotato言語のコードを扱うためのクラスです。
+ * 
+ */
+class BrainPotato{
+    public:
+        BrainPotato();
+        /**
+         * @brief BrainPotatoのソースコードをクラスに設定します。
+         * 
+         * @param BRcode BrainPotatoプログラムのソースコード
+         */
+        void setCode(string BRcode);
+        /**
+         * @brief 設定したコードを実行し、出力する文字列を返します。
+         * 
+         * @return string 
+         */
+        string runCode();
+    private:
+        char* ptr;
+        int l;
+        bool iftrue;
+        string code="";
+};
+BrainPotato::BrainPotato(){}
+void BrainPotato::setCode(string BRcode){
+    code=BRcode;
+}
+string BrainPotato::runCode(){
+    char a[1000];
+    for(int i=0;i<1000;i++){a[i]=0;}
+    ptr=a;
+    l=0;
+    iftrue=false;
+    string inp=code,ret="";
     for(int i=0;i<inp.length();i++){
         char c=inp[i];
         switch (c)
@@ -29,7 +60,7 @@ main(){
             *ptr-=1;
             break;
         case 'k':
-            cout<<*ptr;
+            ret+=*ptr;
             break;
         case 'u':
             if((int)*ptr==0){
@@ -133,5 +164,18 @@ main(){
         default:
             break;
         }
+    }
+    return ret;
+}
+main(){
+    cout<<"helpでヘルプを表示"<<endl;
+    string inp;
+    cin>>inp;
+    if(inp=="help"){
+        cout<<"Created by PotatoTimeKun https://github.com/PotatoTimeKun/programming \n最初のポインタのアドレスより前のアドレスは使用しないことを勧めます\n命令一覧:\np:ポインタのアドレスをインクリメント(ptr++)\no:ポインタのアドレスをデクリメント(ptr--)\nt:ポインタの値をインクリメント(*ptr+=1)\nm:ポインタの値をデクリメント(*ptr-=1)\nk:ポインタの値をASCII文字として出力\nu:ポインタの値が0ならnまで飛ばす\nn:ポインタの値が0以外ならuまで戻る\ni:ポインタの値が0ならaかe(eはaで閉じる)まで飛ばす\ne:iで飛ばされた場合のみaまで実行する\nc:ポインタの値を2倍する(*ptr*=2)\nh:ポインタの値を1/2倍する(*ptr/=2)\ns:キーボード入力を1文字受け取りポインタに格納する";
+    }else{
+        BrainPotato br;
+        br.setCode(inp);
+        cout<<br.runCode();
     }
 }
