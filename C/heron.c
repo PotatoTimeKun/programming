@@ -17,5 +17,5 @@ int main(){
     scanf("%lf",&c);
     s=(a+b+c)/2;
     S=sqrt(s*(s-a)*(s-b)*(s-c));
-    printf("三角形ABCの面積は%.4g",a,b,c,S);
+    printf("三角形ABCの面積は%.4g",S);
 }
