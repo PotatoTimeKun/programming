@@ -27,7 +27,6 @@ class BrainPotato{
          * @return string 
          */
         wstring runCode();
-        long safe=1000;
     private:
         int* ptr;
         int l;
@@ -39,7 +38,7 @@ void BrainPotato::setCode(string BRcode){
     code=BRcode;
 }
 wstring BrainPotato::runCode(){
-    int a[safe];
+    int a[10000];
     for(int i=0;i<1000;i++){a[i]=0;}
     ptr=a;
     l=0;
