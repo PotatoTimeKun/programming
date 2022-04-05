@@ -677,7 +677,6 @@ BrainPotatoを実行する部分のクラスについて示します。
 |BrainPotato()|-|コンストラクタ(何もしない)|
 |setCode(string)|void|ソースコードを設定する|
 |runCode()|wstring プログラムの実行結果|プログラムを実行する|
-|safe|long|ポインタが安全にインクリメントできる数(デフォルトで1000)|
 
 runCode関数では日本語に対応させるためにwstringを使っています。  
 出力する際はwcoutやwprintfを使ってください。  
