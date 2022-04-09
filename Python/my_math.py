@@ -134,3 +134,32 @@ def tri_S(b,c,A):
     A:その間の角(ラジアン値)
     """
     return 1/2*b*c*m.sin(A)
+class mathVector:
+    """ベクトルを扱うクラスです。"""
+    v1=0
+    v2=0
+    ang=None
+    def __init__(self) -> None:
+        pass
+    def __init__(self,v_x:float,v_y:float,angle: float) -> None:
+        """
+        v_x:ベクトルのx成分
+        v_y:ベクトルのy成分
+        angle:ベクトルの角度
+        """
+        self.v1=v_x
+        self.v2=v_y
+        self.ang=angle
+    def __init__(self,x1:float,y1:float,x2:float,y2:float) -> None:
+        """
+        (x1,y1):ベクトルの始点
+        (x2,y2):ベクトルの終点
+        """
+        self.v1=x2-x1
+        self.v2=y2-y1
+        v=cos_theorem(self.v1,self.v2,m.pi/2)
+        self.ang=m.asin(self.v2/v)
+        if(self.v1<0):self.ang=m.pi-self.ang
+def vecValue(vec:mathVector)-> int:
+    """ベクトルの大きさを返します。"""
+    return (vec.v1**2+vec.v2**2)**0.5

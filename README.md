@@ -877,6 +877,15 @@ docstring追加済み
 C\\new_math.hのpython版です。
 docstring追加済み
 
+ver0.8\~now:  
+ベクトルクラスmathVectorを追加  
+コンストラクタとして以下がある
+| 引数 | 説明 |
+| --- | --- |
+| (self) | 新しい零ベクトルを作成する |
+| (self), v_x:float , v_y:float , angle:float | v_x:ベクトルのx成分 v_y:ベクトルのy成分 angle:ベクトルの角度 |
+| (self), x1:float , y1:float , x2:float , y2:float | (x1,y1):ベクトルの始点 (x2,y2):ベクトルの終点 |
+
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
 読み込んだファイルのパスを表示し、そのファイルを開けなかったり文字列として読めなかったときは"this file is not text"と表示します。
