@@ -2,7 +2,7 @@ import chardet as ct
 import pathlib as pl
 inp=input()
 l=0
-def count(parent):
+def count(parent:int)->None:
     global l
     pt=pl.Path(parent)
     for f in pt.iterdir():

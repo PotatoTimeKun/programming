@@ -2,7 +2,7 @@ class Chipher:
     """
     暗号を扱うクラスです
     """
-    def ceasar(mode,sentence,shift):
+    def ceasar(mode:str,sentence:str,shift:int)->str:
         """
         シーザー暗号を扱います。
         mode "m":暗号化モード,"r":復号化モード
@@ -31,7 +31,7 @@ class Chipher:
                 else:ret+=i
             ret=ret.lower()
         return ret
-    def vigenere(mode,sentence,key):
+    def vigenere(mode:str,sentence:str,key:str)->str:
         """
         ヴィジュネル暗号を扱います。
         mode "m":暗号化モード,"r":復号化モード
@@ -69,7 +69,7 @@ class Chipher:
                 b+=1
                 ret=ret.lower()
         return ret
-    def substitution(mode,sentence,key):
+    def substitution(mode:str,sentence:str,key:str)->str:
         """
         単一換字式暗号を扱います。
         mode "m":暗号化モード,"r":復号化モード
@@ -86,7 +86,7 @@ class Chipher:
             for i in range(0,len(sentence)):
                 ret+=abc[key.index(sentence[i])]
         return ret
-    def polybius_square(mode,sentence):
+    def polybius_square(mode:str,sentence:str)->str:
         """
         ポリュビオスの暗号表(5*5)を扱います。
         5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。

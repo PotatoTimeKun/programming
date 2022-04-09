@@ -1,5 +1,5 @@
 """素数を扱います。"""
-def prime_num(start,end):
+def prime_num(start:int,end:int)->list:
     """
     第一引数から第二引数-1までの素数をリストで返します。
     """

@@ -1,5 +1,5 @@
 """ヴィジュネル暗号を作る関数が入っています。"""
-def make_vij(key,sent):
+def make_vij(key:str,sent:str)->str:
     """
     第一引数に鍵、第二引数に平文を受け取りヴィジュネル暗号を返します。
     """
