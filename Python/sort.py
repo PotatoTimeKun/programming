@@ -1,4 +1,4 @@
-def bubble(array):
+def bubble(array:list)->None:
     """
     バブルソート(基本交換法)で昇順に整列を行います。
     array 整列を行うリスト
@@ -9,7 +9,7 @@ def bubble(array):
                 sw=array[j]
                 array[j]=array[j+1]
                 array[j+1]=sw
-def select(array):
+def select(array:list)->None:
     """
     基本選択法で昇順に整列を行います。
     array 整列を行うリスト
@@ -21,7 +21,7 @@ def select(array):
         sw=array[i]
         array[i]=array[min]
         array[min]=sw
-def insert(array):
+def insert(array:list)->None:
     """
     基本挿入法で昇順に整列を行います。
     array 整列を行うリスト
@@ -33,7 +33,7 @@ def insert(array):
                 sw=array[j]
                 array[j]=array[j-1]
                 array[j-1]=sw
-def shell(array):
+def shell(array:list)->None:
     """
     シェルソート(改良挿入法)で昇順に整列を行います。
     array 整列を行うリスト
@@ -47,7 +47,7 @@ def shell(array):
                         sw=array[j]
                         array[j]=array[j-c]
                         array[j-c]=sw
-def quick(array,start=0,end=-1):
+def quick(array:list,start=0,end=-1)->None:
     """
     クイックソートで昇順に整列を行います。
     array 整列を行うリスト
@@ -69,7 +69,7 @@ def quick(array,start=0,end=-1):
         array[pip]=pi
         quick(array,start,pip-1)
         quick(array,pip+1,end)
-def marge(array):
+def marge(array:list)->None:
     """
     ヒープソートで昇順に整列を行います。
     array 整列を行うリスト

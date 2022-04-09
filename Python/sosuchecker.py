@@ -1,5 +1,5 @@
 """素数を調べる関数を扱います。"""
-def check_prime(i):
+def check_prime(i:int)->bool:
     """
     引数が素数かどうか判断し、素数ならTrue、素数でなければFalseを返します。
     """

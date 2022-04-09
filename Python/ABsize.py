@@ -1,4 +1,4 @@
-def ABsize(AorB,size):
+def ABsize(AorB:str,size:int)->list[int]:
     """
     引数に("A"か"B",サイズ番号)を渡すと指定したA判、B判のサイズをmmでリストを返します。リストは縦長になる向きで[縦,横]となります。
     """
