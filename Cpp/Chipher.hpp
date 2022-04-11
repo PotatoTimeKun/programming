@@ -138,6 +138,43 @@ class Chipher{
         }
         return ret;
     }
+    /**
+     * @brief スキュタレー暗号を扱います。
+     * 5列に分けて暗号化します。
+     * 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @return string 暗号文または平文
+     */
+    public:static string scytale(string mode,string sentence){
+        string ret="";
+        int sen_size=sentence.length();
+        if(mode[0]=='m'){
+            int table[5][100];
+            for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+            for(int i=0;i<sen_size;i++){
+                table[i/5][i%5]=sentence[i];
+            }
+            for(int i=0;i<5*(sen_size+4)/5;i++){
+                if(table[i%5][i/5]!='\0')ret+=(char)table[i%5][i/5];
+            }
+        }
+        if(mode[0]=='r'){
+            int table[5][100];
+            for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+            for(int i=0;i<sen_size;i++){
+                table[i/5][i%5]=sentence[i];
+            }
+            for(int i=0;i<sen_size;i++){
+                if(table[i%5][i/5]!='\0')table[i%5][i/5]=sentence[i];
+                else table[(i+1)%5][(i+1)/5]=sentence[i];
+            }
+            for(int i=0;i<5*(sen_size+4)/5;i++){
+                if(table[i/5][i%5]!='\0')ret+=(char)table[i/5][i%5];
+            }
+        }
+        return ret;
+    }
 };
 
 #endif // CHIPHER_HPP_INCLUDED

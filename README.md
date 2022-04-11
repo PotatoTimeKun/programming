@@ -95,6 +95,11 @@ doxygen追加済み
 * void polybius_square(char mode,char \*sentence,int sen_size,char \*return_array)  
 :ポリュビオスの暗号表(5\*5)を扱います。  
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)
+* void scytale(char mode,char\* sentence,int sen_size,char\* return_array)
+スキュタレー暗号を扱います。  
+5列に分けて暗号化・復号化を行います。  
+return_arrayは少し余裕をもって宣言しておいたほうがいいです。  
+言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
 
 doxygen追加済み
 
@@ -635,6 +640,10 @@ doxygen追加済み
 * string Chipher::polybius_square(string モード，string 平文or暗号文)  
 :ポリュビオスの暗号表(5\*5)を扱います。  
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)  
+* string Chipher::scytale(string モード，string 平文or暗号文)
+スキュタレー暗号を扱います。  
+5列に分けて暗号化・復号化を行います。  
+言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
 
 doxygen追加済み
 

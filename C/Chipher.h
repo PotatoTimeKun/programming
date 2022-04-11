@@ -172,4 +172,45 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
         return_array[sen_size/2]='\0';
     }
 }
+/**
+ * @brief スキュタレー暗号を扱います。
+ * 5列に分けて暗号化・復号化を行います。
+ * return_arrayは少し余裕をもって宣言しておいたほうがいいです。
+ * 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
+ *
+ * @param mode "m":暗号化モード，"r":復号化モード
+ * @param sentence 変換する文字列
+ * @param sen_size sentenceの要素数
+ * @param return_array 変換後の文字列を格納する配列
+*/
+void scytale(char mode,char* sentence,int sen_size,char* return_array){
+    if(mode=='m'){
+       int table[5][100];
+       for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+       for(int i=0;i<sen_size;i++){
+           table[i/5][i%5]=sentence[i];
+       }
+       for(int i=0;i<5*(sen_size+4)/5;i++){
+           if(table[i%5][i/5]!='\0')return_array[i]=table[i%5][i/5];
+           else return_array[i]=' ';
+       }
+       return_array[5*(sen_size+4)/5-1]='\0';
+    }
+    if(mode=='r'){
+        int table[5][100];
+        for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+        for(int i=0;i<sen_size;i++){
+            table[i/5][i%5]=sentence[i];
+        }
+        for(int i=0;i<sen_size;i++){
+            if(table[i%5][i/5]!='\0')table[i%5][i/5]=sentence[i];
+            else table[(i+1)%5][(i+1)/5]=sentence[i];
+        }
+        for(int i=0;i<5*(sen_size+4)/5;i++){
+           if(table[i/5][i%5]!='\0')return_array[i]=table[i/5][i%5];
+           else return_array[i]=' ';
+       }
+       return_array[5*(sen_size+4)/5]='\0';
+    }
+}
 #endif
