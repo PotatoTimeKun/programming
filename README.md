@@ -353,6 +353,14 @@ doxygen追加済み
 
 doxygen追加済み
 
+## rnd.h
+疑似乱数を生成する関数が入っています。  
+以下の関数があります。  
+* void LCGs(int a,int b,int m,int n,int *return_array)
+合同法乱数を計算します。
+* void BBS(int p,int q,int a,int n,int *return_array)
+B.B.S.で疑似乱数を生成します。
+
 # Cpp
 C++のソースコードが入っています。
 
