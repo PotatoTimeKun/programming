@@ -915,6 +915,9 @@ ver0.8\~now:
 処理を実行してから完了するまでの時間を計測するデコレータfuncTimerが入っています。  
 計測結果は同ファイル内で宣言している変数countedに入っています。
 
+## mouseclicking.py
+指定した座標をマウスを動かすまでクリックし続けます。  
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
