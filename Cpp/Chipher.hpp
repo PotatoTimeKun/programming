@@ -6,6 +6,7 @@
  */
 #ifndef CHIPHER_HPP_INCLUDED
 #define CHIPHER_HPP_INCLUDED
+#include <iostream>
 #include <algorithm>
 #include <cctype>
 #include <string>
@@ -151,26 +152,33 @@ class Chipher{
         int sen_size=sentence.length();
         if(mode[0]=='m'){
             int table[5][100];
-            for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+            for(int i=0;i<500;i++)table[i%5][i/5]=0;
             for(int i=0;i<sen_size;i++){
-                table[i/5][i%5]=sentence[i];
+                table[i%5][i/5]=sentence[i];
             }
-            for(int i=0;i<5*(sen_size+4)/5;i++){
-                if(table[i%5][i/5]!='\0')ret+=(char)table[i%5][i/5];
+            for(int i=0;i<5;i++){
+                for(int j=0;table[i][j]!=0;j++){
+                    if(j>=100)break;
+                    ret+=table[i][j];
+                }
             }
         }
         if(mode[0]=='r'){
             int table[5][100];
-            for(int i=0;i<5*(sen_size+4)/5;i++)table[i/5][i%5]='\0';
+            for(int i=0;i<500;i++)table[i%5][i/5]=0;
             for(int i=0;i<sen_size;i++){
-                table[i/5][i%5]=sentence[i];
+                table[i%5][i/5]=sentence[i];
+            }
+            int k=0;
+            for(int i=0;i<5;i++){
+                for(int j=0;table[i][j]!=0;j++){
+                    if(j>=100)break;
+                    table[i][j]=sentence[k];
+                    k++;
+                }
             }
             for(int i=0;i<sen_size;i++){
-                if(table[i%5][i/5]!='\0')table[i%5][i/5]=sentence[i];
-                else table[(i+1)%5][(i+1)/5]=sentence[i];
-            }
-            for(int i=0;i<5*(sen_size+4)/5;i++){
-                if(table[i/5][i%5]!='\0')ret+=(char)table[i/5][i%5];
+                ret+=table[i%5][i/5];
             }
         }
         return ret;
