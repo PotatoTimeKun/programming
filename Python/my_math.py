@@ -113,7 +113,7 @@ def cos_theorem(b:float,c:float,A:float)->float:
     c:辺2
     A:その間の角(ラジアン値)
     """
-    return b**2+c**2-2*b*c*m.cos(A)
+    return (b**2+c**2-2*b*c*m.cos(A))**0.5
 def sin_theorem(A:float,B:float,a:float)->float:
     """
     三角形ABC(角A,B,Cに対する位置の辺をa,b,cとする)のaとA,Bから、正弦定理によりbを求めます。
@@ -135,31 +135,65 @@ def tri_S(b:float,c:float,A:float)->float:
     """
     return 1/2*b*c*m.sin(A)
 class mathVector:
-    """ベクトルを扱うクラスです。"""
+    """
+    平面のベクトルを扱うクラスです。
+    コンストラクタ:x成分,y成分を指定
+    onGraph:クラスメソッド、始点と終点を指定してベクトルを返す
+    +:ベクトル同士の加法
+    -:ベクトル同士の減法
+    *:int , float->ベクトルと数値の乗法
+    *:mathVector->内積
+    ==:等しいかどうか
+    !=:等しくないかどうか
+    """
     v1=0
     v2=0
     ang=None
-    def __init__(self) -> None:
-        pass
-    def __init__(self,v_x:float,v_y:float,angle: float) -> None:
+    def __init__(self,v_x=0,v_y=0):
         """
         v_x:ベクトルのx成分
         v_y:ベクトルのy成分
-        angle:ベクトルの角度
         """
         self.v1=v_x
         self.v2=v_y
-        self.ang=angle
-    def __init__(self,x1:float,y1:float,x2:float,y2:float) -> None:
+        if v_y==0 and v_x==0:ang=None
+        else:
+            v=cos_theorem(self.v1,self.v2,m.pi/2)
+            self.ang=m.asin(self.v2/v)
+            if(self.v1<0):self.ang=m.pi-self.ang
+    @classmethod
+    def onGraph(x1:float,y1:float,x2:float,y2:float):
         """
+        mathVectorを返します。
         (x1,y1):ベクトルの始点
         (x2,y2):ベクトルの終点
         """
-        self.v1=x2-x1
-        self.v2=y2-y1
-        v=cos_theorem(self.v1,self.v2,m.pi/2)
-        self.ang=m.asin(self.v2/v)
-        if(self.v1<0):self.ang=m.pi-self.ang
+        ret=mathVector(x2-x1,y2-y1)
+        return ret
+    def __add__(self,otherVector):
+        ret = mathVector(self.v1+otherVector.v1,self.v2+otherVector.v2)
+        return ret
+    def __sub__(self,otherVector):
+        ret = mathVector(self.v1-otherVector.v1,self.v2-otherVector.v2)
+        return ret
+    def __mul__(self,other):
+        if(isinstance(other,int) or isinstance(other,float)):
+            ret=mathVector(other*self.v1,other*self.v2)
+            return ret
+        if(isinstance(other,mathVector)):
+            return self.v1*other.v1+self.v2*other.v2 #内積
+    def __rmul__(self,other):
+        if(isinstance(other,int) or isinstance(other,float)):
+            ret=mathVector(other*self.v1,other*self.v2)
+            return ret
+    def __eq__(self,other) -> bool:
+        if(isinstance(other,mathVector)):
+            return (self.v1==other.v1)and(self.v2==other.v2)
+        else:return False
+    def __ne__(self,other) -> bool:
+        if(isinstance(other,mathVector)):
+            return (self.v1!=other.v1)or(self.v2!=other.v2)
+        else:return True
 def vecValue(vec:mathVector)-> float:
-    """ベクトルの大きさを返します。"""
+    """ベクトルの大きさを返します。(つまり|→vec|)"""
     return (vec.v1**2+vec.v2**2)**0.5

@@ -22,6 +22,11 @@
  * void tri_cent(double x1, double y1, double x2, double y2, double x3, double y3, double *return_array)
  * void focus(double a, double b, double *return_array)
  * void hyperbola_focus(double a, double b, int n, double *return_array)
+ * double cos_theorem(double b,double c,double A)
+ * double sin_theorem(double A,double B,double a)
+ * double rad(double arc)
+ * double arc(double rad)
+ * double tri_S(double b,double c,double A)
  * 
  */
 #include <math.h>
@@ -296,7 +301,7 @@ void hyperbola_focus(double a, double b, int n, double *return_array)
  * @return double 辺3
  */
 double cos_theorem(double b,double c,double A){
-    return pow(b,2)+pow(c,2)-2*b*c*cos(A);
+    return sqrt(pow(b,2)+pow(c,2)-2*b*c*cos(A));
 }
 /**
  * @brief 三角形ABC(角A,B,Cに対する位置の辺をa,b,cとする)のaとA,Bから、正弦定理によりbを求めます。
@@ -325,7 +330,7 @@ double rad(double arc){
  * @return double 
  */
 double arc(double rad){
-    return rad*180/MATH_PI
+    return rad*180/MATH_PI;
 }
 /**
  * @brief 三角形の2辺とその間の角から三角形の面積を求めます。
