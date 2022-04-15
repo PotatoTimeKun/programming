@@ -82,10 +82,6 @@ MATH_PIを使ってラジアンを60分法に変換します。
 
 doxygen追加済み  
 
-ver0.8~now:  
-以下の関数をデバッグしました。  
-* cos_theorem
-
 ## Chipher.h
 暗号を扱う関数が入っています。  
 全ての関数の引数にある**modeという引数は暗号化を行うか復号化を行うかを決めるための引数で、'm'で暗号化，'r'で復号化となります。**  
@@ -897,8 +893,6 @@ docstring追加済み
 ## my_math.py
 C\\new_math.hのpython版です。
 docstring追加済み
-
-ver0.8\~now:  
 ベクトルクラスmathVectorを追加しました。  
 メソッド・演算子として以下があります。
 | メソッド・演算子 | 説明 |
@@ -914,9 +908,6 @@ ver0.8\~now:
 以下の関数を追加しました。  
 * vecValue(vec:mathVector)->float
 ベクトルvの大きさ(つまり|→v|)を調べます。  
-
-以下の関数をデバッグしました。  
-* cos_theorem
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
