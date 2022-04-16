@@ -111,3 +111,34 @@ class Chipher:
                 if(c>=j):c+=1
                 ret+=chr(c)
         return ret
+    def scytale(mode:str,sentence:str)->str:
+        """
+        スキュタレー暗号を扱います。
+        ５列に分けて暗号化します。
+        mode "m":暗号化モード,"r":復号化モード
+        sentence 変換する文字列
+        ->return 暗号文または平文
+        """
+        ret=""
+        if(mode=="m"):
+            table=[[0,0,0,0,0]]
+            for i in range(0,len(sentence)):
+                if(len(table)<=int((i)/5)):table.append([0,0,0,0,0])
+                table[int(i/5)][i%5]=ord(sentence[i])
+            for i in range(0,5):
+                for j in range(0,len(table)):
+                    if(table[j][i]!=0):ret+=chr(table[j][i])
+        if(mode=="r"):
+            table=[[0,0,0,0,0]]
+            for i in range(0,len(sentence)):
+                if(len(table)<=int((i)/5)):table.append([0,0,0,0,0])
+                table[int(i/5)][i%5]=ord(sentence[i])
+            k=0
+            for i in range(0,5):
+                for j in range(0,len(table)):
+                    if(k<len(sentence) and table[j][i]!=0):
+                        table[j][i]=ord(sentence[k])
+                        k+=1
+            for i in range(0,len(sentence)):
+                if(table[int(i/5)][i%5]!=0):ret+=chr(table[int(i/5)][i%5])
+        return ret
