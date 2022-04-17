@@ -6,6 +6,7 @@
  */
 #ifndef CHIPHER_HPP_INCLUDED
 #define CHIPHER_HPP_INCLUDED
+#define SCYTALE_LENGTH 500
 #include <iostream>
 #include <algorithm>
 #include <cctype>
@@ -143,6 +144,8 @@ class Chipher{
      * @brief スキュタレー暗号を扱います。
      * 5列に分けて暗号化します。
      * 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
+     * Chipher.hppのマクロSCYTALE_LENGTHを書き換えることによって最大文字数を変更できます。
+     * SCYTALE_LENGTHは5の倍数にしてください。
      * @param mode "m":暗号化モード，"r":復号化モード
      * @param sentence 変換する文字列
      * @return string 暗号文または平文
@@ -151,28 +154,28 @@ class Chipher{
         string ret="";
         int sen_size=sentence.length();
         if(mode[0]=='m'){
-            int table[5][100];
-            for(int i=0;i<500;i++)table[i%5][i/5]=0;
+            int table[5][int(SCYTALE_LENGTH)/5];
+            for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
             for(int i=0;i<sen_size;i++){
                 table[i%5][i/5]=sentence[i];
             }
             for(int i=0;i<5;i++){
                 for(int j=0;table[i][j]!=0;j++){
-                    if(j>=100)break;
+                    if(j>=int(SCYTALE_LENGTH)/5)break;
                     ret+=table[i][j];
                 }
             }
         }
         if(mode[0]=='r'){
-            int table[5][100];
-            for(int i=0;i<500;i++)table[i%5][i/5]=0;
+            int table[5][int(SCYTALE_LENGTH)/5];
+            for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
             for(int i=0;i<sen_size;i++){
                 table[i%5][i/5]=sentence[i];
             }
             int k=0;
             for(int i=0;i<5;i++){
                 for(int j=0;table[i][j]!=0;j++){
-                    if(j>=100)break;
+                    if(j>=int(SCYTALE_LENGTH)/5)break;
                     table[i][j]=sentence[k];
                     k++;
                 }

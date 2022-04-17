@@ -9,6 +9,7 @@
  */
 #ifndef CHIPHER_H_INCLUDE
 #define CHIPHER_H_INCLUDE
+#define SCYTALE_LENGTH 500
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -178,7 +179,8 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
  * sen_sizeは文字数にしてください。
  * return_arrayは少し余裕をもって宣言しておいたほうがいいです。
  * 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。
- *
+ * Chipher.hのマクロSCYTALE_LENGTHを書き換えることによって最大文字数を変更できます。
+ * SCYTALE_LENGTHは5の倍数にしてください。
  * @param mode "m":暗号化モード，"r":復号化モード
  * @param sentence 変換する文字列
  * @param sen_size sentenceの文字数
@@ -186,15 +188,15 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
 */
 void scytale(char mode,char* sentence,int sen_size,char* return_array){
     if(mode=='m'){
-        int table[5][100];
-        for(int i=0;i<500;i++)table[i%5][i/5]=0;
+        int table[5][int(SCYTALE_LENGTH)/5];
+        for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
         for(int i=0;i<sen_size;i++){
             table[i%5][i/5]=sentence[i];
         }
         int k=0;
         for(int i=0;i<5;i++){
             for(int j=0;table[i][j]!=0;j++){
-                if(j>=100)break;
+                if(j>=int(SCYTALE_LENGTH)/5)break;
                 return_array[k]=table[i][j];
                 k++;
             }
@@ -202,15 +204,15 @@ void scytale(char mode,char* sentence,int sen_size,char* return_array){
         return_array[k]='\0';
     }
     if(mode=='r'){
-        int table[5][100];
-        for(int i=0;i<500;i++)table[i%5][i/5]=0;
+        int table[5][int(SCYTALE_LENGTH)/5];
+        for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
         for(int i=0;i<sen_size;i++){
             table[i%5][i/5]=sentence[i];
         }
         int k=0;
         for(int i=0;i<5;i++){
             for(int j=0;table[i][j]!=0;j++){
-                if(j>=100)break;
+                if(j>=int(SCYTALE_LENGTH)/5)break;
                 table[i][j]=sentence[k];
                 k++;
             }
