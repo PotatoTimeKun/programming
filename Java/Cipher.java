@@ -156,4 +156,66 @@ public class Cipher {
         }
         return ret;
     }
+    /**
+     * スキュタレー暗号を扱います。
+     * 5行に分けて暗号化します。
+     *
+     * @param mode "m":暗号化モード，"r":復号化モード
+     * @param sentence 変換する文字列
+     * @return String 暗号文または平文
+     */
+    public static String scytale(String mode,String sentence){
+        String ret="";
+        List<Integer> list_sen = sentence.chars().boxed().collect(Collectors.toList());
+        List<ArrayList<Integer>> table=new ArrayList<>();
+        List<Integer> inner=new ArrayList<>();
+        if(mode=="m"){
+            for(int i=0;i<5;i++)inner.add(0);
+            table.add(inner);
+            for(int i=0;i<sentence.length();i++){
+                if(table.size()<=i/5){
+                    inner=new ArrayList<>();
+                    for(int j=0;j<5;j++)inner.add(0);
+                    table.add(inner);
+                }
+                inner=table.get(i/5);
+                inner.set(i%5,list_sen.get(i));
+                table.set(i/5,inner);
+            }
+            for(int i=0;i<5;i++){
+                for(int j=0;j<table.size();j++){
+                    if((table.get(j)).get(i)!=0)ret+=Character.toString((table.get(j)).get(i));
+                }
+            }
+        }
+        if(mode=="r"){
+            for(int i=0;i<5;i++)inner.add(0);
+            table.add(inner);
+            for(int i=0;i<sentence.length();i++){
+                if(table.size()<=i/5){
+                    inner=new ArrayList<>();
+                    for(int j=0;j<5;j++)inner.add(0);
+                    table.add(inner);
+                }
+                inner=table.get(i/5);
+                inner.set(i%5,list_sen.get(i));
+                table.set(i/5,inner);
+            }
+            int k=0;
+            for(int i=0;i<5;i++){
+                for(int j=0;j<table.size();j++){
+                    if(k<sentence.length() && (table.get(j)).get(i)!=0){
+                        inner=table.get(j);
+                        inner.set(i,list_sen.get(k));
+                        table.set(j,inner);
+                        k++;
+                    }
+                }
+            }
+            for(int i=0;i<sentence.length();i++){{
+                if((table.get(i/5)).get(i%5)!=0)ret+=Character.toString((table.get(i/5)).get(i%5)!=0);
+            }
+        }
+        return ret;//*未テスト
+    }
 }
