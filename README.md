@@ -724,17 +724,19 @@ Javadoc追加済み
 ## Cipher.java
 暗号を扱うクラスが入っています。  
 以下の関数が入っています。  
-* String Cipher.ceasar(String モード,String 平文or暗号文,int シフトする数)  
+* String Chipher.ceasar(String モード,String 平文or暗号文,int シフトする数)  
 :シーザー暗号を扱います。**モードは"m"で暗号化、"r"で解読です(他関数でも同じです)**。
-* String Cipher.vigenere(String モード，String 平文or暗号文，String 鍵)  
+* String Chipher.vigenere(String モード，String 平文or暗号文，String 鍵)  
 :ヴィジュネル暗号を扱います。
 * String Chipher.substitution(String モード，String 平文or暗号文，String 鍵)  
 :単一換字式暗号を扱います。鍵にa~zに対応した文字列を渡します。  
-* String Chipher::polybius_square(String モード，String 平文or暗号文)  
+* String Chipher.polybius_square(String モード，String 平文or暗号文)  
 :ポリュビオスの暗号表(5\*5)を扱います。  
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。(平文ではa-z以外の文字(空白も含む)は除いてください。暗号文では0と1以外の文字(空白も含む)は除いてください。)  
+* string Chipher.scytale(string モード，string 平文or暗号文)
+スキュタレー暗号を扱います。  
+5列に分けて暗号化・復号化を行います。  
 
-モードの文字列が間違っている場合には文字列"error"が返されます。 
 Javadoc追加済み
 
 ## unit_change.java
