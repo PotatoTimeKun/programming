@@ -1,5 +1,5 @@
 /**
- * @file Chipher.h
+ * @file Cipher.h
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
  * @brief 暗号を扱う関数が入っています。
  * @details 関数一覧
