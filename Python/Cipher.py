@@ -1,4 +1,4 @@
-class Chipher:
+class Cipher:
     """
     暗号を扱うクラスです
     """
@@ -15,14 +15,14 @@ class Chipher:
         z=ord('z')
         ret=""
         if(mode=="m"):
-            if(shift<0):return Chipher.ceasar("r",sentence,shift)
+            if(shift<0):return Cipher.ceasar("r",sentence,shift)
             for i in sentence:
                 if(ord(i)>=a and ord(i)<=z):
                     ret+=chr(a+(ord(i)-a+shift)%26)
                 else:ret+=i
             ret=ret.upper()
         if(mode=="r"):
-            if(shift<0):return Chipher.ceasar("m",sentence,shift)
+            if(shift<0):return Cipher.ceasar("m",sentence,shift)
             for i in sentence:
                 if(ord(i)>=a and ord(i)<=z):
                     p=(ord(i)-a-shift)%26
