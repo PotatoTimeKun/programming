@@ -1,6 +1,6 @@
 自作プログラムを公開してます。  
 各プログラムのバージョン別等の説明はPotatoTimeKun/programmingレポジトリのWikiに書いてあります。  
-ここではver0.7対応の説明を書きます。  
+ここではver0.8対応の説明を書きます。  
 
 # C
 C言語のソースコードが入っています。
@@ -1034,3 +1034,12 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 ## helloworld2.brpt
 helloworldをできるだけコードを短く書こうと思ったのですが、helloworld.brptと大した差はありませんでした。  
 原因はc命令の存在でそもそも短いのとBrainf*ck特有のwhile文の回数制限の構文の長さがあると思います
+
+# Dart
+Dart言語のプログラムが入っています。
+
+## test.dart
+テスト用ファイルです。
+
+## test
+flutterのテストです。
