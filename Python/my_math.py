@@ -139,10 +139,10 @@ class mathVector:
     平面のベクトルを扱うクラスです。
     コンストラクタ:x成分,y成分を指定
     onGraph:クラスメソッド、始点と終点を指定してベクトルを返す
+    naiseki:内積
     +:ベクトル同士の加法
     -:ベクトル同士の減法
-    *:int , float->ベクトルと数値の乗法
-    *:mathVector->内積
+    *:ベクトルと数値の乗法
     ==:等しいかどうか
     !=:等しくないかどうか
     """
@@ -170,6 +170,8 @@ class mathVector:
         """
         ret=mathVector(x2-x1,y2-y1)
         return ret
+    def naiseki(self,otherVector):
+        return self.v1*otherVector.v1+self.v2*otherVector.v2;
     def __add__(self,otherVector):
         ret = mathVector(self.v1+otherVector.v1,self.v2+otherVector.v2)
         return ret
@@ -180,8 +182,6 @@ class mathVector:
         if(isinstance(other,int) or isinstance(other,float)):
             ret=mathVector(other*self.v1,other*self.v2)
             return ret
-        if(isinstance(other,mathVector)):
-            return self.v1*other.v1+self.v2*other.v2 #内積
     def __rmul__(self,other):
         if(isinstance(other,int) or isinstance(other,float)):
             ret=mathVector(other*self.v1,other*self.v2)
