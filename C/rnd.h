@@ -1,3 +1,9 @@
+/**
+ * @file rnd.h
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 乱数を作成する関数をアルゴリズム別で用意しています。
+ * 
+ */
 #ifndef INCLUDE_RND
 #define INCLUDE_RND
 /**
