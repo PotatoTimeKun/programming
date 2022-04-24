@@ -98,10 +98,30 @@ class Cipher{
         string abc="abcdefghijklmnopqrstuvwxyz";
         string ret(sentence);
         if(mode[0]=='m'){
-            for(int i=0;i<sentence.length();i++)ret[i]=key[abc.find(sentence[i])];
+            for(int i=0;i<sentence.length();i++){
+                try
+                {
+                    ret[i]=key[abc.find(sentence[i])];
+                }
+                catch(const std::exception& e)
+                {
+                    ret[i]=sentence[i];
+                }
+                
+            }
         }
         if(mode[0]=='r'){
-            for(int i=0;i<sentence.length();i++)ret[i]=abc[key.find(sentence[i])];
+            for(int i=0;i<sentence.length();i++){
+                try
+                {
+                    ret[i]=abc[key.find(sentence[i])];
+                }
+                catch(const std::exception& e)
+                {
+                    ret[i]=sentence[i];
+                }
+                
+            }
         }
         return ret;
     }

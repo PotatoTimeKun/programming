@@ -81,10 +81,16 @@ class Cipher:
         ret=""
         if mode=="m":
             for i in range(0,len(sentence)):
-                ret+=key[abc.index(sentence[i])]
+                try:
+                    ret+=key[abc.index(sentence[i])]
+                except:
+                    ret+=sentence[i]
         if mode=="r":
             for i in range(0,len(sentence)):
-                ret+=abc[key.index(sentence[i])]
+                try:
+                    ret+=abc[key.index(sentence[i])]
+                except:
+                    ret+=sentence[i]
         return ret
     def polybius_square(mode:str,sentence:str)->str:
         """

@@ -188,7 +188,7 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
 */
 void scytale(char mode,char* sentence,int sen_size,char* return_array){
     if(mode=='m'){
-        int table[5][int(SCYTALE_LENGTH)/5];
+        int table[5][(int)(SCYTALE_LENGTH)/5];
         for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
         for(int i=0;i<sen_size;i++){
             table[i%5][i/5]=sentence[i];
@@ -196,7 +196,7 @@ void scytale(char mode,char* sentence,int sen_size,char* return_array){
         int k=0;
         for(int i=0;i<5;i++){
             for(int j=0;table[i][j]!=0;j++){
-                if(j>=int(SCYTALE_LENGTH)/5)break;
+                if(j>=(int)(SCYTALE_LENGTH)/5)break;
                 return_array[k]=table[i][j];
                 k++;
             }
@@ -204,7 +204,7 @@ void scytale(char mode,char* sentence,int sen_size,char* return_array){
         return_array[k]='\0';
     }
     if(mode=='r'){
-        int table[5][int(SCYTALE_LENGTH)/5];
+        int table[5][(int)(SCYTALE_LENGTH)/5];
         for(int i=0;i<SCYTALE_LENGTH;i++)table[i%5][i/5]=0;
         for(int i=0;i<sen_size;i++){
             table[i%5][i/5]=sentence[i];
@@ -212,7 +212,7 @@ void scytale(char mode,char* sentence,int sen_size,char* return_array){
         int k=0;
         for(int i=0;i<5;i++){
             for(int j=0;table[i][j]!=0;j++){
-                if(j>=int(SCYTALE_LENGTH)/5)break;
+                if(j>=(int)(SCYTALE_LENGTH)/5)break;
                 table[i][j]=sentence[k];
                 k++;
             }

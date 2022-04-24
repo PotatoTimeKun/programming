@@ -109,12 +109,22 @@ public class Cipher {
         String abc = "abcdefghijklmnopqrstuvwxyz";
         String ret = "";
         if (mode == "m") {
-            for (int i = 0; i < sentence.length(); i++)
-                ret += key.charAt(abc.indexOf(sentence.charAt(i)));
+            for (int i = 0; i < sentence.length(); i++){
+                try {
+                    ret += key.charAt(abc.indexOf(sentence.charAt(i)));
+                } catch (Exception e) {
+                    ret+=sentence.charAt(i);
+                }
+            }
         }
         if (mode == "r") {
-            for (int i = 0; i < sentence.length(); i++)
-                ret += abc.charAt(key.indexOf(sentence.charAt(i)));
+            for (int i = 0; i < sentence.length(); i++){
+                try {
+                    ret += abc.charAt(key.indexOf(sentence.charAt(i)));
+                } catch (Exception e) {
+                    ret+=sentence.charAt(i);
+                }
+            }
         }
         return ret;
     }
