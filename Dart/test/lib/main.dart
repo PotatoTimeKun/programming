@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget{
     return MaterialApp(
       title: 'Potato',
       theme: ThemeData(primaryColor: Colors.blue),
-      home: const MyHomePage(title:'home'),
+      home: const MyHomePage(title:'function'),
     );
   }
 }
@@ -51,8 +51,13 @@ class _MyHomePageState extends State<MyHomePage>{
               'x=$_i\ny=x:\n  y=$_ix\n  f\'($_i)=1\ny=x^2:\n  y=$_ix2\n  f\'($_i)=${2*_i}\ny=x^3:\n  y=$_ix3\n  f\'($_i)=${3*_i*_i}\ny=log[2]x:\n  y=$_il2x\n  f\'($_i)=${1/(_i*log(2))}\ny=log[10]x:\n  y=$_il10x\n  f\'($_i)=${1/(_i*log(10))}\ny=log[e]x:\n  y=$_ilnx\n  f\'($_i)=${1/_i}',
               textAlign: TextAlign.left,
               textScaleFactor: 1.5,
-              overflow: TextOverflow.ellipsis,
             ),
+            TextButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context){
+                return secHomePage();
+              }));
+            }, child: const Text("Next Page"),
+            )
           ],
         )
       ),
@@ -60,6 +65,46 @@ class _MyHomePageState extends State<MyHomePage>{
         onPressed: _iPlus,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class secHomePage extends StatefulWidget{
+  const secHomePage({Key key=const Key(''),this.title=""}):super(key: key);
+  final String title;
+  @override
+  secPageState createState()=>secPageState();
+}
+
+class secPage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return MaterialApp(
+      home: secHomePage(),
+    );
+  }
+}
+
+class secPageState extends State<secHomePage>{
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(title: const Text("2nd Page"),),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+                'images/potato.jpg',
+              fit: BoxFit.fitWidth,
+            ),
+            TextButton(onPressed: (){
+              Navigator.pop(context);
+            }, child: const Text("Back Page"),
+            )
+          ],
+        ),
       ),
     );
   }
