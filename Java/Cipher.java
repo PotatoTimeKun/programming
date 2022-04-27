@@ -132,18 +132,23 @@ public class Cipher {
     /**
      * ポリュビオスの暗号表(5*5)を扱います。
      * 5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
-     * 平文ではa-z以外の文字(空白も含む)は除いてください。
-     * 暗号文では0と1以外の文字(空白も含む)は除いてください。
      * 
      * @param mode "m":暗号化モード，"r":復号化モード
      * @param sentence 変換する文字列
      * @return String 暗号文または平文
      */
     public static String polybius_square(String mode,String sentence){
+        sentence = sentence.toLowerCase();
         String ret="";
         List<Integer> list_sen = sentence.chars().boxed().collect(Collectors.toList());
-        int a='a',j='j';
+        int a='a',j='j'-'a',z='z',c1='1',c5='5';
         if(mode=="m"){
+            for(int i=0;i<list_sen.size();i++){
+                if(list_sen.get(i)<a || list_sen.get(i)>z){
+                    list_sen.remove(i);
+                    i--;
+                }
+            }
             for(int i=0;i<sentence.length();i++){
                 int c=list_sen.get(i)-a;
                 if(c>=j)c--;
@@ -152,6 +157,12 @@ public class Cipher {
             }
         }
         if(mode=="r"){
+            for(int i=0;i<list_sen.size();i++){
+                if(list_sen.get(i)<c1 || list_sen.get(i)>c5){
+                    list_sen.remove(i);
+                    i--;
+                }
+            }
             for(int i=0;i<sentence.length()/2;i++){
                 int c=a+(5*(list_sen.get(2*i)-(int)'0'-1)+(list_sen.get(2*i+1)-(int)'0'-1));
                 if(c>=j)c++;

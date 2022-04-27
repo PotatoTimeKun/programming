@@ -96,23 +96,31 @@ class Cipher:
         """
         ポリュビオスの暗号表(5*5)を扱います。
         5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
-        平文ではa-z以外の文字(空白も含む)は除いてください。
-        暗号文では0と1以外の文字(空白も含む)は除いてください。
         mode "m":暗号化モード,"r":復号化モード
         sentence 変換する文字列
         ->return 暗号文または平文
         """
+        sentence=sentence.lower()
         ret=""
+        sent_t=""
         a=ord('a')
-        j=ord('j')
+        j=ord('j')-ord('a')
         if(mode=="m"):
+            for c in sentence:
+                if(ord(c)>=ord('a') and ord(c)<=ord('z')):
+                    sent_t+=c
+            sentence=sent_t
             for i in range(0,len(sentence)):
                 c=ord(sentence[i])-a
                 if(c>=j):c-=1
-                ret+=str(c/5+1)
-                ret+=str(c%5+1)
+                ret+=str(int(c/5+1))
+                ret+=str(int(c%5+1))
         if(mode=="r"):
-            for i in range(0,len(sentence)):
+            for c in sentence:
+                if(ord(c)>=ord('1') and ord(c)<=ord('5')):
+                    sent_t+=c
+            sentence=sent_t
+            for i in range(0,int(len(sentence)/2)):
                 c=a+(5*(ord(sentence[2*i])-ord('0')-1)+(ord(sentence[2*i+1])-ord('0')-1))
                 if(c>=j):c+=1
                 ret+=chr(c)

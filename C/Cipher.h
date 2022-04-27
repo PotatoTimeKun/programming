@@ -140,19 +140,27 @@ void substitution(char mode, char *sentence, int sen_size, char *key)
 /**
  * @brief ポリュビオスの暗号表(5*5)を扱います。
  * 5*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
- * 平文ではa-z以外の文字(空白も含む)は除いてください。
- * 暗号文では0と1以外の文字(空白も含む)は除いてください。
  * 
  * @param mode "m":暗号化モード，"r":復号化モード
- * @param sentence 変換する文字列
+ * @param sentence 変換する文字列(内容が変更される可能性があります。)
  * @param sen_size sentenceの要素数
  * @param return_array 変換後の文字列を格納する配列
  */
 void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
+    for (int i = 0; i < sen_size; i++)
+        sentence[i] = tolower(sentence[i]);
     if(mode=='m'){
         for(int i=0;i<sen_size;i++){
+            if(sentence[i]<'a' || sentence[i]>'z'){
+                for(int i=i;i<sen_size-1;i++){
+                    sentence[i]=sentence[i+1];
+                }
+                sen_size--;
+            }
+        }
+        for(int i=0;i<sen_size;i++){
             int c=sentence[i]-'a';
-            if(c<'j'){
+            if(c<('j'-'a')){
                 return_array[2*i]='0'+(c/5+1);
                 return_array[2*i+1]='0'+(c%5+1);
             }else{
@@ -164,9 +172,17 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
         return_array[sen_size*2]='\0';
     }
     if(mode=='r'){
+        for(int i=0;i<sen_size;i++){
+            if(sentence[i]<'1' || sentence[i]>'5'){
+                for(int i=i;i<sen_size-1;i++){
+                    sentence[i]=sentence[i+1];
+                }
+                sen_size--;
+            }
+        }
         for(int i=0;i<sen_size/2;i++){
             return_array[i]='a'+(5*((int)sentence[2*i]-(int)'0'-1)+((int)sentence[2*i+1]-(int)'0'-1));
-            if(return_array[i]>='j'){
+            if(return_array[i]>=('j'-'a')){
                 return_array[i]+=1;
             }
         }
