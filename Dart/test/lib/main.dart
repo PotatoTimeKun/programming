@@ -2,6 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+final Uri _url = Uri.parse('https://potatotimekun.github.io/web/');
+
+void _launchUrl() async {
+  if (!await launchUrl(_url)) throw 'Could not launch $_url';
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -14,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Potato',
       theme: ThemeData(primaryColor: Colors.blue),
-      home: const MyHomePage(title: 'function'),
+      home: const MyHomePage(title: 'Home'),
     );
   }
 }
@@ -48,6 +56,20 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        leading: const IconButton(
+          icon: Icon(Icons.web),
+          onPressed: _launchUrl,
+        ),
+        actions: const <Widget>[
+          IconButton(
+            icon: Icon(Icons.web_asset),
+            onPressed: _launchUrl,
+          ),
+          IconButton(
+            icon: Icon(Icons.web_stories),
+            onPressed: _launchUrl,
+          ),
+        ],
       ),
       body: Center(
           child: Column(
@@ -61,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
           TextButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return secHomePage();
+                return const SecHomePage();
               }));
             },
             child: const Text("Next Page"),
@@ -72,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) {
-                      return serHomePage(
+                      return ThiHomePage(
                         data: _i,
                       );
                     },
@@ -83,7 +105,15 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
             child: Text(title3),
-          )
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const ForHomePage();
+              }));
+            },
+            child: const Text("4th Page"),
+          ),
         ],
       )),
       floatingActionButton: FloatingActionButton(
@@ -95,20 +125,21 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class secHomePage extends StatefulWidget {
-  const secHomePage({Key key = const Key(''), this.title = ""})
+class SecHomePage extends StatefulWidget {
+  const SecHomePage({Key key = const Key(''), this.title = ""})
       : super(key: key);
   final String title;
   @override
-  secPageState createState() => secPageState();
+  SecPageState createState() => SecPageState();
 }
 
-class secPageState extends State<secHomePage> {
+class SecPageState extends State<SecHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("2nd Page"),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         alignment: Alignment.center,
@@ -119,7 +150,7 @@ class secPageState extends State<secHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Spacer(
+            const Spacer(
               flex: 1,
             ),
             Container(
@@ -135,7 +166,7 @@ class secPageState extends State<secHomePage> {
                 boxShadow: const [BoxShadow(blurRadius: 10)],
               ),
             ),
-            Spacer(
+            const Spacer(
               flex: 1,
             ),
             TextButton(
@@ -144,7 +175,7 @@ class secPageState extends State<secHomePage> {
               },
               child: const Text("Back Page"),
             ),
-            Spacer(
+            const Spacer(
               flex: 1,
             )
           ],
@@ -154,17 +185,17 @@ class secPageState extends State<secHomePage> {
   }
 }
 
-class serHomePage extends StatefulWidget {
-  const serHomePage({Key key = const Key(''), this.title = "", this.data = 1})
+class ThiHomePage extends StatefulWidget {
+  const ThiHomePage({Key key = const Key(''), this.title = "", this.data = 1})
       : super(key: key);
   final String title;
   final int data;
   @override
-  serPageState createState() => serPageState(data);
+  ThiPageState createState() => ThiPageState(data);
 }
 
-class serPageState extends State<serHomePage> {
-  serPageState(this.data);
+class ThiPageState extends State<ThiHomePage> {
+  ThiPageState(this.data);
   final int data;
   @override
   Widget build(BuildContext context) {
@@ -173,18 +204,242 @@ class serPageState extends State<serHomePage> {
         title: const Text("3rd Page"),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
-            Text("x=$data"),
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context, "already visited");
-                },
-                child: const Text("Back"))
+            const Align(
+                alignment: Alignment.center,
+                child: ClipOval(
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                )),
+            const Align(
+              alignment: Alignment(-0.2, -0.2),
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(color: Colors.red),
+                ),
+              ),
+            ),
+            Align(
+                alignment: const Alignment(0.2, 0.2),
+                child: ClipRRect(
+                  child: const SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(color: Colors.red),
+                    ),
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                )),
+            Align(
+                alignment: const Alignment(0.15, 0.15),
+                child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(context, "already visited");
+                    },
+                    child: const Text("Back"))),
+            Align(
+              alignment: const Alignment(0.25, 0.25),
+              child: Text("x=$data"),
+            ),
           ],
         ),
       ),
     );
+  }
+}
+
+class ForHomePage extends StatefulWidget {
+  const ForHomePage({Key key = const Key(''), this.title = ""})
+      : super(key: key);
+  final String title;
+  @override
+  ForPageState createState() => ForPageState();
+}
+
+class ForPageState extends State<ForHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("4th Page"),
+        ),
+        body: ListView(
+          children: <Widget>[
+            const ListTile(
+              title: Text("1"),
+              subtitle: Text("hello"),
+            ),
+            const ListTile(
+              title: Text("2"),
+              subtitle: Text("good morning"),
+            ),
+            const ListTile(
+              title: Text("3"),
+              subtitle: Text("good night"),
+            ),
+            ListTile(
+              title: TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const FivHomePage();
+                  }));
+                },
+                child: const Text("5th Page"),
+              ),
+            )
+          ],
+        ));
+  }
+}
+
+class FivHomePage extends StatefulWidget {
+  const FivHomePage({Key key = const Key(''), this.title = ""})
+      : super(key: key);
+  final String title;
+  @override
+  FivPageState createState() => FivPageState();
+}
+
+class FivPageState extends State<FivHomePage> {
+  final valCon = TextEditingController();
+  String st = "", stD = "Drag Target";
+  Color a = Colors.red;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("5th Page"),
+        ),
+        body: PageView(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                AnimatedContainer(
+                  duration: const Duration(seconds: 4),
+                  color: a,
+                  child: const SizedBox(
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        a = Colors.blue;
+                      });
+                    },
+                    child: const Text("animation"))
+              ],
+            ),
+            SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextField(
+                      controller: valCon,
+                    ),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          st = valCon.text;
+                        });
+                      },
+                      child: const Text(
+                        "get text",
+                        textScaleFactor: 2,
+                      )),
+                  Text(st, textScaleFactor: 2),
+                  GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          st = "taped";
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("on Tap", textScaleFactor: 2),
+                      )),
+                  GestureDetector(
+                      onDoubleTap: () {
+                        setState(() {
+                          st = "double taped";
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("on DoubleTap", textScaleFactor: 2),
+                      )),
+                  GestureDetector(
+                      onLongPress: () {
+                        setState(() {
+                          st = "long pressed";
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("on LongPress", textScaleFactor: 2),
+                      )),
+                  Dismissible(
+                    key: UniqueKey(),
+                    child: const ListTile(
+                      title: Text("Dismissible"),
+                    ),
+                    background: Container(
+                      color: Colors.black12,
+                    ),
+                  ),
+                  Draggable(
+                    child: Container(
+                      width: 150,
+                      height: 50,
+                      child: const Text(
+                        "Draggable",
+                        textScaleFactor: 1.5,
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                    feedback: const FlutterLogo(
+                      size: 150,
+                      textColor: Colors.red,
+                    ),
+                    data: "Draged",
+                  ),
+                  DragTarget<String>(
+                    builder: (context, accepted, rejected) {
+                      return Container(
+                        width: 150,
+                        height: 50,
+                        child: Text(
+                          stD,
+                          textScaleFactor: 1.5,
+                        ),
+                        alignment: Alignment.center,
+                      );
+                    },
+                    onAccept: (data) {
+                      setState(() {
+                        stD = data;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
+        ));
   }
 }
