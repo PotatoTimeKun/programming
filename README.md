@@ -915,11 +915,21 @@ docstring追加済み
 | (ベクトル)!=(オブジェクト) | not ((ベクトル)==(オブジェクト)) |
 
 以下の関数を追加しました。  
-* vecValue(vec:mathVector)->float
+* vecValue(vec:mathVector)->float  
 ベクトルvの大きさ(つまり|→v|)を調べます。  
-* differential(function:function)->function
+* differential(function:function)->function  
 引数に渡した関数を微分して導関数を返します。  
-具体的にはlim\[h->0\](f(x+h)-f(x))/hにおいてh=0.00000000001にした関数を返します。
+具体的にはlim\[h->0\](f(x+h)-f(x))/hにおいてh->0.00000000001にした関数を返します。
+* dif_decimal(function:function)->function  
+引数に渡した関数を微分して導関数を返します。  
+値をすべてdecimal型で扱い、小数点以下15で切り捨てます。  
+引数に渡す関数の処理においてもdecimal型を用いてください。  
+導関数において微分係数を導く時の引数が小数ならそれもdecimal型にしてください。  
+具体的には  
+小数点以下100桁までの数を10進数で保持し、  
+lim\[h->0\](f(x+h)-f(x))/hにおいて  
+h->decimal.Decimal('0.00000000000000000000000000000001')にして  
+計算結果を15桁で切り捨てる関数を返します。
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
