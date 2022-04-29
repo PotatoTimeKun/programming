@@ -917,6 +917,9 @@ docstring追加済み
 以下の関数を追加しました。  
 * vecValue(vec:mathVector)->float
 ベクトルvの大きさ(つまり|→v|)を調べます。  
+* differential(function:function)->function
+引数に渡した関数を微分して導関数を返します。  
+具体的にはlim\[h->0\](f(x+h)-f(x))/hにおいてh=0.00000000001にした関数を返します。
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
