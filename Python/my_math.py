@@ -197,3 +197,8 @@ class mathVector:
 def vecValue(vec:mathVector)-> float:
     """ベクトルの大きさを返します。(つまり|→vec|)"""
     return (vec.v1**2+vec.v2**2)**0.5
+def differential(function:function)->function:
+    """引数に渡した関数を微分して導関数を返します。"""
+    def ret(x):
+        return (function(x+0.00000000001)-function(x))/(0.00000000001)
+    return ret
