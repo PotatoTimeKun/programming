@@ -1,4 +1,5 @@
 import math as m
+import decimal as d
 def heron(a:float,b:float,c:float)->float:
     """
     ヘロンの公式より三角形の面積を返します。
@@ -201,4 +202,13 @@ def differential(function:function)->function:
     """引数に渡した関数を微分して導関数を返します。"""
     def ret(x):
         return (function(x+0.00000000001)-function(x))/(0.00000000001)
+    return ret
+def dif_decimal(function:function)->function:
+    """引数に渡した関数を微分して導関数を返します。
+    値をすべてdecimal型で扱い、小数点以下15で切り捨てます。
+    引数に渡す関数の処理においてもdecimal型を用いてください。
+    導関数において微分係数を導く時の引数が小数ならそれもdecimal型にしてください。"""
+    def ret(x):
+        d.getcontext().prec = 100
+        return round((function(x+d.Decimal('0.00000000000000000000000000000001'))-function(x))/(d.Decimal('0.00000000000000000000000000000001')),15)
     return ret
