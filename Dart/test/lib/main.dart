@@ -35,16 +35,29 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  var isexp = false;
   int _i = 1, _ix = 1, _ix2 = 1, _ix3 = 1;
   double _il2x = 0, _il10x = 0, _ilnx = 0;
   String title3 = "3rd Page";
+  int dropv = 0;
+  double incr = 1;
+  final _scafKey = GlobalKey<ScaffoldState>();
+  late TabController _tabController;
+  var isSel = [true, false];
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
-    void _iPlus() {
+    void _iPlus({int val = 1}) {
       setState(() {
-        _i++;
-        _ix++;
+        _i += val;
+        _ix += val;
         _ix2 = _i * _i;
         _ix3 = _i * _i * _i;
         _il2x = log(_i) / log(2);
@@ -54,70 +67,240 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
+      key: _scafKey,
       appBar: AppBar(
         title: Text(widget.title),
         leading: const IconButton(
           icon: Icon(Icons.web),
           onPressed: _launchUrl,
         ),
-        actions: const <Widget>[
-          IconButton(
-            icon: Icon(Icons.web_asset),
-            onPressed: _launchUrl,
+        actions: <Widget>[
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return <PopupMenuItem>[
+                PopupMenuItem(
+                    child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _i = 1;
+                      _ix = 1;
+                      _ix2 = _i * _i;
+                      _ix3 = _i * _i * _i;
+                      _il2x = log(_i) / log(2);
+                      _il10x = log(_i) / log(10);
+                      _ilnx = log(_i);
+                    });
+                  },
+                  child: const Text("x reset"),
+                )),
+                PopupMenuItem(
+                    child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _i = 1;
+                      _ix = 1;
+                      _ix2 = _i * _i;
+                      _ix3 = _i * _i * _i;
+                      _il2x = log(_i) / log(2);
+                      _il10x = log(_i) / log(10);
+                      _ilnx = log(_i);
+                      _iPlus(val: 9999);
+                    });
+                  },
+                  child: const Text("x to 10000"),
+                )),
+              ];
+            },
           ),
           IconButton(
-            icon: Icon(Icons.web_stories),
-            onPressed: _launchUrl,
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              _scafKey.currentState!.openEndDrawer();
+            },
           ),
+        ],
+        bottom: TabBar(
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.mail),
+            ),
+            Tab(
+              icon: Icon(Icons.youtube_searched_for),
+            ),
+          ],
+          controller: _tabController,
+        ),
+      ),
+      endDrawer: Drawer(
+        child: Column(
+          children: const <Widget>[Spacer(), Text("drawer"), Spacer()],
+        ),
+      ),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _tabController,
+        children: [
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ExpansionPanelList(
+                    expansionCallback: (int index, bool isexpan) {
+                      setState(() {
+                        isexp = !isexp;
+                      });
+                    },
+                    children: [
+                      ExpansionPanel(
+                          headerBuilder: (BuildContext context, bool isexpan) {
+                            return ListTile(
+                              title: Text("x=$_i"),
+                            );
+                          },
+                          body: Text(
+                            'y=x:\n  y=$_ix\n  f\'($_i)=1\ny=x^2:\n  y=$_ix2\n  f\'($_i)=${2 * _i}\ny=x^3:\n  y=$_ix3\n  f\'($_i)=${3 * _i * _i}\ny=log[2]x:\n  y=$_il2x\n  f\'($_i)=${1 / (_i * log(2))}\ny=log[10]x:\n  y=$_il10x\n  f\'($_i)=${1 / (_i * log(10))}\ny=log[e]x:\n  y=$_ilnx\n  f\'($_i)=${1 / _i}',
+                            textAlign: TextAlign.left,
+                            textScaleFactor: 1.5,
+                          ),
+                          isExpanded: isexp)
+                    ],
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const SecHomePage();
+                          }));
+                        },
+                        child: const Text("Next Page"),
+                      ),
+                      ColoredBox(
+                        color: Colors.grey,
+                        child: TextButton.icon(
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: () async {
+                            String bol = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) {
+                                    return ThiHomePage(
+                                      data: _i,
+                                    );
+                                  },
+                                  fullscreenDialog: true),
+                            ) as String;
+                            setState(() {
+                              title3 = bol;
+                            });
+                          },
+                          label: Text(title3),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const ForHomePage();
+                          }));
+                        },
+                        child: const Text("4th Page"),
+                      ),
+                    ],
+                  ),
+                  DropdownButton(
+                      value: dropv,
+                      items: <DropdownMenuItem>[
+                        DropdownMenuItem(
+                            value: 0,
+                            child: TextButton(
+                                onPressed: () {
+                                  _iPlus(val: 10);
+                                },
+                                child: const Text("+10"))),
+                        DropdownMenuItem(
+                            value: 1,
+                            child: TextButton(
+                                onPressed: () {
+                                  _iPlus(val: 100);
+                                },
+                                child: const Text("+100"))),
+                        DropdownMenuItem(
+                            value: 2,
+                            child: TextButton(
+                                onPressed: () {
+                                  _iPlus(val: -1);
+                                },
+                                child: const Text("-1"))),
+                      ],
+                      onChanged: (dynamic value) {
+                        setState(() {
+                          dropv = value;
+                        });
+                      }),
+                  ToggleButtons(
+                    children: const [
+                      Icon(Icons.add),
+                      Icon(Icons.do_not_disturb_on)
+                    ],
+                    isSelected: isSel,
+                    onPressed: (int index) {
+                      setState(() {
+                        for (int i = 0; i < 2; i++) {
+                          if (i == index) {
+                            isSel[i] = true;
+                          } else {
+                            isSel[i] = false;
+                          }
+                        }
+                      });
+                    },
+                  ),
+                  Slider.adaptive(
+                      value: incr,
+                      divisions: 10,
+                      min: 1,
+                      max: 100,
+                      label: "+ ${incr.toInt()}",
+                      onChanged: (double val) {
+                        setState(() {
+                          incr = val;
+                        });
+                      }),
+                  const CircularProgressIndicator()
+                ],
+              ),
+            ),
+          ),
+          CustomScrollView(
+            slivers: <Widget>[
+              const SliverAppBar(
+                expandedHeight: 100,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text("Flexible Space Bar"),
+                  centerTitle: true,
+                  background: FlutterLogo(),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text('$index'),
+                  );
+                }, childCount: 30),
+              ),
+            ],
+          )
         ],
       ),
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'x=$_i\ny=x:\n  y=$_ix\n  f\'($_i)=1\ny=x^2:\n  y=$_ix2\n  f\'($_i)=${2 * _i}\ny=x^3:\n  y=$_ix3\n  f\'($_i)=${3 * _i * _i}\ny=log[2]x:\n  y=$_il2x\n  f\'($_i)=${1 / (_i * log(2))}\ny=log[10]x:\n  y=$_il10x\n  f\'($_i)=${1 / (_i * log(10))}\ny=log[e]x:\n  y=$_ilnx\n  f\'($_i)=${1 / _i}',
-            textAlign: TextAlign.left,
-            textScaleFactor: 1.5,
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const SecHomePage();
-              }));
-            },
-            child: const Text("Next Page"),
-          ),
-          TextButton(
-            onPressed: () async {
-              String bol = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) {
-                      return ThiHomePage(
-                        data: _i,
-                      );
-                    },
-                    fullscreenDialog: true),
-              ) as String;
-              setState(() {
-                title3 = bol;
-              });
-            },
-            child: Text(title3),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const ForHomePage();
-              }));
-            },
-            child: const Text("4th Page"),
-          ),
-        ],
-      )),
       floatingActionButton: FloatingActionButton(
-        onPressed: _iPlus,
+        onPressed: () {
+          _iPlus(val: incr.toInt());
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
@@ -268,38 +451,141 @@ class ForHomePage extends StatefulWidget {
 }
 
 class ForPageState extends State<ForHomePage> {
+  var _v = "";
+  var _t = "";
+  var _d = "";
+  Future _sel() async {
+    DateTime? sel = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2021),
+        lastDate: DateTime(2023),
+        locale: Localizations.localeOf(context));
+    if (sel != null) {
+      setState(() {
+        _v = sel.toString();
+      });
+    }
+  }
+
+  Future _selt() async {
+    TimeOfDay? selt =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (selt != null) {
+      setState(() {
+        _t = selt.toString();
+      });
+    }
+  }
+
+  Future _dia() async {
+    var ans = await showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text("question"),
+            children: <Widget>[
+              SimpleDialogOption(
+                child: const Text("option 1"),
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+              ),
+              SimpleDialogOption(
+                child: const Text("option 2"),
+                onPressed: () {
+                  Navigator.pop(context, 2);
+                },
+              ),
+            ],
+          );
+        });
+    switch (ans) {
+      case 1:
+        setState(() {
+          _d = "1";
+        });
+        break;
+      case 2:
+        setState(() {
+          _d = "2";
+        });
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text("4th Page"),
         ),
-        body: ListView(
-          children: <Widget>[
-            const ListTile(
-              title: Text("1"),
-              subtitle: Text("hello"),
+        body: RefreshIndicator(
+            child: ListView(
+              children: <Widget>[
+                const ListTile(
+                  title: Text("1"),
+                  subtitle: Text("hello"),
+                ),
+                const ListTile(
+                  title: Text("2"),
+                  subtitle: Text("good morning"),
+                ),
+                const ListTile(
+                  title: Text("3"),
+                  subtitle: Text("good night"),
+                ),
+                ListTile(
+                  title: TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const FivHomePage();
+                      }));
+                    },
+                    child: const Text("5th Page"),
+                  ),
+                ),
+                Tooltip(
+                  message: 'card',
+                  child: Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(
+                        child: Text("this is card"),
+                      ),
+                    ),
+                  ),
+                ),
+                ListTile(
+                  title: Text(_v),
+                  subtitle: TextButton(
+                    onPressed: _sel,
+                    child: const Text("select date"),
+                  ),
+                ),
+                ListTile(
+                  title: Text(_t),
+                  subtitle: TextButton(
+                    onPressed: _selt,
+                    child: const Text("select time"),
+                  ),
+                ),
+                ListTile(
+                  title: Text(_d),
+                  subtitle: TextButton(
+                    onPressed: _dia,
+                    child: const Text("dialog"),
+                  ),
+                ),
+              ],
             ),
-            const ListTile(
-              title: Text("2"),
-              subtitle: Text("good morning"),
-            ),
-            const ListTile(
-              title: Text("3"),
-              subtitle: Text("good night"),
-            ),
-            ListTile(
-              title: TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const FivHomePage();
-                  }));
-                },
-                child: const Text("5th Page"),
-              ),
-            )
-          ],
-        ));
+            onRefresh: () {
+              return Future.delayed(const Duration(seconds: 5), () {});
+            }));
   }
 }
 
