@@ -83,4 +83,35 @@ class Cipher {
     }
     return ret;
   }
+
+  /**
+   * 単一換字式暗号を扱います。
+   * mode "m":暗号化モード,"r":復号化モード
+   * sentence 変換する文字列
+   * key 鍵
+   */
+  static String substitution(String mode, String sentence, String key) {
+    String ret = "";
+    String abc = "abcdefghijklmnopqrstuvwxyz";
+    sentence = sentence.toLowerCase();
+    if (mode == "m") {
+      for (int i = 0; i < sentence.length; i++) {
+        try {
+          ret += key[abc.indexOf(sentence[i])];
+        } catch (e) {
+          ret += sentence[i];
+        }
+      }
+    }
+    if (mode == "r") {
+      for (int i = 0; i < sentence.length; i++) {
+        try {
+          ret += abc[key.indexOf(sentence[i])];
+        } catch (e) {
+          ret += sentence[i];
+        }
+      }
+    }
+    return ret;
+  }
 }
