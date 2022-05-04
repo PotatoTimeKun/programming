@@ -165,7 +165,7 @@ public class Cipher {
             }
             for(int i=0;i<sentence.length()/2;i++){
                 int c=a+(5*(list_sen.get(2*i)-(int)'0'-1)+(list_sen.get(2*i+1)-(int)'0'-1));
-                if(c>=j)c++;
+                if(c>=j+a)c++;
                 ret+=Character.toString(c);
             }
         }

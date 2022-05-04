@@ -160,7 +160,7 @@ class Cipher{
             sentence=sent_t;
             for(int i=0;i<sentence.length()/2;i++){
                 ret+='a'+(5*((int)sentence[2*i]-(int)'0'-1)+((int)sentence[2*i+1]-(int)'0'-1));
-                if(ret[i]>=('j'-'a')){
+                if(ret[i]>='j'){
                     ret[i]+=1;
                 }
             }

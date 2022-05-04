@@ -182,7 +182,7 @@ void polybius_square(char mode,char* sentence,int sen_size,char* return_array){
         }
         for(int i=0;i<sen_size/2;i++){
             return_array[i]='a'+(5*((int)sentence[2*i]-(int)'0'-1)+((int)sentence[2*i+1]-(int)'0'-1));
-            if(return_array[i]>=('j'-'a')){
+            if(return_array[i]>='j'){
                 return_array[i]+=1;
             }
         }

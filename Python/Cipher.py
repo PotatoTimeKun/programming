@@ -122,7 +122,7 @@ class Cipher:
             sentence=sent_t
             for i in range(0,int(len(sentence)/2)):
                 c=a+(5*(ord(sentence[2*i])-ord('0')-1)+(ord(sentence[2*i+1])-ord('0')-1))
-                if(c>=j):c+=1
+                if(c>=j+a):c+=1
                 ret+=chr(c)
         return ret
     def scytale(mode:str,sentence:str)->str:
