@@ -1054,7 +1054,7 @@ Dart言語のプログラムが入っています。
 # Cipher.dart
 他言語のCipherプログラムと同じです。  
 返り値はString型で返し、モードはString型で渡します。  
-今のところceaserとVigenereがあります。
+今のところceaserとVigenereとsubstitutionがあります。
 
 ## test.dart
 テスト用ファイルです。
