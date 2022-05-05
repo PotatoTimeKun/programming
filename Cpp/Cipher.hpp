@@ -203,7 +203,7 @@ class Cipher{
             for(int i=0;i<5;i++){
                 for(int j=0;table[i][j]!=0;j++){
                     if(j>=int(SCYTALE_LENGTH)/5)break;
-                    table[i][j]=sentence[k];
+                    if(k<sentence.length())table[i][j]=sentence[k];
                     k++;
                 }
             }
