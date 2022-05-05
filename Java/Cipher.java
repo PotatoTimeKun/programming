@@ -190,7 +190,7 @@ public class Cipher {
         if(mode=="m"){
             for(int i=0;i<5;i++){
                 for(int j=0;j<(sentence.length()+4)/5;j++){
-                    ret+=Character.toString(table[i][j]);
+                    if(table[i][j]!=0)ret+=Character.toString(table[i][j]);
                 }
             }
         }
@@ -198,7 +198,7 @@ public class Cipher {
             int k=0;
             for(int i=0;i<5;i++){
                 for(int j=0;j<(sentence.length()+4)/5;j++){
-                    table[i][j]=list_sen.get(k);
+                    if(k<sentence.length() && table[i][j]!=0)table[i][j]=list_sen.get(k);
                     k++;
                 }
             }

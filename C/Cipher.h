@@ -229,7 +229,7 @@ void scytale(char mode,char* sentence,int sen_size,char* return_array){
         for(int i=0;i<5;i++){
             for(int j=0;table[i][j]!=0;j++){
                 if(j>=(int)(SCYTALE_LENGTH)/5)break;
-                table[i][j]=sentence[k];
+                if(k<sen_size)table[i][j]=sentence[k];
                 k++;
             }
         }
