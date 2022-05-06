@@ -153,7 +153,7 @@ class Cipher {
       encoded = enc(sent_t);
       for (int i = 0; i < (sent_t.length / 2).toInt(); i++) {
         int c = (a +
-                (5 * (encoded[2 * i] - e0 - 1) + (encoded[2 * i + 1] - e0 - 1)))
+            (5 * (encoded[2 * i] - e0 - 1) + (encoded[2 * i + 1] - e0 - 1)))
             .toInt();
         if (c >= j + a) c++;
         ret += dec([c]);
