@@ -18671,7 +18671,7 @@ e=o
 h=A.ao(e)
 if(t._p.b(h)){j=h
 i=A.a4J(j.target)
-if(t.Gf.b(i)){if(i.status===404&&b==="AssetManifest.json"){$.by().$1("Asset manifest does not exist at `"+A.f(f)+"` \u2013 ignoring.")
+if(t.Gf.b(i)){if(i.status===404&&b==="https://potatotimekun.github.io/programming/Dart/cipher/web/assets/AssetManifest.json"){$.by().$1("Asset manifest does not exist at `"+A.f(f)+"` \u2013 ignoring.")
 q=A.jY(new Uint8Array(A.Me(B.N.gqN().cQ("{}"))).buffer,0,null)
 s=1
 break}h=i.status
@@ -19845,7 +19845,7 @@ var $async$i5=A.a6(function(a1,a2){if(a1===1){o=a2
 s=p}while(true)switch(s){case 0:b=null
 p=4
 s=7
-return A.a9(a0.cV(0,"FontManifest.json"),$async$i5)
+return A.a9(a0.cV(0,"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/FontManifest.json"),$async$i5)
 case 7:b=a2
 p=2
 s=6
@@ -26384,7 +26384,7 @@ var $async$i5=A.a6(function(a8,a9){if(a8===1){o=a9
 s=p}while(true)switch(s){case 0:a5=null
 p=4
 s=7
-return A.a9(a7.cV(0,"FontManifest.json"),$async$i5)
+return A.a9(a7.cV(0,"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/FontManifest.json"),$async$i5)
 case 7:a5=a9
 p=2
 s=6
