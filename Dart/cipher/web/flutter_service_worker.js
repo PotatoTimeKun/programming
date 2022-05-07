@@ -3,36 +3,36 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "https://potatotimekun.github.io/programming/Dart/cipher/web/assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/NOTICES": "2d7236aca695ba4cd213a3478e55d740",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/canvaskit/canvaskit.js": "c2b4e5f3d7a3d82aed024e7249a78487",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/canvaskit/canvaskit.wasm": "4b83d89d9fecbea8ca46f2f760c5a9ba",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/canvaskit/profiling/canvaskit.js": "ae2949af4efc61d28a4a80fffa1db900",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/canvaskit/profiling/canvaskit.wasm": "95e736ab31147d1b2c7b25f11d4c32cd",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/flutter.js": "3688efe0a39e59781b4f95efbd6b5b62",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/index.html": "b804c01359c5ab95d54b063c2839c6b8",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/": "b804c01359c5ab95d54b063c2839c6b8",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/main.dart.js": "65ac3fe82148cf6cba1995118cb85b5b",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/manifest.json": "3c7a6dcf76c89ac723f8cd9a7d7f3252",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/version.json": "209660fb8186ea46b316bd26ed8a8151"
+  "assets/AssetManifest.json": "2efbb41d7877d10aac9d091f58ccd7b9",
+"assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
+"assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
+"assets/NOTICES": "2d7236aca695ba4cd213a3478e55d740",
+"assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
+"canvaskit/canvaskit.js": "c2b4e5f3d7a3d82aed024e7249a78487",
+"canvaskit/canvaskit.wasm": "4b83d89d9fecbea8ca46f2f760c5a9ba",
+"canvaskit/profiling/canvaskit.js": "ae2949af4efc61d28a4a80fffa1db900",
+"canvaskit/profiling/canvaskit.wasm": "95e736ab31147d1b2c7b25f11d4c32cd",
+"favicon.png": "5dcef449791fa27946b3d35ad8803796",
+"flutter.js": "3688efe0a39e59781b4f95efbd6b5b62",
+"icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
+"icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
+"icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
+"icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
+"index.html": "b804c01359c5ab95d54b063c2839c6b8",
+"/": "b804c01359c5ab95d54b063c2839c6b8",
+"main.dart.js": "65ac3fe82148cf6cba1995118cb85b5b",
+"manifest.json": "3c7a6dcf76c89ac723f8cd9a7d7f3252",
+"version.json": "209660fb8186ea46b316bd26ed8a8151"
 };
 
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = [
-  "https://potatotimekun.github.io/programming/Dart/cipher/web/main.dart.js",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/index.html",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/NOTICES",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/AssetManifest.json",
-"https://potatotimekun.github.io/programming/Dart/cipher/web/assets/FontManifest.json"];
+  "main.dart.js",
+"index.html",
+"assets/NOTICES",
+"assets/AssetManifest.json",
+"assets/FontManifest.json"];
 // During install, the TEMP cache is populated with the application shell files.
 self.addEventListener("install", (event) => {
   self.skipWaiting();
