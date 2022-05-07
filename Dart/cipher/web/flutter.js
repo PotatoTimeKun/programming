@@ -33,7 +33,7 @@ _flutter.loader = null;
      */
     loadEntrypoint(options) {
       const {
-        entrypointUrl = "https://potatotimekun.github.io/programming/Dart/cipher/web/main.dart.js",
+        entrypointUrl = "main.dart.js",
         serviceWorker,
       } = (options || {});
       return this._loadWithServiceWorker(entrypointUrl, serviceWorker);
@@ -92,7 +92,7 @@ _flutter.loader = null;
         timeoutMillis = 4000,
       } = serviceWorkerOptions;
 
-      var serviceWorkerUrl = "https://potatotimekun.github.io/programming/Dart/cipher/web/flutter_service_worker.js?v=" + serviceWorkerVersion;
+      var serviceWorkerUrl = "flutter_service_worker.js?v=" + serviceWorkerVersion;
       let loader = navigator.serviceWorker.register(serviceWorkerUrl)
           .then((reg) => {
             if (!reg.active && (reg.installing || reg.waiting)) {
