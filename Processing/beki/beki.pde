@@ -1,97 +1,91 @@
-int x,y,pw=1,xp=1,yp=1,ex,ey;
-float xo=300,yo=300;
-void setup(){
-  size(600,650);
+final int x_window = 600, y_window = 700;
+int power = 1;
+float x, y, x_old, y_old, x_wide=1, y_wide=1;
+void settings(){
+  size(x_window, y_window+50);
 }
-void draw(){
-  xo=300;
-  yo=300;
-  if(keyPressed && keyCode==UP){
-    yp+=1000000;
+void setup(){
+  strokeWeight(3);
+  show_graph(power);
+  show_button();
+}
+void draw(){}
+void show_graph(int x_pow){
+  if(x_pow==power)show_graph(x_pow-1);
+  else{
+    background(0);
+    stroke(255);
+    line(0, y_window/2, x_window, y_window/2);
+    line(x_window/2, 0, x_window/2, y_window);
   }
-  if(keyPressed && keyCode==DOWN){
-    yp-=1000000;
-    if(yp<1){yp=1;}
+  x_old = 0;
+  y_old = 0;
+  x=0;
+  y=0;
+  stroke(255,0,0);
+  if(x_pow!=power)stroke(0,0,255);
+  if(x_pow==0){
+    line(0, y_window/2, x_window, y_window/2);
+    return;
   }
-  ex=300*xp;
-  ey=300*yp;
-  background(0);
+  while(y<y_window*y_wide && y!=Float.valueOf("Infinity")){
+    y=pow(x,x_pow);
+    if(x_pow!=power)y*=power;
+    line(x/x_wide+x_window/2, -y/y_wide+y_window/2, x_old/x_wide+x_window/2, -y_old/y_wide+y_window/2);
+    if(x_pow%2==0)line(-x/x_wide+x_window/2, -y/y_wide+y_window/2, -x_old/x_wide+x_window/2, -y_old/y_wide+y_window/2);
+    else line(-x/x_wide+x_window/2, y/y_wide+y_window/2, -x_old/x_wide+x_window/2, y_old/y_wide+y_window/2);
+    x_old=x;
+    y_old=y;
+    x++;
+  }
+}
+void show_button(){
   stroke(255);
-  line(0,300,600,300);
-  line(300,0,300,600);
-  float xpp,ypp;
-  if(xp==-9){
-    xpp=0.1;
-  }
-  else{
-    xpp=xp;
-  }
-  if(yp==-9){
-    ypp=0.1;
-  }
-  else{
-    ypp=yp;
-  }
-  for(x=-300;x<300;x++){
-    y=int(pow(x,pw));
-    if(x!=-300 && y!=int(pow(300,10)) && y!=int(pow(-300,5)) ){
-      if(yo!=300)line(x/xpp+300,-y/ypp+300,xo,yo);
-      xo=x/xpp+300;
-      yo=-y/ypp+300;
-    }
-  }
   fill(255);
   for(int i=0;i<6;i++){
-    rect(50*i+i*10,600,50,50);
+    rect(70*i, y_window, 60, 50);
   }
-  rect(550,600,50,50);
+  rect(x_window-50, y_window, 100, 50);
   textSize(20);
-  text("0",280,290);
-  if(xp==-9){
-    text("30",530,290);
-  }else{
-    text(ex,530,290);
-  }
-  if(yp==-9){
-    text("30",250,20);
-  }else{
-    text(ey,250,20);
-  }
-  text("x",550,320);
-  text("y",280,40);
+  text("0", x_window/2-20, y_window/2-10);
+  text(int(x_window/2*x_wide), x_window-70, y_window/2-10);
+  text(int(y_window/2*y_wide), x_window/2-50, 20);
+  text("x", x_window-50, y_window/2+20);
+  text("y", x_window/2-20, 40);
   fill(0);
   textSize(40);
-  String[] st={"x+","y+","x-","y-","+","-"};
+  String[] st={"x*2","y*2","x/2","y/2","  +","  -"};
   for(int i=0;i<6;i++){
-    text(st[i],50*i+i*10,640);
+    text(st[i], 70*i+5, y_window+40);
   }
-  text(pw,550,640);
+  text(power, x_window-50, y_window+40);
 }
 void mousePressed(){
-    for(int i=0;i<6;i++){
-      if(mouseX>i*60 && mouseX<i*60+50){
-        switch(i){
-          case 0:
-          xp+=10;
+  for(int i=0;i<6;i++){
+    if(mouseY<y_window)break;
+    if(mouseX>i*70 && mouseX<i*70+60){
+      switch(i){
+        case 0:
+          x_wide*=2;
           break;
-          case 1:
-          yp+=10;
+        case 1:
+          y_wide*=2;
           break;
-          case 2:
-          xp-=10;
+        case 2:
+          x_wide/=2;
           break;
-          case 3:
-          yp-=10;
+        case 3:
+          y_wide/=2;
           break;
-          case 4:
-          pw++;
+        case 4:
+          if(x<99)power++;
           break;
-          case 5:
-          pw--;
+        case 5:
+          if(x>1)power--;
           break;
-        }
-        if(xp<-9){xp=-9;}
-        if(yp<-9){yp=-9;}
       }
     }
   }
+  show_graph(power);
+  show_button();
+}
