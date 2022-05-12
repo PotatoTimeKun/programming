@@ -1,10 +1,18 @@
-def pr_ma(su1,su2):
-    print('-'*(su1-1)+'P'+'-'*(29-su1)+'Goal')
-    print('-'*(su2-1)+'C'+'-'*(29-su2)+'Goal')
+def print_sugoroku(point=[],name=[])->None:
+    """
+    すごろくの盤面を文字列で表現します。  
+    すごろくの点数をリストで受け取ります。  
+    盤面上の名前をリストで受け取ります。名前の数が足りない場合は数字が入ります。
+    """
+    for i in range(0,len(point)):
+        try:
+            print('-'*(point[i]-1)+name[i]+'-'*(29-point[i])+'Goal')
+        except:
+            print('-'*(point[i]-1)+i+'-'*(29-point[i])+'Goal')
 from random import randint as ri
 p=1
 c=1
-pr_ma(p,c)
+print_sugoroku([p,c],['P','C'])
 print('スゴロクスタート!(Pがプレイヤーです)\nEnterを押すと進みます')
 while True:
     input()
@@ -30,4 +38,4 @@ while True:
         print('Draw!')
         break
     else:
-        pr_ma(p,c)
+        print_sugoroku([p,c],['P','C'])
