@@ -1,56 +1,32 @@
-int xm=5;
-int ym=5;
+int x_move=5;
+int y_move=5;
 int x=100;
 int y=50;
 void setup(){
   size(600,600);
+  frameRate(150);
 }
 
 void draw(){
-  frameRate(150);
   background(0);
-  x+=xm;
-  y+=ym;
-  if(x>=500&&y>=550){xm=int(random(-5.9999999,-1));
-ym=int(random(-5.9999999,-1));
-x+=xm;
-y+=ym;
-}
-  if(x>100&&x<500&&y>=550){xm=int(random(-5.9999999,5.9999999));
-ym=int(random(-5.9999999,-1));
-x+=xm;
-y+=ym;
-}
-  if(y>50&&y<550&&x>=500){ym=int(random(-5.9999999,5.9999999));
-xm=int(random(-5.9999999,-1));
-x+=xm;
-y+=ym;
-}
-  if(x<=100&&y<=50){xm=int(random(1,5.9999999));
-ym=int(random(1,5.9999999));
-x+=xm;
-y+=ym;
-}
-  if(x>100&&x<500&&y<=50){xm=int(random(-5.9999999,5.9999999));
-ym=int(random(1,5.9999999));
-x+=xm;
-y+=ym;
-}
-  if(y>50&&y<550&&x<=100){ym=int(random(-5.9999999,5.9999999));
-xm=int(random(1,5.9999999));
-x+=xm;
-y+=ym;
-}
-  if(x>=500&&y<=50){xm=int(random(-5.9999999,-1));
-ym=int(random(1,5.9999999));
-x+=xm;
-y+=ym;
-}
-  if(x<=100&&y>=550){xm=int(random(1,5.9999999));
-ym=int(random(-5.9999999,-1));
-x+=xm;
-y+=ym;
-}
+  x+=x_move;//x座標の移動
+  y+=y_move;//y座標の移動
+  if(x>500){//右端にいるとき
+    x=500;
+    x_move=int(random(-5.99,-2));//左向きに
+  }
+  if(x<100){//左端にいるとき
+    x=100;
+    x_move=int(random(2,5.99));//右向きに
+  }
+  if(y>550){//下端にいるとき
+    y=550;
+    y_move=int(random(-5.99,-2));//上向きに
+  }
+  if(y<50){//上端にいるとき
+    y=50;
+    y_move=int(random(2,5.99));//下向きに
+  }
   strokeWeight(5);
   stroke(255);
   line(x-50,y,x-100,y);
