@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "newitem",
+  "ingredients": [
+    {
+      "item": "test:newblock"
+    }
+  ],
+  "result": {
+    "item": "test:newitem",
+    "count": 8
+  }
+}

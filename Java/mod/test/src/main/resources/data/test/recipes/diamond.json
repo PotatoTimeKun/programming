@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "test:newitem"
+  },
+  "result": "minecraft:diamond",
+  "experience": 100000,
+  "cookingtime": 1
+}

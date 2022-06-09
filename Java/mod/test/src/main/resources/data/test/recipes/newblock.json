@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#@#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "test:newitem"
+    },
+    "@": {
+      "item": "minecraft:dirt"
+    }
+  },
+  "result": {
+    "item": "test:newblock"
+  }
+}
