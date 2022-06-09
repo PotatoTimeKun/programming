@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "test:newblock"
+    ]
+  },
+  "criteria": {
+    "has_newitem": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "test:newitem"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "test:newblock"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_newitem",
+      "has_the_recipe"
+    ]
+  ]
+}

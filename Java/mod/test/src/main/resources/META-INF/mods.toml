@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="MIT Lisence"
+[[mods]]
+modId="test"
+version="${file.jarVersion}"
+displayName="Potato Mod"
+logoFile="newitem.png"
+authors="PotatoTimeKun"
+description='''
+This adds "newitem" and "newblock".
+Newitem can be made by dirt.
+When you burn newitem with furnace,you can get diamond and 100000 of experience.
+'''
+
+[[dependencies.test]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.test]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"
