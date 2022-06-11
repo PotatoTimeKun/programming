@@ -407,6 +407,18 @@ int,long long,float,double,char
 * Char  
 0
 
+## new_tabaicho.h
+リストによって、多倍長整数と多倍長整数間の四則演算を扱う関数が入ったヘッダファイルです。  
+多倍長整数はmkList関数によって返されたTabaicho*型の変数を使用します。  
+四則演算を行う関数はそれぞれsum,sub,mul,diviです。  
+inputLongInt関数はキーボード入力によって得た多倍長整数を返します。  
+outputLongInt関数は引数の多倍長整数を表示します。  
+cmp関数は引数の多倍長整数同士の大きさを比較します。  
+
+## tabaicho.c
+new_tabaicho.hを用いています。  
+キーボード入力で得た2つの多倍長整数から、四則演算を行って結果を返します。  
+
 # Cpp
 C++のソースコードが入っています。
 
