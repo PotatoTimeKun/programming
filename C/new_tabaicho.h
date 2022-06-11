@@ -1,3 +1,21 @@
+// This is writed using shift-jis
+/**
+ * @file new_tabaicho.h
+ * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
+ * @brief 
+ * リストによって多倍長整数を扱います。
+ * 多倍長整数はmkList関数によって返されたTabaicho*型の変数を使用します。
+ * (多倍長整数間の)四則演算を行う関数はそれぞれsum,sub,mul,diviです。
+ * inputTabaicho関数はキーボード入力によって得た多倍長整数を返します。
+ * showTabaicho関数は引数の多倍長整数を表示します。
+ * cmp関数は引数の多倍長整数同士の大きさを比較します。
+ * この関数のテストはtabaicho.cで行えます。
+ * 
+ * @date 2022-06-11
+ * 
+ * @copyright Copyright (c) 2022 PotatoTimeKun
+ * 
+ */
 #ifndef INCLUDE_NEW_TABAICHO
 #define INCLUDE_NEW_TABAICHO
 #include <stdlib.h>
@@ -201,7 +219,7 @@ void delList(Tabaicho *lis)
  *
  * @param list 多倍長整数
  */
-Tabaicho* inputLongInt()
+Tabaicho* inputTabaicho()
 {
     Tabaicho *list;
     list = mkList();
@@ -228,7 +246,7 @@ Tabaicho* inputLongInt()
  *
  * @param list 多倍長整数
  */
-void outputLongInt(Tabaicho *list)
+void showTabaicho(Tabaicho *list)
 {
     int n = list->len;
     int not_zero = 0; // 0埋め非表示用

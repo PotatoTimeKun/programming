@@ -5,9 +5,9 @@ int main(){
     Tabaicho* tab;
     Tabaicho* tab2;
     printf("a=");
-    tab=inputLongInt();
+    tab=inputTabaicho();
     printf("b=");
-    tab2=inputLongInt();
+    tab2=inputTabaicho();
     switch(cmp(tab,tab2)){
         case -1:
             printf("a<b\n");
@@ -21,15 +21,15 @@ int main(){
     }
     Tabaicho* tab3=sum(tab,tab2);
     printf("a+b=");
-    outputLongInt(tab3);
+    showTabaicho(tab3);
     delList(tab3);
     tab3=sub(tab,tab2);
     printf("a-b=");
-    outputLongInt(tab3);
+    showTabaicho(tab3);
     delList(tab3);
     tab3=mul(tab,tab2);
     printf("a*b=");
-    outputLongInt(tab3);
+    showTabaicho(tab3);
     delList(tab3);
     tab3=divi(tab,tab2);
     printf("a/b=");
