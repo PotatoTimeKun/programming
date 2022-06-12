@@ -414,6 +414,8 @@ int,long long,float,double,char
 inputLongInt関数はキーボード入力によって得た多倍長整数を返します。  
 outputLongInt関数は引数の多倍長整数を表示します。  
 cmp関数は引数の多倍長整数同士の大きさを比較します。  
+多倍長整数のリストは、my_list.hのリストと同じように使えます。  
+(ただし、データ型は「」(つまりなし)として扱います。例外としてat関数は既にあったのでnumAt関数とします。)  
 
 ## tabaicho.c
 new_tabaicho.hを用いています。  
@@ -427,7 +429,8 @@ C++のソースコードが入っています。
 多倍長整数は、同じフォルダで公開してる**newint.hをインポートして使っています**。  
 doxygen追加済み
 
-## newint.h
+## ~newint.h~
+## newint.hpp
 **多倍長整数**を扱うヘッダファイルです。  
 newintというクラス名で、インスタンスに対するpublicメンバ関数は以下のようになります。  
 * void set(string):値を設定  
@@ -442,7 +445,10 @@ newintというクラス名で、インスタンスに対するpublicメンバ�
 * newint(string):渡した値を表すインスタンスを作成。  
 
 また、newintインスタンス間での四則演算及び剰余の演算が可能です。  
-doxygen追加済み
+doxygen追加済み  
+
+## tabaicho.hpp
+newint.hppの多倍長整数を利用し、キーボード入力で受け取った値で四則演算等を行います。  
 
 ## newfloat.h
 多倍長整数の小数版です。これにも**newint.hをインポートして使用**しています。  
