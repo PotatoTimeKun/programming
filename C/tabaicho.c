@@ -33,7 +33,7 @@ int main(){
     delList(tab3);
     tab3=divi(tab,tab2);
     printf("a/b=");
-    outputLongInt(tab3);
+    showTabaicho(tab3);
     delList(tab);
     delList(tab2);
     delList(tab3);

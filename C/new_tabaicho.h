@@ -409,13 +409,13 @@ Tabaicho *mul(Tabaicho *a, Tabaicho *b)
         Tabaicho *a_bi = mkList(); // a*b[i]
         int b_keta = numAt(b, i);  // b[i]
         int carry = 0;             //キャリー
-        for (int j = b->len - 1; j >= 0; j--)
+        for (int j = a->len - 1; j >= 0; j--)
         {                                           // bの桁ごとにかけ算を行う
             int tmp = numAt(a, j) * b_keta + carry; // tmp=a[j]*b[i]+carry
             carry = tmp / 10;
             tmp = tmp % 10;
             addAt(a_bi, tmp, 1);
-        }
+        } // リストの最初は0が入るので最上位桁へのキャリーは考えなくてよい
         for (int j = b->len - 1; j > i; j--)
             add(a_bi, 0); // a*b[i]を適切な桁数にする
         c = sum(c, a_bi); // cにa*b[i]を足す
@@ -437,7 +437,7 @@ Tabaicho *divi(Tabaicho *a, Tabaicho *b)
     Tabaicho *rem = mkList(); // 余り
     for (int i = 0; i < a->len; i++)
     {                                  // 先頭から末尾まで
-        Tabaicho *keta_sum = mkList(); // bの和
+        Tabaicho *keta_sum = mkList(); // bを足した和
         add(rem, 0);                   // 余りを*10
         for (int j = 0; j < 10; j++)
         {                             // 割り算
