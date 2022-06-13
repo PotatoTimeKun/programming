@@ -20,4 +20,13 @@ int main(){
     c=a%b;
     cout<<"a%b="+c.str()<<endl;
     cout<<"a>b="+to_string(a>b)<<endl;
+    cout<<"++a="+(++a).str()<<endl;
+    --a;
+    cout<<"--a="+(--a).str()<<endl;
+    ++a;
+    cout<<"a++="+(a++).str()<<endl;
+    a--;
+    cout<<"a--="+(a--).str()<<endl;
+    a++;
+    cout<<"a[0]="+to_string(a[0])<<endl;
 }
