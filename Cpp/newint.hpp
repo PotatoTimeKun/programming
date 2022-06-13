@@ -232,8 +232,8 @@ newint newint::operator-(newint a)
     (b.value.size() < a.value.size())
         ? (b.keta(a.value.size()))
         : (a.keta(b.value.size())); // 3項演算子、ゼロ埋めで桁数をa,b両方同じにする
-    if ((b.minus) == (a.minus))
-    { // 同符号での演算なら
+    if (!(b.minus) && !(a.minus))
+    { // 正同士での演算なら
         if (a < b)
         { // 大きい方から小さい方を引くとき(符号は+のままになる)
             for (int i = 0; i < a.value.size(); i++)
@@ -253,6 +253,10 @@ newint newint::operator-(newint a)
             ret.set("0"); // a==bなら結果は0
         else
             ret = -(a - b); // b>aのときは b-a = -(a-b) として計算
+    }
+    else if((b.minus) && (a.minus))
+    { // 負同士での演算なら
+        ret = -(-b - -a); // 正同士での演算に変換
     }
     else
     {                 //異符号なら
@@ -354,15 +358,16 @@ newint newint::operator-()
     newint ret(this);
     ret.minus = !ret.minus; // not演算子で反転
     return ret;
-};
+}
 
 newint newint::operator++()
 { // 単項演算子の++ (++x)
     newint b(this);
     if (b.minus)
     { // 絶対値で演算を行うため
+        b.minus=false; // 符号が負のままだと無限にループする
         --b;
-        this->set(b.str());
+        this->set((-b).str());
         return *this;
     }
     b.value += "0"; // 桁数が1つ大きくなる可能性があるため、桁設定
@@ -385,8 +390,9 @@ newint newint::operator++(int n)
     newint ret(this); // 返り値、これは変化させない
     if (b.minus)
     { // 絶対値で演算を行うため
-        b++;
-        this->set(b.str());
+        b.minus=false; // 符号が負のままだと無限にループする
+        b--;
+        this->set((-b).str());
         return ret;
     }
     b.value += "0"; // 桁数が1つ大きくなる可能性があるため、桁設定
@@ -414,8 +420,9 @@ newint newint::operator--()
     }
     if (b.minus)
     { // 絶対値で演算を行うため
+        b.minus=false; // 符号が負のままだと無限にループする
         ++b;
-        this->set(b.str());
+        this->set((-b).str());
         return *this;
     }
     for (int i = 0; i < b.value.size(); i++)
@@ -444,8 +451,9 @@ newint newint::operator--(int n)
     }
     if (b.minus)
     { // 絶対値で演算を行うため
-        ++b;
-        this->set(b.str());
+        b.minus=false; // 符号が負のままだと無限にループする
+        b++;
+        this->set((-b).str());
         return ret;
     }
     for (int i = 0; i < b.value.size(); i++)
