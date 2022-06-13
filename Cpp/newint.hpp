@@ -70,7 +70,12 @@ public:
      */
     void set(string newValue)
     {
-        if (newValue[0] == '-')
+        if (newValue == "-0")
+        {
+            value = "0";
+            minus = false;
+        }
+        else if (newValue[0] == '-')
         {
             value = newValue.substr(1);
             minus = true;
@@ -78,6 +83,7 @@ public:
         else
         {
             value = newValue;
+            minus = false;
         }
         reverse(value.begin(), value.end());
     }
@@ -174,8 +180,11 @@ public:
     newint operator/(newint a);
     newint operator%(newint a);
     newint operator-();
-    newint operator++();
-    newint operator--();
+    newint operator++();      // ++a
+    newint operator--();      // --a
+    newint operator++(int n); // a++
+    newint operator--(int n); // a--
+    int operator[](int n);
     bool operator<(newint a);
     bool operator<=(newint a);
     bool operator>(newint a);
@@ -350,6 +359,12 @@ newint newint::operator-()
 newint newint::operator++()
 { // 単項演算子の++ (++x)
     newint b(this);
+    if (b.minus)
+    { // 絶対値で演算を行うため
+        --b;
+        this->set(b.str());
+        return *this;
+    }
     b.value += "0"; // 桁数が1つ大きくなる可能性があるため、桁設定
     for (int i = 0; i < b.value.size(); i++)
     {
@@ -364,12 +379,92 @@ newint newint::operator++()
     return *this;
 }
 
-newint newint::operator--()
-{ // 単項演算子の-- (--x) 、 効率はよくなってないです、ただ書くのが楽なだけ
+newint newint::operator++(int n)
+{ // 単項演算子の++(x++)
     newint b(this);
-    b = b - new newint("1");
-    set(b.str());
+    newint ret(this); // 返り値、これは変化させない
+    if (b.minus)
+    { // 絶対値で演算を行うため
+        b++;
+        this->set(b.str());
+        return ret;
+    }
+    b.value += "0"; // 桁数が1つ大きくなる可能性があるため、桁設定
+    for (int i = 0; i < b.value.size(); i++)
+    {
+        if (b.value[i] != '9')
+        { // 9が続いたらそれまでの桁の数は0になる
+            b.value[i] += 1;
+            b.value = string(i, '0') + b.value.substr(i);
+            break;
+        }
+    }
+    this->set(b.str());
+    return ret;
+}
+
+newint newint::operator--()
+{ // 単項演算子の-- (--x)
+    newint b(this);
+    if (b.str() == "0")
+    {
+        b.set("-1"); // ハグるため
+        this->set(b.str());
+        return *this;
+    }
+    if (b.minus)
+    { // 絶対値で演算を行うため
+        ++b;
+        this->set(b.str());
+        return *this;
+    }
+    for (int i = 0; i < b.value.size(); i++)
+    {
+        if (b.value[i] != '0')
+        { // 9が続いたらそれまでの桁の数は0になる
+            b.value[i] -= 1;
+            b.value = string(i, '9') + b.value.substr(i);
+            this->set(b.str());
+            return *this;
+        }
+    }
+    this->set("0"); // 処理が完了しないー＞0
     return *this;
+}
+
+newint newint::operator--(int n)
+{ // 単項演算子の--(x--)
+    newint b(this);
+    newint ret(this); // 返り値、これは変化させない
+    if (b.str() == "0")
+    {
+        b.set("-1"); // ハグるため
+        this->set(b.str());
+        return ret;
+    }
+    if (b.minus)
+    { // 絶対値で演算を行うため
+        ++b;
+        this->set(b.str());
+        return ret;
+    }
+    for (int i = 0; i < b.value.size(); i++)
+    {
+        if (b.value[i] != '0')
+        { // 9が続いたらそれまでの桁の数は0になる
+            b.value[i] -= 1;
+            b.value = string(i, '9') + b.value.substr(i);
+            this->set(b.str());
+            return ret;
+        }
+    }
+    this->set("0"); // 処理が完了しないー＞0
+    return ret;
+}
+
+int newint::operator[](int n)
+{ // a[n]、値の絶対値におけるn番目の数値を返す
+    return (this->str(true))[n] - '0';
 }
 
 bool newint::operator<(newint a)
