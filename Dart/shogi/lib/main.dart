@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:video_player/video_player.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,9 +32,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _scafKey = GlobalKey<ScaffoldState>();
   final AudioCache _cache = AudioCache(
     fixedPlayer: AudioPlayer(),
   );
+  late AudioPlayer _player;
+  bool musicPlay = false;
+  double BGMvolume = 1, SEvolume = 1;
   String game1_desc = "", game2_desc = "", game3_desc = "";
   bool show_game1 = false, show_game2 = false, show_game3 = false;
   Future<void> show_url(Uri url) async {
@@ -45,15 +49,75 @@ class _MyHomePageState extends State<MyHomePage> {
       throw 'Could not launch $url';
     }
   }
-  @override
-  void initState(){
-    _cache.loop('miracle_future.mp3');
+
+  Future<void> getSetting() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      BGMvolume = pref.getDouble("bgm") ?? 1;
+      SEvolume = pref.getDouble("se") ?? 1;
+    });
   }
+
+  Future<void> saveSetting() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setDouble("bgm", BGMvolume);
+    pref.setDouble("se", SEvolume);
+  }
+
+  @override
+  void initState() {
+    getSetting();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scafKey,
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () {
+                _scafKey.currentState!.openEndDrawer();
+              },
+              icon: const Icon(Icons.settings))
+        ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            const Center(child: Text("BGMボリューム")),
+            Slider.adaptive(
+              value: BGMvolume,
+              onChanged: (double new_volume) {
+                setState(() {
+                  BGMvolume = new_volume;
+                  try {
+                    _player.setVolume(BGMvolume);
+                  } catch (e) {}
+                });
+                saveSetting();
+              },
+              min: 0,
+              max: 1,
+              divisions: 15,
+            ),
+            const Center(child: Text("効果音ボリューム")),
+            Slider.adaptive(
+              value: SEvolume,
+              onChanged: (double new_volume) {
+                setState(() {
+                  SEvolume = new_volume;
+                });
+                ShogiManage.volume = SEvolume;
+                saveSetting();
+              },
+              min: 0,
+              max: 1,
+              divisions: 15,
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: Column(
@@ -65,7 +129,9 @@ class _MyHomePageState extends State<MyHomePage> {
             const Spacer(),
             Container(
                 width: 250,
-                color: Colors.blue,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.blue),
                 child: Row(
                   children: [
                     TextButton(
@@ -82,18 +148,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            show_game2 = !show_game2;
-                            if (show_game2) {
-                              game2_desc = "王は乱数で決まった方向に1マス進みます。\n青の駒:自分  赤の駒:敵";
-                            } else {
-                              game2_desc = "";
-                            }
-                          });
-                        },
-                        icon: const Icon(Icons.question_mark_rounded))
+                    Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.lightBlue,
+                            border: Border.all(color: Colors.white, width: 2)),
+                        margin: const EdgeInsets.all(5),
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                show_game2 = !show_game2;
+                                if (show_game2) {
+                                  game2_desc =
+                                      "王は乱数で決まった方向に1マス進みます。\n青の駒:自分  赤の駒:敵";
+                                } else {
+                                  game2_desc = "";
+                                }
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.question_mark_rounded,
+                              color: Colors.white,
+                            )))
                   ],
                 )),
             Text(
@@ -104,7 +180,9 @@ class _MyHomePageState extends State<MyHomePage> {
             const Spacer(),
             Container(
                 width: 250,
-                color: Colors.blue,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.blue),
                 child: Row(
                   children: [
                     TextButton(
@@ -121,18 +199,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            show_game1 = !show_game1;
-                            if (show_game1) {
-                              game1_desc = "王は乱数で決まったマスにワープします。\n青の駒:自分  赤の駒:敵";
-                            } else {
-                              game1_desc = "";
-                            }
-                          });
-                        },
-                        icon: const Icon(Icons.question_mark_rounded))
+                    Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.lightBlue,
+                            border: Border.all(color: Colors.white, width: 2)),
+                        margin: const EdgeInsets.all(5),
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                show_game1 = !show_game1;
+                                if (show_game1) {
+                                  game1_desc =
+                                      "王は乱数で決まったマスにワープします。\n青の駒:自分  赤の駒:敵";
+                                } else {
+                                  game1_desc = "";
+                                }
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.question_mark_rounded,
+                              color: Colors.white,
+                            )))
                   ],
                 )),
             Text(
@@ -143,7 +231,9 @@ class _MyHomePageState extends State<MyHomePage> {
             const Spacer(),
             Container(
                 width: 250,
-                color: Colors.blue,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.blue),
                 child: Row(
                   children: [
                     TextButton(
@@ -160,18 +250,27 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     const Spacer(),
-                    IconButton(
-                        onPressed: () {
-                          setState(() {
-                            show_game3 = !show_game3;
-                            if (show_game3) {
-                              game3_desc = "将棋ではないことは明らかです。\n青の駒:自分  赤の駒:敵";
-                            } else {
-                              game3_desc = "";
-                            }
-                          });
-                        },
-                        icon: const Icon(Icons.question_mark_rounded))
+                    Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.lightBlue,
+                            border: Border.all(color: Colors.white, width: 2)),
+                        margin: const EdgeInsets.all(5),
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                show_game3 = !show_game3;
+                                if (show_game3) {
+                                  game3_desc = "将棋ではないことは明らかです。\n青の駒:自分  赤の駒:敵";
+                                } else {
+                                  game3_desc = "";
+                                }
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.question_mark_rounded,
+                              color: Colors.white,
+                            )))
                   ],
                 )),
             Text(
@@ -181,12 +280,36 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const Spacer(),
             Container(
+              width: 250,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  color: Colors.blue),
+              child: TextButton(
+                child: Text(
+                  (musicPlay) ? "BGM OFF" : "BGM ON",
+                  style: const TextStyle(color: Colors.white),
+                  textScaleFactor: 2,
+                ),
+                onPressed: () async {
+                  if (musicPlay) {
+                    _player.stop();
+                  } else {
+                    _player = await _cache.loop('miracle_future.mp3');
+                    _player.setVolume(BGMvolume);
+                  }
+                  setState(() {
+                    musicPlay = !musicPlay;
+                  });
+                },
+              ),
+            ),
+            const Spacer(),
+            Container(
                 color: Colors.blueGrey,
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: Row(
                   children: [
                     const Spacer(),
-                    const Icon(Icons.web),
                     TextButton(
                         onPressed: () {
                           show_url(Uri.parse(
@@ -318,7 +441,8 @@ class ShogiManage {
       [2, 0, 2, 0, 2]
     ];
   }
-
+  static double volume = 1;
+  AudioPlayer _player = AudioPlayer();
   final AudioCache _cache = AudioCache(
     fixedPlayer: AudioPlayer(),
   );
@@ -383,7 +507,7 @@ class ShogiManage {
   }
 
   /// 盤面を次へ進める、将棋！用
-  void next() {
+  Future<void> next() async {
     if (win() != 0) return;
     if (turn == 0) {
       shogiTable[komaNow[2]][komaNow[3]] = 0;
@@ -405,11 +529,12 @@ class ShogiManage {
     } else if (win() == 2) {
       winner = "You win!";
     }
-    _cache.play('koma.wav');
+    _player = await _cache.play('koma.wav');
+    _player.setVolume(ShogiManage.volume);
   }
 
   /// 盤面を次へ進める、将棋？用
-  void nextShogi() {
+  Future<void> nextShogi() async {
     if (win() != 0) return;
     if (turn == 0) {
       shogiTable[komaNow[2]][komaNow[3]] = 0;
@@ -453,11 +578,12 @@ class ShogiManage {
     } else if (win() == 2) {
       winner = "You win!";
     }
-    _cache.play('koma.wav');
+    _player = await _cache.play('koma.wav');
+    _player.setVolume(ShogiManage.volume);
   }
 
   /// 盤面を次へ進める、将棋ではない用
-  void nextNotShogi() {
+  Future<void> nextNotShogi() async {
     if (win() != 0) return;
     int turnKoma = (turn == 0) ? 2 : 1;
     while (true) {
@@ -493,9 +619,11 @@ class ShogiManage {
     } else if (win() == 2) {
       winner = "You win!";
     }
-    _cache.play('koma.wav');
+    _player = await _cache.play('koma.wav');
+    _player.setVolume(ShogiManage.volume);
   }
 }
+
 /// 将棋の盤面を返す関数
 Widget shogiTableBuild(ShogiManage shogi) {
   return Padding(
@@ -548,18 +676,32 @@ class Page2nd extends State<HP2nd> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                shogi.player,
-                textScaleFactor: 2,
-              ),
-            ),
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            shogi = ShogiManage();
+                          });
+                        },
+                        icon: const Icon(Icons.refresh)),
+                    const Spacer(),
+                    Text(
+                      shogi.player,
+                      textScaleFactor: 2,
+                    ),
+                    const Spacer()
+                  ],
+                )),
             shogiTableBuild(shogi),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
                   width: 200,
-                  color: Colors.cyan,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: Colors.blue),
                   child: TextButton(
                       onPressed: () async {
                         if (cpuTurn) return;
@@ -577,23 +719,6 @@ class Page2nd extends State<HP2nd> {
                         "駒を動かす",
                         textScaleFactor: 2,
                         style: TextStyle(color: Colors.black),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(15),
-                child: Container(
-                  width: 200,
-                  color: Colors.cyan,
-                  child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          shogi = ShogiManage();
-                        });
-                      },
-                      child: const Text(
-                        "リセット",
-                        textScaleFactor: 2,
-                        style: TextStyle(color: Colors.red),
                       )),
                 )),
           ],
@@ -623,18 +748,32 @@ class Page3rd extends State<HP3rd> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                shogi.player,
-                textScaleFactor: 2,
-              ),
-            ),
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            shogi = ShogiManage();
+                          });
+                        },
+                        icon: const Icon(Icons.refresh)),
+                    const Spacer(),
+                    Text(
+                      shogi.player,
+                      textScaleFactor: 2,
+                    ),
+                    const Spacer()
+                  ],
+                )),
             shogiTableBuild(shogi),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
                   width: 200,
-                  color: Colors.cyan,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: Colors.blue),
                   child: TextButton(
                       onPressed: () async {
                         if (cpuTurn) return;
@@ -652,23 +791,6 @@ class Page3rd extends State<HP3rd> {
                         "駒を動かす",
                         textScaleFactor: 2,
                         style: TextStyle(color: Colors.black),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(15),
-                child: Container(
-                  width: 200,
-                  color: Colors.cyan,
-                  child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          shogi = ShogiManage();
-                        });
-                      },
-                      child: const Text(
-                        "リセット",
-                        textScaleFactor: 2,
-                        style: TextStyle(color: Colors.red),
                       )),
                 )),
           ],
@@ -698,18 +820,32 @@ class Page4th extends State<HP4th> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(5),
-              child: Text(
-                shogi.player,
-                textScaleFactor: 2,
-              ),
-            ),
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            shogi = ShogiManage.notShogi();
+                          });
+                        },
+                        icon: const Icon(Icons.refresh)),
+                    const Spacer(),
+                    Text(
+                      shogi.player,
+                      textScaleFactor: 2,
+                    ),
+                    const Spacer()
+                  ],
+                )),
             shogiTableBuild(shogi),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
                   width: 200,
-                  color: Colors.cyan,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: Colors.blue),
                   child: TextButton(
                       onPressed: () async {
                         if (cpuTurn) return;
@@ -727,23 +863,6 @@ class Page4th extends State<HP4th> {
                         "駒を動かす",
                         textScaleFactor: 2,
                         style: TextStyle(color: Colors.black),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(15),
-                child: Container(
-                  width: 200,
-                  color: Colors.cyan,
-                  child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          shogi = ShogiManage.notShogi();
-                        });
-                      },
-                      child: const Text(
-                        "リセット",
-                        textScaleFactor: 2,
-                        style: TextStyle(color: Colors.red),
                       )),
                 )),
           ],
