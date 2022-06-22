@@ -39,8 +39,11 @@ class _MyHomePageState extends State<MyHomePage> {
   late AudioPlayer _player;
   bool musicPlay = false;
   double BGMvolume = 1, SEvolume = 1;
-  String game1_desc = "", game2_desc = "", game3_desc = "";
-  bool show_game1 = false, show_game2 = false, show_game3 = false;
+  String game1_desc = "", game2_desc = "", game3_desc = "", game4_desc = "";
+  bool show_game1 = false,
+      show_game2 = false,
+      show_game3 = false,
+      show_game4 = false;
   Future<void> show_url(Uri url) async {
     if (!await launchUrl(
       url,
@@ -160,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 show_game2 = !show_game2;
                                 if (show_game2) {
                                   game2_desc =
-                                      "王は乱数で決まった方向に1マス進みます。\n青の駒:自分  赤の駒:敵";
+                                      "王は乱数で決まった方向に1マス進みます。";
                                 } else {
                                   game2_desc = "";
                                 }
@@ -211,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 show_game1 = !show_game1;
                                 if (show_game1) {
                                   game1_desc =
-                                      "王は乱数で決まったマスにワープします。\n青の駒:自分  赤の駒:敵";
+                                      "王は乱数で決まったマスにワープします。";
                                 } else {
                                   game1_desc = "";
                                 }
@@ -261,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               setState(() {
                                 show_game3 = !show_game3;
                                 if (show_game3) {
-                                  game3_desc = "将棋ではないことは明らかです。\n青の駒:自分  赤の駒:敵";
+                                  game3_desc = "将棋ではないことは明らかです。";
                                 } else {
                                   game3_desc = "";
                                 }
@@ -275,6 +278,56 @@ class _MyHomePageState extends State<MyHomePage> {
                 )),
             Text(
               game3_desc,
+              style: const TextStyle(color: Colors.black54),
+              textScaleFactor: 1.2,
+            ),
+            const Spacer(),
+            Container(
+                width: 250,
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    color: Colors.blue),
+                child: Row(
+                  children: [
+                    TextButton(
+                      child: const Text(
+                        "爆弾",
+                        style: TextStyle(color: Colors.white),
+                        textScaleFactor: 2,
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const HP5th();
+                        }));
+                      },
+                    ),
+                    const Spacer(),
+                    Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.lightBlue,
+                            border: Border.all(color: Colors.white, width: 2)),
+                        margin: const EdgeInsets.all(5),
+                        child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                show_game4 = !show_game4;
+                                if (show_game4) {
+                                  game4_desc = "将棋ってなんですか?";
+                                } else {
+                                  game4_desc = "";
+                                }
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.question_mark_rounded,
+                              color: Colors.white,
+                            )))
+                  ],
+                )),
+            Text(
+              game4_desc,
               style: const TextStyle(color: Colors.black54),
               textScaleFactor: 1.2,
             ),
@@ -441,7 +494,51 @@ class ShogiManage {
       [2, 0, 2, 0, 2]
     ];
   }
+
+  ShogiManage.bakudan() {
+    shogiTable = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0]
+    ];
+    int bakudanCount=5,locate=0;
+    while(true){
+      if(rnd.get()%24==0 && shogiTable[locate~/5][locate%5]==0){
+        shogiTable[locate~/5][locate%5]=3;
+        bakudanCount--;
+      }
+      if(bakudanCount==0)break;
+      locate=(locate+1)%25;
+    }
+  }
+
+  Future<void> saveGame(String key, int value) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    max = pref.getInt("Max$key") ?? -1;
+    if (max < value) {
+      pref.setInt("Max$key", value);
+      max = value;
+    }
+    min = pref.getInt("Min$key") ?? -1;
+    if (min == -1 || min > value) {
+      pref.setInt("Min$key", value);
+      min = value;
+    }
+  }
+
+  int min = -1;
+
+  int max = 0;
+
+  /// ターン数のカウント
+  int turn_count = 0;
+
+  /// SEのボリューム
   static double volume = 1;
+
+  /// SEを流すためのプレーヤー
   AudioPlayer _player = AudioPlayer();
   final AudioCache _cache = AudioCache(
     fixedPlayer: AudioPlayer(),
@@ -486,6 +583,22 @@ class ShogiManage {
         fit: BoxFit.fill,
       );
     }
+    if (n == 3) {
+      return Image.asset(
+        "images/bakudan.png",
+        height: 80,
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    }
+    if (n == 4) {
+      return Image.asset(
+        "images/ban.png",
+        height: 80,
+        width: 80,
+        fit: BoxFit.fill,
+      );
+    }
     return const SizedBox(
       width: 80,
       height: 80,
@@ -506,10 +619,11 @@ class ShogiManage {
     return 0;
   }
 
-  /// 盤面を次へ進める、将棋！用
+  /// 盤面を次へ進める、将棋?用
   Future<void> next() async {
     if (win() != 0) return;
     if (turn == 0) {
+      turn_count++;
       shogiTable[komaNow[2]][komaNow[3]] = 0;
       komaNow[2] = rnd.get() % 5;
       komaNow[3] = rnd.get() % 5;
@@ -525,18 +639,21 @@ class ShogiManage {
       player = turn == 0 ? "あなたのターンです" : "あいてのターンです";
       if (turn == 1) {}
     } else if (win() == 1) {
+      saveGame("shogi", turn_count);
       winner = "You lose...";
     } else if (win() == 2) {
+      saveGame("shogi", turn_count);
       winner = "You win!";
     }
     _player = await _cache.play('koma.wav');
     _player.setVolume(ShogiManage.volume);
   }
 
-  /// 盤面を次へ進める、将棋？用
+  /// 盤面を次へ進める、将棋!用
   Future<void> nextShogi() async {
     if (win() != 0) return;
     if (turn == 0) {
+      turn_count++;
       shogiTable[komaNow[2]][komaNow[3]] = 0;
       while (true) {
         int tate = (rnd.get() % 2 == 1 ? -1 : 1) * (rnd.get() % 2);
@@ -574,8 +691,10 @@ class ShogiManage {
       player = turn == 0 ? "あなたのターンです" : "あいてのターンです";
       if (turn == 1) {}
     } else if (win() == 1) {
+      saveGame("shogi?", turn_count);
       winner = "You lose...";
     } else if (win() == 2) {
+      saveGame("shogi?", turn_count);
       winner = "You win!";
     }
     _player = await _cache.play('koma.wav');
@@ -586,6 +705,7 @@ class ShogiManage {
   Future<void> nextNotShogi() async {
     if (win() != 0) return;
     int turnKoma = (turn == 0) ? 2 : 1;
+    if (turn == 0) turn_count++;
     while (true) {
       bool breaking = false; //while文を抜けるかどうか
       int selected = rnd.get() % 5 + 1; //5個ある内の動かす駒を決める
@@ -615,9 +735,43 @@ class ShogiManage {
       player = turn == 0 ? "あなたのターンです" : "あいてのターンです";
       if (turn == 1) {}
     } else if (win() == 1) {
+      saveGame("notshogi", turn_count);
       winner = "You lose...";
     } else if (win() == 2) {
+      saveGame("notshogi", turn_count);
       winner = "You win!";
+    }
+    _player = await _cache.play('koma.wav');
+    _player.setVolume(ShogiManage.volume);
+  }
+
+  Future<void> nextBan() async {
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < 5; j++) {
+        if (shogiTable[i][j] == 4) return;
+      }
+    }
+    turn_count++;
+    shogiTable[komaNow[2]][komaNow[3]] = 0;
+    while (true) {
+      int tate = (rnd.get() % 2 == 1 ? -1 : 1) * (rnd.get() % 2);
+      int yoko = (rnd.get() % 2 == 1 ? -1 : 1) * (rnd.get() % 2);
+      if (!(tate == 0 && yoko == 0) &&
+          komaNow[2] + tate < 5 &&
+          komaNow[2] + tate > -1 &&
+          komaNow[3] + yoko < 5 &&
+          komaNow[3] + yoko > -1) {
+        komaNow[2] += tate;
+        komaNow[3] += yoko;
+        break;
+      }
+    }
+    if (shogiTable[komaNow[2]][komaNow[3]] == 3) {
+      shogiTable[komaNow[2]][komaNow[3]] = 4;
+      saveGame("ban", turn_count);
+      winner = "Explosion!";
+    } else {
+      shogiTable[komaNow[2]][komaNow[3]] = 2;
     }
     _player = await _cache.play('koma.wav');
     _player.setVolume(ShogiManage.volume);
@@ -625,7 +779,12 @@ class ShogiManage {
 }
 
 /// 将棋の盤面を返す関数
-Widget shogiTableBuild(ShogiManage shogi) {
+/// 引数は、
+/// shogiManageのインスタンス,
+/// 右のような関数(){setState((){shogiManageのインスタンス.winner="";});},
+/// デバイスのサイズ(Size型)
+Widget shogiTableBuild(
+    ShogiManage shogi, Function setWinner, Size window_size) {
   return Padding(
       padding: const EdgeInsets.all(5),
       child: Stack(
@@ -644,14 +803,51 @@ Widget shogiTableBuild(ShogiManage shogi) {
                             color: Colors.black12,
                             child: shogi.Koma(index, index2))))),
           ),
-          Text(
-            shogi.winner,
-            textScaleFactor: 4,
-            style: const TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-            ),
-          )
+          Positioned(
+              top: 50,
+              left: window_size.width / 2 - 200,
+              child: Opacity(
+                opacity: (shogi.winner != "") ? 1 : 0,
+                child: Container(
+                    height: 300,
+                    width: 390,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular((10))),
+                        border: Border.all(width: 5, color: Colors.black)),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          shogi.winner,
+                          textScaleFactor: 4,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${shogi.turn_count}ターン\n最小ターン数:${shogi.min}\n最大ターン数:${shogi.max}",
+                          textScaleFactor: 2,
+                          style: const TextStyle(color: Colors.black45),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    )),
+              )),
+          Positioned(
+              left: window_size.width / 2 + 140,
+              top: 60,
+              child: Opacity(
+                opacity: (shogi.winner != "") ? 1 : 0,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    setWinner();
+                  },
+                ),
+              )),
         ],
       ));
 }
@@ -668,6 +864,7 @@ class Page2nd extends State<HP2nd> {
   bool cpuTurn = false;
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text("将棋?なう"),
@@ -694,7 +891,11 @@ class Page2nd extends State<HP2nd> {
                     const Spacer()
                   ],
                 )),
-            shogiTableBuild(shogi),
+            shogiTableBuild(shogi, () {
+              setState(() {
+                shogi.winner = "";
+              });
+            }, size),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
@@ -740,6 +941,7 @@ class Page3rd extends State<HP3rd> {
   bool cpuTurn = false;
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text("将棋!なう"),
@@ -766,7 +968,11 @@ class Page3rd extends State<HP3rd> {
                     const Spacer()
                   ],
                 )),
-            shogiTableBuild(shogi),
+            shogiTableBuild(shogi, () {
+              setState(() {
+                shogi.winner = "";
+              });
+            }, size),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
@@ -812,6 +1018,7 @@ class Page4th extends State<HP4th> {
   bool cpuTurn = false;
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text("将棋ではないなう"),
@@ -838,7 +1045,11 @@ class Page4th extends State<HP4th> {
                     const Spacer()
                   ],
                 )),
-            shogiTableBuild(shogi),
+            shogiTableBuild(shogi, () {
+              setState(() {
+                shogi.winner = "";
+              });
+            }, size),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
@@ -857,6 +1068,75 @@ class Page4th extends State<HP4th> {
                         setState(() {
                           shogi.nextNotShogi();
                           cpuTurn = false;
+                        });
+                      },
+                      child: const Text(
+                        "駒を動かす",
+                        textScaleFactor: 2,
+                        style: TextStyle(color: Colors.black),
+                      )),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HP5th extends StatefulWidget {
+  const HP5th({Key? key}) : super(key: key);
+
+  @override
+  State<HP5th> createState() => Page5th();
+}
+
+class Page5th extends State<HP5th> {
+  var shogi = ShogiManage.bakudan();
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("爆弾なう"),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            shogi = ShogiManage.bakudan();
+                          });
+                        },
+                        icon: const Icon(Icons.refresh)),
+                    const Spacer(),
+                    Text(
+                      shogi.player,
+                      textScaleFactor: 2,
+                    ),
+                    const Spacer()
+                  ],
+                )),
+            shogiTableBuild(shogi, () {
+              setState(() {
+                shogi.winner = "";
+              });
+            }, size),
+            Padding(
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                  width: 200,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: Colors.blue),
+                  child: TextButton(
+                      onPressed: (){
+                        setState(() {
+                          shogi.nextBan();
                         });
                       },
                       child: const Text(

@@ -1,5 +1,5 @@
-name: sho2
-description: A new Flutter project.
+name: shogi
+description: "ランダムな将棋(運ゲー)"
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -36,18 +36,28 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^3.0.1
   url_launcher: ^6.1.2
+  flutter_launcher_icons: ^0.9.2
+  audioplayers: ^0.20.1
+  video_player: ^2.4.2
+  shared_preferences: ^2.0.15
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: any
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-
+flutter_icons:
+  android: true
+  ios: true
+  web: true
+  image_path: "images/ou_blue.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -56,6 +66,10 @@ flutter:
   assets:
     - images/ou_blue.png
     - images/ou_red.png
+    - images/bakudan.png
+    - images/ban.png
+    - assets/miracle_future.mp3
+    - assets/koma.wav
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
