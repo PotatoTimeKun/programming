@@ -56,7 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
   double BGMvolume = 1, SEvolume = 1;
 
   /// 各ゲームモードのタイトル
-  final List<String> titles = ["将棋!     ", "将棋?     ", "将棋ではない", "爆弾     ","将棋避け    "];
+  final List<String> titles = [
+    "将棋!     ",
+    "将棋?     ",
+    "将棋ではない",
+    "爆弾     ",
+    "将棋避け    "
+  ];
 
   /// 各ゲームモードの説明文
   final List<String> desc = [
@@ -77,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   /// 各ゲームモードで説明文を表示するかどうか
-  var showGame = [false, false, false, false,false];
+  var showGame = [false, false, false, false, false];
 
   /// 指定したURIに飛ぶ
   Future<void> showUrl(Uri url) async {
@@ -123,7 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 textScaleFactor: 2,
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                Navigator.push(this.context,
+                    MaterialPageRoute(builder: (context) {
                   return pages[gameNumber];
                 }));
               },
@@ -340,8 +347,8 @@ class HPres extends StatefulWidget {
 Future<List<Text>> buildTexts() async {
   // 将棋の結果のリストを返す
   var shogi = ShogiManage();
-  var keys = ["shogi?", "shogi", "notshogi", "ban","yoke"];
-  var titles = ["将棋!", "将棋?", "将棋ではない", "爆弾","将棋避け"];
+  var keys = ["shogi?", "shogi", "notshogi", "ban", "yoke"];
+  var titles = ["将棋!", "将棋?", "将棋ではない", "爆弾", "将棋避け"];
   var texts = <Text>[];
   for (int i = 0; i < keys.length; i++) {
     await shogi.saveGame(keys[i], -1); // セーブデータは変化させない、min/maxに値を代入させる
@@ -354,9 +361,37 @@ Future<List<Text>> buildTexts() async {
   return texts;
 }
 
+Future<List<TextButton>> buildReplays(BuildContext context) async {
+  var keys = ["shogi?", "shogi", "notshogi", "ban"];
+  var titles = ["将棋?", "将棋!", "将棋ではない", "爆弾"];
+  var texts = <TextButton>[];
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  List<String> list = pref.getStringList("replay") ?? [];
+  print(list);
+  for (int i = 0; i < list.length ~/ 3; i++) {
+    int num = 0;
+    for (int j = 0; j < keys.length; j++) {
+      if (list[i * 3] == keys[j]) num = j;
+    }
+    texts.add(TextButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return HPrep(
+              mode: list[i * 3],
+              seed: int.parse(list[i * 3 + 1]),
+              index: int.parse(list[i * 3 + 2]),
+            );
+          }));
+        },
+        child: Text("${titles[num]}\n${list[i * 3 + 1]}-${list[i * 3 + 2]}")));
+  }
+  return texts;
+}
+
 class Pageres extends State<HPres> {
   // 結果を表示するページ
   dynamic texts;
+  dynamic replays;
 
   @override
   void initState() {
@@ -364,31 +399,164 @@ class Pageres extends State<HPres> {
     super.initState();
     Future(() async {
       var tex = await buildTexts();
+      var rep = await buildReplays(this.context);
       setState(() {
         texts = tex;
+        replays = rep;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text("記録なう"),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(this.context);
+                },
+              ),
+              bottom: const TabBar(
+                tabs: [
+                  Tab(
+                    text: "ハイスコア",
+                  ),
+                  Tab(
+                    text: "リプレイ",
+                  )
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                SingleChildScrollView(
+                  child: SizedBox(
+                    // 幅設定用
+                    width: double.infinity,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(
+                            // textsを順に表示
+                            texts.length,
+                            (index) => Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: texts[index],
+                                ))),
+                  ),
+                ),
+                SingleChildScrollView(
+                  child: SizedBox(
+                    // 幅設定用
+                    width: double.infinity,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(
+                            // textsを順に表示
+                            replays.length,
+                            (index) => Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: replays[index],
+                                ))),
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+}
+
+class HPrep extends StatefulWidget {
+  const HPrep(
+      {Key? key, required this.mode, required this.seed, required this.index})
+      : super(key: key);
+
+  final String mode;
+  final int seed, index;
+
+  @override
+  State<HPrep> createState() => Pagerep(this.mode, this.seed, this.index);
+}
+
+class Pagerep extends State<HPrep> {
+  final String mode;
+  final int seed, index;
+  ShogiManage shogi = ShogiManage();
+  late Function next;
+  Pagerep(this.mode, this.seed, this.index) : super();
+  @override
+  void initState() {
+    switch (mode) {
+      case "shogi":
+        shogi = ShogiManage();
+        next = shogi.nextShogi;
+        break;
+      case "shogi?":
+        shogi = ShogiManage();
+        next = shogi.next;
+        break;
+      case "notshogi":
+        shogi = ShogiManage.notShogi();
+        next = shogi.nextNotShogi;
+        break;
+      case "ban":
+        ShogiManage();
+        next = shogi.nextBan;
+        break;
+      case "yoke":
+        shogi = ShogiManage();
+        next = shogi.nextYoke;
+    }
+    shogi.rnd.seed(seed);
+    shogi.rnd.index = index;
+    if (mode == "ban") shogi.bakudan();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("記録なう"),
+        title: const Text("リプレイなう"),
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          // 幅設定用
-          width: double.infinity,
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                  // textsを順に表示
-                  texts.length,
-                  (index) => Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: texts[index],
-                      ))),
+      body: Center(
+        child: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  shogi.player,
+                  textScaleFactor: 2,
+                )),
+            shogiTableBuild(shogi, () {
+              setState(() {
+                shogi.winner = "";
+              });
+            }, MediaQuery.of(context).size, mode, seed, index, showSave: false),
+            Padding(
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                  width: 200,
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: Colors.blue),
+                  child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          next();
+                        });
+                      },
+                      child: const Text(
+                        "駒を動かす",
+                        textScaleFactor: 2,
+                        style: TextStyle(color: Colors.black),
+                      )),
+                )),
+          ],
         ),
       ),
     );
