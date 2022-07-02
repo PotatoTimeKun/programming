@@ -24,7 +24,7 @@ class Random {
   var rnd = <int>[];
 
   /// rnd配列のインデックス、クラス外からのアクセスは推奨しない
-  int _index = 100;
+  int index = 100;
 
   /// 現在使用している乱数の種、クラス外へは読み込みのみ推奨、書き込まないこと
   int seed_number = -1;
@@ -35,7 +35,7 @@ class Random {
     // x[0]=b
     // x[k+1]=(x[k]*a)%m
     seed_number = n;
-    _index = 0;
+    index = 0;
     int max; //乱数の周期
     var sosu = <int>[
       //漸化式のmになる
@@ -76,14 +76,14 @@ class Random {
           now.hour * 60 * 60 +
           now.day * 60 * 60 * 24 +
           now.month * 60 * 60 * 24 * 31);
-      _index = 0;
+      index = 0;
     }
-    if (_index > 99) {
+    if (index > 99) {
       //インデックスが最大になったら、乱数を次の種で作る
       seed(++seed_number);
     }
-    _index++;
-    return rnd[_index - 1];
+    index++;
+    return rnd[index - 1];
   }
 }
 
@@ -112,7 +112,7 @@ class ShogiManage {
   }
 
   /// 爆弾5個をランダムに置いた盤面で初期化
-  ShogiManage.bakudan() {
+  void bakudan() {
     shogiTable = [
       [0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0],
@@ -146,6 +146,15 @@ class ShogiManage {
       pref.setInt("Min$key", value);
       min = value;
     }
+  }
+
+  Future<void> savePlay(String mode, int seed, int index) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    List<String> list = pref.getStringList("replay") ?? [];
+    list.add(mode);
+    list.add(seed.toString());
+    list.add(index.toString());
+    pref.setStringList("replay", list);
   }
 
   /// デバッグ用、ゲームデータ削除
@@ -463,7 +472,7 @@ class ShogiManage {
   }
 
   Future<void> move(int distance) async {
-    if(shogiTable[komaNow[2]][komaNow[3]]!=2)return;
+    if (shogiTable[komaNow[2]][komaNow[3]] != 2) return;
     shogiTable[komaNow[2]][komaNow[3]] = 0;
     if (komaNow[3] + distance >= 0 && komaNow[3] + distance <= 4)
       komaNow[3] += distance;
@@ -478,7 +487,9 @@ class ShogiManage {
 /// shogiManageのインスタンス,
 /// 右のような関数(){setState((){shogiManageのインスタンス.winner="";});},
 /// デバイスのサイズ(Size型)
-Widget shogiTableBuild(ShogiManage shogi, Function setWinner, Size windowSize) {
+Widget shogiTableBuild(ShogiManage shogi, Function setWinner, Size windowSize,
+    String mode, int seed, int index,
+    {bool showSave = true}) {
   return Padding(
       padding: const EdgeInsets.all(5),
       child: Stack(
@@ -498,12 +509,12 @@ Widget shogiTableBuild(ShogiManage shogi, Function setWinner, Size windowSize) {
                             child: shogi.koma(index, index2))))),
           ),
           Positioned(
-              top: 50,
+              top: 20,
               left: windowSize.width / 2 - 200,
               child: Opacity(
                 opacity: (shogi.winner != "") ? 1 : 0,
                 child: Container(
-                    height: 300,
+                    height: 360,
                     width: 390,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -526,13 +537,26 @@ Widget shogiTableBuild(ShogiManage shogi, Function setWinner, Size windowSize) {
                           textScaleFactor: 2,
                           style: const TextStyle(color: Colors.black45),
                           textAlign: TextAlign.center,
-                        )
+                        ),
+                        (showSave && mode != "yoke")
+                            ? (TextButton(
+                                onPressed: () {
+                                  shogi.savePlay(mode, seed, index);
+                                },
+                                child: const Text(
+                                  "リプレイを保存",
+                                  textScaleFactor: 1.5,
+                                )))
+                            : (const SizedBox(
+                                width: 0,
+                                height: 0,
+                              ))
                       ],
                     )),
               )),
           Positioned(
               left: windowSize.width / 2 + 140,
-              top: 60,
+              top: 30,
               child: Opacity(
                 opacity: (shogi.winner != "") ? 1 : 0,
                 child: IconButton(

@@ -14,6 +14,15 @@ class HPshogi extends StatefulWidget {
 class PageShogi extends State<HPshogi> {
   var shogi = ShogiManage();
   bool cpuTurn = false;
+  late int seed,index;
+  @override
+  void initState(){
+    setState((){
+      shogi.rnd.get();
+      seed=shogi.rnd.seed_number;
+      index=shogi.rnd.index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -32,6 +41,9 @@ class PageShogi extends State<HPshogi> {
                         onPressed: () {
                           setState(() {
                             shogi = ShogiManage();
+                            shogi.rnd.get();
+                            seed=shogi.rnd.seed_number;
+                            index=shogi.rnd.index;
                           });
                         },
                         icon: const Icon(Icons.refresh)),
@@ -47,7 +59,7 @@ class PageShogi extends State<HPshogi> {
               setState(() {
                 shogi.winner = "";
               });
-            }, size),
+            }, size,"shogi",seed,index),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
