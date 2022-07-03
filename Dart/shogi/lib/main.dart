@@ -344,8 +344,8 @@ class HPres extends StatefulWidget {
   State<HPres> createState() => Pageres();
 }
 
+/// ハイスコアタブのTextのリストを作成する
 Future<List<Text>> buildTexts() async {
-  // 将棋の結果のリストを返す
   var shogi = ShogiManage();
   var keys = ["shogi?", "shogi", "notshogi", "ban", "yoke"];
   var titles = ["将棋!", "将棋?", "将棋ではない", "爆弾", "将棋避け"];
@@ -354,36 +354,51 @@ Future<List<Text>> buildTexts() async {
     await shogi.saveGame(keys[i], -1); // セーブデータは変化させない、min/maxに値を代入させる
     texts.add(Text(
       "${titles[i]}\n Max:${shogi.max == -1 ? "---" : shogi.max}\n Min:${shogi.min == -1 ? "---" : shogi.min}",
-      textAlign: TextAlign.start,
+      textAlign: TextAlign.center,
       textScaleFactor: 2,
     ));
   }
   return texts;
 }
 
+/// リプレイタブのTextButtonのリストを作成する
 Future<List<TextButton>> buildReplays(BuildContext context) async {
-  var keys = ["shogi?", "shogi", "notshogi", "ban"];
-  var titles = ["将棋?", "将棋!", "将棋ではない", "爆弾"];
+  var keys = ["shogi?", "shogi", "notshogi", "ban", "yoke"];
+  var titles = ["将棋?", "将棋!", "将棋ではない", "爆弾", "将棋避け"];
   var texts = <TextButton>[];
   SharedPreferences pref = await SharedPreferences.getInstance();
-  List<String> list = pref.getStringList("replay") ?? [];
-  print(list);
+  List<String> list = pref.getStringList("replay") ?? []; // リプレイのリストの取得
+  List<String> yoke_pos =
+      pref.getStringList("yoke_pos") ?? []; // yokeモード専用データを取得
+  int yoke_ind = 0; // yoke_posのインデックス
   for (int i = 0; i < list.length ~/ 3; i++) {
+    // listは[モード名,乱数の種,乱数リストのインデックス,...]と繰り返す
     int num = 0;
     for (int j = 0; j < keys.length; j++) {
+      // モード名と一致するkeysの要素のインデックスをnumに代入
       if (list[i * 3] == keys[j]) num = j;
+    }
+    String yoke_str = ""; // HPrepに渡す将棋避け用データ
+    if (list[i * 3] == "yoke") {
+      // 将棋避けのときは専用のデータを取得
+      yoke_str = yoke_pos[yoke_ind];
+      yoke_ind++;
     }
     texts.add(TextButton(
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return HPrep(
-              mode: list[i * 3],
-              seed: int.parse(list[i * 3 + 1]),
-              index: int.parse(list[i * 3 + 2]),
-            );
+                mode: list[i * 3],
+                seed: int.parse(list[i * 3 + 1]),
+                index: int.parse(list[i * 3 + 2]),
+                yoke_pos: yoke_str);
           }));
         },
-        child: Text("${titles[num]}\n${list[i * 3 + 1]}-${list[i * 3 + 2]}")));
+        child: Text(
+            "${titles[num]}\n${list[i * 3 + 1]}-${list[i * 3 + 2]}",
+            textScaleFactor: 2,
+            textAlign: TextAlign.center,
+        ))); //タイトル\n乱数の種-乱数リストのインデックス
   }
   return texts;
 }
@@ -416,7 +431,7 @@ class Pageres extends State<HPres> {
             appBar: AppBar(
               title: const Text("記録なう"),
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(this.context);
                 },
@@ -435,35 +450,29 @@ class Pageres extends State<HPres> {
             body: TabBarView(
               children: [
                 SingleChildScrollView(
-                  child: SizedBox(
-                    // 幅設定用
-                    width: double.infinity,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child:Column(
                         children: List.generate(
                             // textsを順に表示
                             texts.length,
-                            (index) => Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: texts[index],
+                            (index) => Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.all(20),
+                              decoration: const BoxDecoration(color:Colors.black12,borderRadius: BorderRadius.all(Radius.circular(5))),
+                              child: texts[index],
                                 ))),
-                  ),
                 ),
                 SingleChildScrollView(
-                  child: SizedBox(
-                    // 幅設定用
-                    width: double.infinity,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                         children: List.generate(
-                            // textsを順に表示
+                            // replaysを順に表示
                             replays.length,
-                            (index) => Padding(
-                                  padding: const EdgeInsets.all(20),
+                            (index) => Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.all(20),
+                                  decoration: const BoxDecoration(color:Colors.black12,borderRadius: BorderRadius.all(Radius.circular(5))),
                                   child: replays[index],
                                 ))),
                   ),
-                ),
               ],
             )),
       ),
@@ -471,27 +480,40 @@ class Pageres extends State<HPres> {
   }
 }
 
+/// リプレイの表示
 class HPrep extends StatefulWidget {
+  /// mode : ゲームモード名(半角英数)
+  /// seed : 乱数の種
+  /// index : 乱数リストのインデックス
+  /// yoke_pos : yoke用データ(ない場合は””)
   const HPrep(
-      {Key? key, required this.mode, required this.seed, required this.index})
+      {Key? key,
+      required this.mode,
+      required this.seed,
+      required this.index,
+      required this.yoke_pos})
       : super(key: key);
 
-  final String mode;
+  final String mode, yoke_pos;
   final int seed, index;
 
   @override
-  State<HPrep> createState() => Pagerep(this.mode, this.seed, this.index);
+  State<HPrep> createState() =>
+      Pagerep(this.mode, this.seed, this.index, this.yoke_pos);
 }
 
 class Pagerep extends State<HPrep> {
   final String mode;
   final int seed, index;
+  final String yoke_pos;
   ShogiManage shogi = ShogiManage();
-  late Function next;
-  Pagerep(this.mode, this.seed, this.index) : super();
+  late Function next; // "駒を動かす"ボタンを押したときに実行する関数
+  int yoke_ind = 0; // yoke_posのインデックス
+  Pagerep(this.mode, this.seed, this.index, this.yoke_pos) : super();
   @override
   void initState() {
     switch (mode) {
+      // shogiの初期化とnextの設定
       case "shogi":
         shogi = ShogiManage();
         next = shogi.nextShogi;
@@ -505,14 +527,20 @@ class Pagerep extends State<HPrep> {
         next = shogi.nextNotShogi;
         break;
       case "ban":
-        ShogiManage();
+        // ShogiManage.bakudan()は乱数を使用するので種を設定するまで実行しない→switch後
         next = shogi.nextBan;
         break;
       case "yoke":
         shogi = ShogiManage();
-        next = shogi.nextYoke;
+        next = () {
+          // nextYoke関数は相手の駒を動かすだけなのでその前に自分を動かす
+          if (shogi.win() == 1) return;
+          // yoke_posはインデックスと同じターンでの駒の位置(横のみ)
+          shogi.move(int.parse(yoke_pos[++yoke_ind]) - shogi.komaNow[3]);
+          shogi.nextYoke();
+        };
     }
-    shogi.rnd.seed(seed);
+    shogi.rnd.seed(seed); // 種・インデックスを設定
     shogi.rnd.index = index;
     if (mode == "ban") shogi.bakudan();
   }
@@ -527,17 +555,20 @@ class Pagerep extends State<HPrep> {
         child: Column(
           children: [
             Padding(
+                // 駒を動かすプレイヤー
                 padding: const EdgeInsets.all(5),
                 child: Text(
                   shogi.player,
                   textScaleFactor: 2,
                 )),
             shogiTableBuild(shogi, () {
+              // 盤面
               setState(() {
                 shogi.winner = "";
               });
             }, MediaQuery.of(context).size, mode, seed, index, showSave: false),
             Padding(
+                // "駒を動かす"ボタン
                 padding: const EdgeInsets.all(15),
                 child: Container(
                   width: 200,

@@ -11,17 +11,18 @@ class HPban extends StatefulWidget {
 
 class PageBan extends State<HPban> {
   late var shogi;
-  late int seed,index;
+  late int seed, index;
   @override
-  void initState(){
-    setState((){
-      shogi=ShogiManage();
+  void initState() {
+    setState(() {
+      shogi = ShogiManage();
       shogi.rnd.get();
-      seed=shogi.rnd.seed_number;
-      index=shogi.rnd.index;
+      seed = shogi.rnd.seed_number;
+      index = shogi.rnd.index;
       shogi.bakudan();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -39,10 +40,10 @@ class PageBan extends State<HPban> {
                     IconButton(
                         onPressed: () {
                           setState(() {
-                            shogi=ShogiManage();
+                            shogi = ShogiManage();
                             shogi.rnd.get();
-                            seed=shogi.rnd.seed_number;
-                            index=shogi.rnd.index;
+                            seed = shogi.rnd.seed_number;
+                            index = shogi.rnd.index;
                             shogi.bakudan();
                           });
                         },
@@ -59,7 +60,7 @@ class PageBan extends State<HPban> {
               setState(() {
                 shogi.winner = "";
               });
-            }, size,"ban",seed,index),
+            }, size, "ban", seed, index),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
