@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'shogiManager.dart';
 
-
 class HPshogi extends StatefulWidget {
   const HPshogi({Key? key}) : super(key: key);
 
@@ -14,15 +13,16 @@ class HPshogi extends StatefulWidget {
 class PageShogi extends State<HPshogi> {
   var shogi = ShogiManage();
   bool cpuTurn = false;
-  late int seed,index;
+  late int seed, index;
   @override
-  void initState(){
-    setState((){
+  void initState() {
+    setState(() {
       shogi.rnd.get();
-      seed=shogi.rnd.seed_number;
-      index=shogi.rnd.index;
+      seed = shogi.rnd.seed_number;
+      index = shogi.rnd.index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -42,8 +42,8 @@ class PageShogi extends State<HPshogi> {
                           setState(() {
                             shogi = ShogiManage();
                             shogi.rnd.get();
-                            seed=shogi.rnd.seed_number;
-                            index=shogi.rnd.index;
+                            seed = shogi.rnd.seed_number;
+                            index = shogi.rnd.index;
                           });
                         },
                         icon: const Icon(Icons.refresh)),
@@ -59,7 +59,7 @@ class PageShogi extends State<HPshogi> {
               setState(() {
                 shogi.winner = "";
               });
-            }, size,"shogi",seed,index),
+            }, size, "shogi", seed, index),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(

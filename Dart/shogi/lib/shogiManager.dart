@@ -131,8 +131,11 @@ class ShogiManage {
     }
   }
 
+  /// 将棋避け用、各ターンでの自分の位置
+  String yoke_pos = "2";
+
   /// データをセーブする関数
-  /// key : ゲームモード(shogi?/shogi/notshogi/ban)
+  /// key : ゲームモード(shogi?/shogi/notshogi/ban/yoke)
   /// value : ターン数
   Future<void> saveGame(String key, int value) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -148,6 +151,10 @@ class ShogiManage {
     }
   }
 
+  /// リプレイを保存する関数
+  /// mode : ゲームモード(shogi?/shogi/notshogi/ban/yoke)
+  /// seed : ゲーム開始時の乱数の種(rand.seed_number)
+  /// index : ゲーム開始時の乱数のインデックス(rand.index)
   Future<void> savePlay(String mode, int seed, int index) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     List<String> list = pref.getStringList("replay") ?? [];
@@ -155,10 +162,22 @@ class ShogiManage {
     list.add(seed.toString());
     list.add(index.toString());
     pref.setStringList("replay", list);
+    if (mode == "yoke") {
+      list = pref.getStringList("yoke_pos") ?? [];
+      list.add(yoke_pos);
+      pref.setStringList("yoke_pos", list);
+    }
+  }
+
+  /// デバッグ用、リプレイデータ削除
+  static Future<void> deletePlay() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setStringList("replay", []);
+    pref.setStringList("yoke_pos", []);
   }
 
   /// デバッグ用、ゲームデータ削除
-  Future<void> _deleteSave() async {
+  static Future<void> deleteSave() async {
     var keys = ["shogi?", "shogi", "notshogi", "ban", "yoke"];
     SharedPreferences pref = await SharedPreferences.getInstance();
     for (int i = 0; i < keys.length; i++) {
@@ -421,6 +440,7 @@ class ShogiManage {
   Future<void> nextYoke() async {
     if (win() == 1) return;
     turnCount++;
+    yoke_pos += komaNow[3].toString();
     for (int i = 24; i >= 0; i--) {
       if (shogiTable[i ~/ 5][i % 5] == 4) shogiTable[i ~/ 5][i % 5] = 0;
     }
@@ -468,7 +488,6 @@ class ShogiManage {
     }
     _player = await _cache.play('koma.wav');
     _player.setVolume(ShogiManage.volume);
-    print("end");
   }
 
   Future<void> move(int distance) async {
@@ -538,7 +557,7 @@ Widget shogiTableBuild(ShogiManage shogi, Function setWinner, Size windowSize,
                           style: const TextStyle(color: Colors.black45),
                           textAlign: TextAlign.center,
                         ),
-                        (showSave && mode != "yoke")
+                        (showSave)
                             ? (TextButton(
                                 onPressed: () {
                                   shogi.savePlay(mode, seed, index);

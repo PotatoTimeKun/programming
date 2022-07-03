@@ -13,13 +13,13 @@ class HPyk extends StatefulWidget {
 class PageShogiYoke extends State<HPyk> {
   var shogi = ShogiManage();
   late Timer timer;
-  late int seed,index;
+  late int seed, index;
   @override
   void initState() {
-    setState((){
+    setState(() {
       shogi.rnd.get();
-      seed=shogi.rnd.seed_number;
-      index=shogi.rnd.index;
+      seed = shogi.rnd.seed_number;
+      index = shogi.rnd.index;
     });
     timer = Timer.periodic(
       const Duration(milliseconds: 1000),
@@ -55,8 +55,8 @@ class PageShogiYoke extends State<HPyk> {
                           setState(() {
                             shogi = ShogiManage();
                             shogi.rnd.get();
-                            seed=shogi.rnd.seed_number;
-                            index=shogi.rnd.index;
+                            seed = shogi.rnd.seed_number;
+                            index = shogi.rnd.index;
                           });
                         },
                         icon: const Icon(Icons.refresh)),
@@ -67,7 +67,7 @@ class PageShogiYoke extends State<HPyk> {
               setState(() {
                 shogi.winner = "";
               });
-            }, size,"yoke",seed,index),
+            }, size, "yoke", seed, index),
             Padding(
                 padding: const EdgeInsets.all(15),
                 child: Row(
