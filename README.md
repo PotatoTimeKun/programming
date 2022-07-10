@@ -1034,10 +1034,10 @@ docstring追加済み
 以下の関数を追加しました。  
 * vecValue(vec:mathVector)->float  
 ベクトルvの大きさ(つまり|→v|)を調べます。  
-* differential(function:function)->function  
+* differential(func:function)->function  
 引数に渡した関数を微分して導関数を返します。  
 具体的にはlim\[h->0\](f(x+h)-f(x))/hにおいてh->0.00000000001にした関数を返します。
-* dif_decimal(function:function)->function  
+* dif_decimal(func:function)->function  
 引数に渡した関数を微分して導関数を返します。  
 値をすべてdecimal型で扱い、小数点以下15で切り捨てます。  
 引数に渡す関数の処理においてもdecimal型を用いてください。  
@@ -1046,7 +1046,13 @@ docstring追加済み
 小数点以下100桁までの数を10進数で保持し、  
 lim\[h->0\](f(x+h)-f(x))/hにおいて  
 h->decimal.Decimal('0.00000000000000000000000000000001')にして  
-計算結果を15桁で切り捨てる関数を返します。
+計算結果を15桁で切り捨てる関数を返します。  
+* def show_table(func,firstList:list,secondList:list,strLen=10)->None:  
+引数が2つある関数に、2つのリストから全ての場合で順に値を渡して、表を表示します。  
+func (function): 関数  
+firstList (list): 要素が関数の第一引数となるリスト  
+secondList (list): 要素が関数の代に引数となるリスト  
+strLen (int, デフォルト:10): 表の列の横幅(左寄せに使う)  
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  

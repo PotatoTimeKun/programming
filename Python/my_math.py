@@ -16,13 +16,13 @@ def factorial(n:int)->int:
     for i in range(1,n+1):
         ret*=i
     return ret
-def combination(n:int,r:int)->int:
-    """nからr個選んだ組み合わせ(nCr)を返します。"""
-    ret=factorial(n)/factorial(n-r)
-    return ret
 def permutation(n:int,r:int)->int:
     """nからr個選んだ順列(nPr)を返します。"""
-    ret=combination(n,r)/factorial(r)
+    ret=factorial(n)/factorial(n-r)
+    return ret
+def combination(n:int,r:int)->int:
+    """nからr個選んだ組み合わせ(nCr)を返します。"""
+    ret=permutation(n,r)/factorial(r)
     return ret
 def GP_sum(a1:float,r:float,n:int)->float:
     """
@@ -198,17 +198,35 @@ class mathVector:
 def vecValue(vec:mathVector)-> float:
     """ベクトルの大きさを返します。(つまり|→vec|)"""
     return (vec.v1**2+vec.v2**2)**0.5
-def differential(function:function)->function:
+def differential(func):
     """引数に渡した関数を微分して導関数を返します。"""
     def ret(x):
-        return (function(x+0.00000000001)-function(x))/(0.00000000001)
+        return (func(x+0.00000000001)-func(x))/(0.00000000001)
     return ret
-def dif_decimal(function:function)->function:
+def dif_decimal(func):
     """引数に渡した関数を微分して導関数を返します。
     値をすべてdecimal型で扱い、小数点以下15で切り捨てます。
     引数に渡す関数の処理においてもdecimal型を用いてください。
     導関数において微分係数を導く時の引数が小数ならそれもdecimal型にしてください。"""
     def ret(x):
         d.getcontext().prec = 100
-        return round((function(x+d.Decimal('0.00000000000000000000000000000001'))-function(x))/(d.Decimal('0.00000000000000000000000000000001')),15)
+        return round((func(x+d.Decimal('0.00000000000000000000000000000001'))-func(x))/(d.Decimal('0.00000000000000000000000000000001')),15)
     return ret
+def show_table(func,firstList:list,secondList:list,strLen=10)->None:
+    """
+    引数が2つある関数に、2つのリストから全ての場合で順に値を渡して、表を表示します。
+    Args:
+        func (function): 関数
+        firstList (list): 要素が関数の第一引数となるリスト
+        secondList (list): 要素が関数の代に引数となるリスト
+        strLen (int, optional): 表の列の横幅(左寄せに使う). Defaults to 10.
+    """
+    print("fir\\sec".ljust(strLen),end='')
+    for i in secondList:
+        print(str(i).ljust(strLen),end='')
+    print() #改行
+    for i in firstList:
+        print(str(i).ljust(strLen),end='')
+        for j in secondList:
+            print(str(func(i,j)).ljust(strLen),end='')
+        print()
