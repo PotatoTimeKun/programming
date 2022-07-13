@@ -1051,12 +1051,20 @@ docstring追加済み
 lim\[h->0\](f(x+h)-f(x))/hにおいて  
 h->decimal.Decimal('0.00000000000000000000000000000001')にして  
 計算結果を15桁で切り捨てる関数を返します。  
-* def show_table(func,firstList:list,secondList:list,strLen=10)->None:  
+* show_table(func,firstList:list,secondList:list,strLen=10)->None:  
 引数が2つある関数に、2つのリストから全ての場合で順に値を渡して、表を表示します。  
 func (function): 関数  
 firstList (list): 要素が関数の第一引数となるリスト  
 secondList (list): 要素が関数の代に引数となるリスト  
 strLen (int, デフォルト:10): 表の列の横幅(左寄せに使う)  
+* prime_fact(i: int) -> int  
+引数の値で素因数分解を行い、素因数をリストで返します。(昇順・重複あり)  
+引数が小数や1以下の場合\[-1\]が返されます。  
+soinsubunkai.pyの関数と同じです。  
+* yakubun(a, b)->str  
+a/bを約分した状態の文字列を返します。  
+a>0,b>0,a!=1,b!=1で動きます。  
+a,bは数字でも文字列でもいいですが、一応小数は文字列にすることをおすすめします  
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
