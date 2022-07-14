@@ -326,43 +326,56 @@ def prime_fact(i: int) -> int:
     return res
 
 
-def yakubun(a, b)->str:
+def yakubun(a, b) -> str:
     """
     a/bを約分した状態の文字列を返します。
-    a>0,b>0,a!=1,b!=1で動きます。
+    bに0を入れるとエラーを返します。  
     a,bは数字でも文字列でもいいですが、一応小数は文字列にすることをおすすめします
     """
+    if(float(b) == 0):
+        raise Exception("function yakubun:0で割らないでください")
+    sign = float(a)/abs(float(a))*float(b)/abs(float(b)) # 結果の符号
     a = str(a)
     b = str(b)
-    a = a[::-1]
+    if(a[0] == '-'): # -は取る
+        a = a[1:]
+    if(b[0] == '-'):
+        b = b[1:]
+    # 以下は小数点以下の桁数を揃える
+    a = a[::-1]  # 逆順に
     b = b[::-1]
-    a_dot = 0
+    a_dot = 0  # .の位置
     b_dot = 0
     try:
         a_dot = a.index('.')
     except:
-        a = '.'+a
+        a = '.'+a # .がない場合追加する
     try:
         b_dot = b.index('.')
     except:
         b = '.'+b
-    if(a_dot == b_dot):
-        a = a[:a_dot]+a[a_dot+1:]
+    if(a_dot == b_dot): # 小数点以下の桁数が同じ
+        a = a[:a_dot]+a[a_dot+1:] # .を消す
         b = b[:b_dot]+b[b_dot+1:]
-    elif(a_dot > b_dot):
-        a = a[:a_dot]+a[a_dot+1:]
-        b = '0'*(a_dot-b_dot)+b[:b_dot]+b[b_dot+1:]
-    else:
+    elif(a_dot > b_dot): # aの方が小数点以下の桁数が多い
+        a = a[:a_dot]+a[a_dot+1:] # aは.を消す
+        b = '0'*(a_dot-b_dot)+b[:b_dot]+b[b_dot+1:] # bは差の分0を追加し.を消す
+    else: # a_dot < b_dot
         a = '0'*(b_dot-a_dot)+a[:a_dot]+a[a_dot+1:]
         b = b[:b_dot]+b[b_dot+1:]
-    a = int(a[::-1])
+    a = int(a[::-1]) # 逆順から戻し、整数に
     b = int(b[::-1])
-    a_lis = prime_fact(a)
+    # 以下は素因数分解して同じ値を消す
+    a_lis = prime_fact(a) # 素因数分解
+    if(a_lis[0] == -1):
+        a_lis = [a] # 素因数分解不可→0もしくは1
     b_lis = prime_fact(b)
+    if(b_lis[0] == -1):
+        b_lis = [1] # 素因数分解不可→1
     i = 0
     while(i < len(a_lis)):
         for j in range(len(b_lis)):
-            if(a_lis[i] == b_lis[j]):
+            if(a_lis[i] == b_lis[j] != 1):
                 a_lis = a_lis[:i]+a_lis[i+1:]
                 b_lis = b_lis[:j]+b_lis[j+1:]
                 i -= 1
@@ -374,4 +387,10 @@ def yakubun(a, b)->str:
     b = 1
     for i in b_lis:
         b *= i
-    return str(a)+"/"+str(b)
+    ret = ""
+    if(sign < 0):
+        ret = "-"
+    ret += str(a)
+    if(a != 0 and b != 1):
+        ret += "/"+str(b)
+    return ret
