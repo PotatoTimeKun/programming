@@ -334,10 +334,10 @@ def yakubun(a, b) -> str:
     """
     if(float(b) == 0):
         raise Exception("function yakubun:0で割らないでください")
-    sign = float(a)/abs(float(a))*float(b)/abs(float(b)) # 結果の符号
+    sign = float(a)/abs(float(a))*float(b)/abs(float(b))  # 結果の符号
     a = str(a)
     b = str(b)
-    if(a[0] == '-'): # -は取る
+    if(a[0] == '-'):  # -は取る
         a = a[1:]
     if(b[0] == '-'):
         b = b[1:]
@@ -349,29 +349,29 @@ def yakubun(a, b) -> str:
     try:
         a_dot = a.index('.')
     except:
-        a = '.'+a # .がない場合追加する
+        a = '.'+a  # .がない場合追加する
     try:
         b_dot = b.index('.')
     except:
         b = '.'+b
-    if(a_dot == b_dot): # 小数点以下の桁数が同じ
-        a = a[:a_dot]+a[a_dot+1:] # .を消す
+    if(a_dot == b_dot):  # 小数点以下の桁数が同じ
+        a = a[:a_dot]+a[a_dot+1:]  # .を消す
         b = b[:b_dot]+b[b_dot+1:]
-    elif(a_dot > b_dot): # aの方が小数点以下の桁数が多い
-        a = a[:a_dot]+a[a_dot+1:] # aは.を消す
-        b = '0'*(a_dot-b_dot)+b[:b_dot]+b[b_dot+1:] # bは差の分0を追加し.を消す
-    else: # a_dot < b_dot
+    elif(a_dot > b_dot):  # aの方が小数点以下の桁数が多い
+        a = a[:a_dot]+a[a_dot+1:]  # aは.を消す
+        b = '0'*(a_dot-b_dot)+b[:b_dot]+b[b_dot+1:]  # bは差の分0を追加し.を消す
+    else:  # a_dot < b_dot
         a = '0'*(b_dot-a_dot)+a[:a_dot]+a[a_dot+1:]
         b = b[:b_dot]+b[b_dot+1:]
-    a = int(a[::-1]) # 逆順から戻し、整数に
+    a = int(a[::-1])  # 逆順から戻し、整数に
     b = int(b[::-1])
     # 以下は素因数分解して同じ値を消す
-    a_lis = prime_fact(a) # 素因数分解
+    a_lis = prime_fact(a)  # 素因数分解
     if(a_lis[0] == -1):
-        a_lis = [a] # 素因数分解不可→0もしくは1
+        a_lis = [a]  # 素因数分解不可→0もしくは1
     b_lis = prime_fact(b)
     if(b_lis[0] == -1):
-        b_lis = [1] # 素因数分解不可→1
+        b_lis = [1]  # 素因数分解不可→1
     i = 0
     while(i < len(a_lis)):
         for j in range(len(b_lis)):
@@ -394,3 +394,34 @@ def yakubun(a, b) -> str:
     if(a != 0 and b != 1):
         ret += "/"+str(b)
     return ret
+
+
+def prime_num(start: int, end: int) -> list:
+    """
+    第一引数から第二引数-1までの素数をリストで返します。
+    """
+    numlist = []
+    for i in range(start, end):
+        is_sosu = True
+        for n in range(2, i):
+            if i % n == 0:
+                is_sosu = False
+        if is_sosu and i >= 2:
+            numlist.append(i)
+    return numlist
+
+
+def check_prime(i: int) -> bool:
+    """
+    引数が素数かどうか判断し、素数ならTrue、素数でなければFalseを返します。
+    """
+    if float(i).is_integer():
+        i = int(i)
+    else:
+        return False
+    if i < 2:
+        return False
+    for ic in range(2, i):
+        if i % ic == 0:
+            return False
+    return True
