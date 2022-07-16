@@ -3,13 +3,13 @@
  * @file new_tabaicho.h
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
  * @brief 
- * ƒŠƒXƒg‚É‚æ‚Á‚Ä‘½”{’·®”‚ğˆµ‚¢‚Ü‚·B
- * ‘½”{’·®”‚ÍmkListŠÖ”‚É‚æ‚Á‚Ä•Ô‚³‚ê‚½Tabaicho*Œ^‚Ì•Ï”‚ğg—p‚µ‚Ü‚·B
- * (‘½”{’·®”ŠÔ‚Ì)l‘¥‰‰Z‚ğs‚¤ŠÖ”‚Í‚»‚ê‚¼‚êsum,sub,mul,divi‚Å‚·B
- * inputTabaichoŠÖ”‚ÍƒL[ƒ{[ƒh“ü—Í‚É‚æ‚Á‚Ä“¾‚½‘½”{’·®”‚ğ•Ô‚µ‚Ü‚·B
- * showTabaichoŠÖ”‚Íˆø”‚Ì‘½”{’·®”‚ğ•\¦‚µ‚Ü‚·B
- * cmpŠÖ”‚Íˆø”‚Ì‘½”{’·®”“¯m‚Ì‘å‚«‚³‚ğ”äŠr‚µ‚Ü‚·B
- * ‚±‚ÌŠÖ”‚ÌƒeƒXƒg‚Ítabaicho.c‚Ås‚¦‚Ü‚·B
+ * ãƒªã‚¹ãƒˆã«ã‚ˆã£ã¦å¤šå€é•·æ•´æ•°ã‚’æ‰±ã„ã¾ã™ã€‚
+ * å¤šå€é•·æ•´æ•°ã¯mkListé–¢æ•°ã«ã‚ˆã£ã¦è¿”ã•ã‚ŒãŸTabaicho*å‹ã®å¤‰æ•°ã‚’ä½¿ç”¨ã—ã¾ã™ã€‚
+ * (å¤šå€é•·æ•´æ•°é–“ã®)å››å‰‡æ¼”ç®—ã‚’è¡Œã†é–¢æ•°ã¯ãã‚Œãã‚Œsum,sub,mul,diviã§ã™ã€‚
+ * inputTabaichoé–¢æ•°ã¯ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›ã«ã‚ˆã£ã¦å¾—ãŸå¤šå€é•·æ•´æ•°ã‚’è¿”ã—ã¾ã™ã€‚
+ * showTabaichoé–¢æ•°ã¯å¼•æ•°ã®å¤šå€é•·æ•´æ•°ã‚’è¡¨ç¤ºã—ã¾ã™ã€‚
+ * cmpé–¢æ•°ã¯å¼•æ•°ã®å¤šå€é•·æ•´æ•°åŒå£«ã®å¤§ãã•ã‚’æ¯”è¼ƒã—ã¾ã™ã€‚
+ * ã“ã®é–¢æ•°ã®ãƒ†ã‚¹ãƒˆã¯tabaicho.cã§è¡Œãˆã¾ã™ã€‚
  * 
  * @date 2022-06-11
  * 
@@ -22,32 +22,32 @@
 #include <stdio.h>
 
 /**
- * @brief æ“ªˆÈŠO‚Í‚±‚ÌŒ^‚ğg‚¤A—v‘f‚Ì’l‚ÆŸ—v‘f‚Ö‚Ìƒ|ƒCƒ“ƒ^‚Ì‚İ‚ğ‚à‚Â
+ * @brief å…ˆé ­ä»¥å¤–ã¯ã“ã®å‹ã‚’ä½¿ã†ã€è¦ç´ ã®å€¤ã¨æ¬¡è¦ç´ ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã®ã¿ã‚’ã‚‚ã¤
  *
  */
 typedef struct mylist_0
 {
-    int value;             // —v‘f‚Ì’l
-    struct mylist_0 *next; //Ÿ‚Ì—v‘f
+    int value;             // è¦ç´ ã®å€¤
+    struct mylist_0 *next; //æ¬¡ã®è¦ç´ 
 } Tabaicho_child;
 
 /**
- * @brief ‘½”{’·®”‚ğˆµ‚¤Aæ“ª‚Ì‚İ‚±‚ÌŒ^‚ğg‚¤
+ * @brief å¤šå€é•·æ•´æ•°ã‚’æ‰±ã†ã€å…ˆé ­ã®ã¿ã“ã®å‹ã‚’ä½¿ã†
  *
  */
 typedef struct mylist_1
 {
-    int len;               // ‘½”{’·®”‚Ì’·‚³(ƒŠƒXƒg‚Ì’·‚³)
-    int value;             // æ“ª‚Ì’l
-    int minus;             // ’l‚ª•‰‚È‚ç1‚ğ“ü‚ê‚é
-    struct mylist_0 *next; //Ÿ‚Ì—v‘f
+    int len;               // å¤šå€é•·æ•´æ•°ã®é•·ã•(ãƒªã‚¹ãƒˆã®é•·ã•)
+    int value;             // å…ˆé ­ã®å€¤
+    int minus;             // å€¤ãŒè² ãªã‚‰1ã‚’å…¥ã‚Œã‚‹
+    struct mylist_0 *next; //æ¬¡ã®è¦ç´ 
 } Tabaicho;
 
 /**
- * @brief ƒŠƒXƒg‚Ì––”ö‚É—v‘f‚ğ’Ç‰Á‚µ‚Ü‚·
+ * @brief ãƒªã‚¹ãƒˆã®æœ«å°¾ã«è¦ç´ ã‚’è¿½åŠ ã—ã¾ã™
  *
- * @param lis ‘½”{’·®”
- * @param val —v‘f‚Ì’l
+ * @param lis å¤šå€é•·æ•´æ•°
+ * @param val è¦ç´ ã®å€¤
  */
 void add(Tabaicho *lis, int val)
 {
@@ -68,11 +68,11 @@ void add(Tabaicho *lis, int val)
 }
 
 /**
- * @brief w’è‚µ‚½ƒCƒ“ƒfƒbƒNƒX‚É—v‘f‚ğ’Ç‰Á‚µ‚Ü‚·
+ * @brief æŒ‡å®šã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«è¦ç´ ã‚’è¿½åŠ ã—ã¾ã™
  *
- * @param lis ‘½”{’·®”
- * @param val ’l
- * @param list_index ƒCƒ“ƒfƒbƒNƒX
+ * @param lis å¤šå€é•·æ•´æ•°
+ * @param val å€¤
+ * @param list_index ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
  */
 void addAt(Tabaicho *lis, int val, int list_index)
 {
@@ -113,10 +113,10 @@ void addAt(Tabaicho *lis, int val, int list_index)
 }
 
 /**
- * @brief V‚µ‚¢‘½”{’·®”‚ğì‚è‚Ü‚·
+ * @brief æ–°ã—ã„å¤šå€é•·æ•´æ•°ã‚’ä½œã‚Šã¾ã™
  *
- * @param val ’l
- * @return ‘½”{’·®”
+ * @param val å€¤
+ * @return å¤šå€é•·æ•´æ•°
  */
 Tabaicho *mkList()
 {
@@ -129,11 +129,11 @@ Tabaicho *mkList()
 }
 
 /**
- * @brief w’è‚µ‚½ƒCƒ“ƒfƒbƒNƒX‚Ì’l‚ğ•Ô‚µ‚Ü‚·
+ * @brief æŒ‡å®šã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®å€¤ã‚’è¿”ã—ã¾ã™
  *
- * @param lis ‘½”{’·®”
- * @param list_index ƒCƒ“ƒfƒbƒNƒX
- * @return ’l
+ * @param lis å¤šå€é•·æ•´æ•°
+ * @param list_index ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+ * @return å€¤
  */
 int numAt(Tabaicho *lis, int list_index)
 {
@@ -150,11 +150,11 @@ int numAt(Tabaicho *lis, int list_index)
 }
 
 /**
- * @brief w’è‚µ‚½ƒCƒ“ƒfƒbƒNƒX‚Ì—v‘f‚ğíœ‚µ‚Ü‚·
+ * @brief æŒ‡å®šã—ãŸã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®è¦ç´ ã‚’å‰Šé™¤ã—ã¾ã™
  *
- * @param lis ‘½”{’·®”
- * @param list_index ƒCƒ“ƒfƒbƒNƒX
- * @return íœ‚µ‚½’l
+ * @param lis å¤šå€é•·æ•´æ•°
+ * @param list_index ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
+ * @return å‰Šé™¤ã—ãŸå€¤
  */
 int delAt(Tabaicho *lis, int list_index)
 {
@@ -193,9 +193,9 @@ int delAt(Tabaicho *lis, int list_index)
 }
 
 /**
- * @brief ‘½”{’·®”‚ğíœ‚µ‚Ü‚·
+ * @brief å¤šå€é•·æ•´æ•°ã‚’å‰Šé™¤ã—ã¾ã™
  *
- * @param lis ‘½”{’·®”
+ * @param lis å¤šå€é•·æ•´æ•°
  */
 void delList(Tabaicho *lis)
 {
@@ -215,9 +215,9 @@ void delList(Tabaicho *lis)
 }
 
 /**
- * @brief ‘½”{’·®”‚ğƒL[ƒ{[ƒh“ü—Í‚Åó‚¯æ‚è‚Ü‚·
+ * @brief å¤šå€é•·æ•´æ•°ã‚’ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰å…¥åŠ›ã§å—ã‘å–ã‚Šã¾ã™
  *
- * @param list ‘½”{’·®”
+ * @param list å¤šå€é•·æ•´æ•°
  */
 Tabaicho* inputTabaicho()
 {
@@ -228,28 +228,28 @@ Tabaicho* inputTabaicho()
         char c;
         scanf("%c", &c);
         if (c >= '0' && c <= '9')
-        { // 0~9‚ÍƒŠƒXƒg‚É’Ç‰Á
+        { // 0~9ã¯ãƒªã‚¹ãƒˆã«è¿½åŠ 
             add(list, c - '0');
         }
         else if (c == '-')
-        { // -‚ª—ˆ‚½‚ç•‰‚É(-‚ªæ“ª‚Å‚È‚­‚Ä‚à•‰‚É‚È‚é)
+        { // -ãŒæ¥ãŸã‚‰è² ã«(-ãŒå…ˆé ­ã§ãªãã¦ã‚‚è² ã«ãªã‚‹)
             list->minus = 1;
         }
         else
-            break; // ƒzƒƒCƒgƒXƒy[ƒXŠÜ‚Ş‚»‚Ì‘¼‚Ì•¶š‚Í“ü—ÍI—¹‚Æ‚·‚é
+            break; // ãƒ›ãƒ¯ã‚¤ãƒˆã‚¹ãƒšãƒ¼ã‚¹å«ã‚€ãã®ä»–ã®æ–‡å­—ã¯å…¥åŠ›çµ‚äº†ã¨ã™ã‚‹
     }
     return list;
 }
 
 /**
- * @brief ‘½”{’·®”‚ğo—Í‚µ‚Ü‚·
+ * @brief å¤šå€é•·æ•´æ•°ã‚’å‡ºåŠ›ã—ã¾ã™
  *
- * @param list ‘½”{’·®”
+ * @param list å¤šå€é•·æ•´æ•°
  */
 void showTabaicho(Tabaicho *list)
 {
     int n = list->len;
-    int not_zero = 0; // 0–„‚ß”ñ•\¦—p
+    int not_zero = 0; // 0åŸ‹ã‚éè¡¨ç¤ºç”¨
     if (list->minus)
         printf("-");
     for (int i = 0; i < n; i++)
@@ -262,10 +262,10 @@ void showTabaicho(Tabaicho *list)
     printf("\n");
 }
 
-Tabaicho *sub(Tabaicho *, Tabaicho *); //ƒvƒƒgƒ^ƒCƒvéŒ¾
+Tabaicho *sub(Tabaicho *, Tabaicho *); //ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
 
 /**
- * @brief ‘½”{’·®”“¯m‚Ì‘«‚µZ(a+b)
+ * @brief å¤šå€é•·æ•´æ•°åŒå£«ã®è¶³ã—ç®—(a+b)
  *
  * @return Tabaicho* a+b
  */
@@ -273,14 +273,14 @@ Tabaicho *sum(Tabaicho *a, Tabaicho *b)
 {
     Tabaicho *c;
     if (!a->minus && b->minus)
-    { //ˆÙ•„†‚È‚çŒ¸–@‚É
+    { //ç•°ç¬¦å·ãªã‚‰æ¸›æ³•ã«
         b->minus = !b->minus;
         c = sub(a, b);
         b->minus = !b->minus;
         return c;
     }
     else if (a->minus && !b->minus)
-    { //ˆÙ•„†‚È‚çŒ¸–@‚É
+    { //ç•°ç¬¦å·ãªã‚‰æ¸›æ³•ã«
         a->minus = !a->minus;
         c = sub(b, a);
         a->minus = !a->minus;
@@ -291,54 +291,54 @@ Tabaicho *sum(Tabaicho *a, Tabaicho *b)
     {
         addAt((a->len < b->len) ? a : b, 0, 0);
     }
-    int carry = 0;                        // ƒLƒƒƒŠ[
-    for (int k = a->len - 1; k >= 0; k--) // ––”ö‚©‚çæ“ª‚Ü‚Å
+    int carry = 0;                        // ã‚­ãƒ£ãƒªãƒ¼
+    for (int k = a->len - 1; k >= 0; k--) // æœ«å°¾ã‹ã‚‰å…ˆé ­ã¾ã§
     {
-        int tmp = numAt(a, k) + numAt(b, k) + carry; // ’Pƒ‚É‘«‚µ‚½’l
-        carry = tmp / 10;                            // ‘½‚¢•ª‚ÍƒLƒƒƒŠ[‚Ö
-        addAt(c, tmp % 10, 1);                       // Œ‹‰Ê‚ğ“ü‚ê‚é
+        int tmp = numAt(a, k) + numAt(b, k) + carry; // å˜ç´”ã«è¶³ã—ãŸå€¤
+        carry = tmp / 10;                            // å¤šã„åˆ†ã¯ã‚­ãƒ£ãƒªãƒ¼ã¸
+        addAt(c, tmp % 10, 1);                       // çµæœã‚’å…¥ã‚Œã‚‹
     }
-    addAt(c, carry, 1); //ÅŒã‚ÌƒLƒƒƒŠ[‚ğ’Ç‰Á
+    addAt(c, carry, 1); //æœ€å¾Œã®ã‚­ãƒ£ãƒªãƒ¼ã‚’è¿½åŠ 
     if (a->minus && b->minus)
-        c->minus = 1; //ƒ}ƒCƒiƒX“¯m‚È‚çŒ‹‰Ê‚àƒ}ƒCƒiƒX
+        c->minus = 1; //ãƒã‚¤ãƒŠã‚¹åŒå£«ãªã‚‰çµæœã‚‚ãƒã‚¤ãƒŠã‚¹
     return c;
 }
 
 /**
- * @brief ‘½”{’·®”“¯m‚Ì‘å‚«‚³‚Ì”äŠr
+ * @brief å¤šå€é•·æ•´æ•°åŒå£«ã®å¤§ãã•ã®æ¯”è¼ƒ
  * @return 1(a>b) / 0(a==b) / -1(a<b)
  */
 int cmp(Tabaicho *a, Tabaicho *b)
 {
     if (a->minus && !b->minus)
-        return -1; //•„†‚ªˆá‚¤‚È‚ç‘å¬‚Í–¾‚ç‚©
+        return -1; //ç¬¦å·ãŒé•ã†ãªã‚‰å¤§å°ã¯æ˜ã‚‰ã‹
     if (!a->minus && b->minus)
-        return 1; //•„†‚ªˆá‚¤‚È‚ç‘å¬‚Í–¾‚ç‚©
+        return 1; //ç¬¦å·ãŒé•ã†ãªã‚‰å¤§å°ã¯æ˜ã‚‰ã‹
     while (a->len != b->len)
-    { //Œ…”‚ğ‘µ‚¦‚é
+    { //æ¡æ•°ã‚’æƒãˆã‚‹
         addAt((a->len < b->len) ? a : b, 0, 0);
     }
     for (int i = 0; i < a->len; i++)
-    { // æ“ª‚©‚ç1Œ…‚¸‚ÂŒ©‚é
+    { // å…ˆé ­ã‹ã‚‰1æ¡ãšã¤è¦‹ã‚‹
         if (numAt(b, i) > numAt(a, i))
         { // b[i]>a[i]
             if (!a->minus && !b->minus)
-                return -1; // •„†‚Å•Ô‚è’l‚Í‹t‚É‚È‚é
+                return -1; // ç¬¦å·ã§è¿”ã‚Šå€¤ã¯é€†ã«ãªã‚‹
             else
                 return 1;
         }
         if (numAt(a, i) > numAt(b, i))
         { // a[i]>b[i]
             if (!a->minus && !b->minus)
-                return 1; // •„†‚Å•Ô‚è’l‚Í‹t‚É‚È‚é
+                return 1; // ç¬¦å·ã§è¿”ã‚Šå€¤ã¯é€†ã«ãªã‚‹
             else
                 return -1;
         }
-    }         // ‘å¬‚ª‚È‚©‚Á‚½‚ç
+    }         // å¤§å°ãŒãªã‹ã£ãŸã‚‰
     return 0; // 0(a==b)
 }
 
-/** ƒAƒNƒZƒX”ñ„§A‘å¬ŠÖŒW‚È‚­ˆø‚«Z‚ğs‚¤*/
+/** ã‚¢ã‚¯ã‚»ã‚¹éæ¨å¥¨ã€å¤§å°é–¢ä¿‚ãªãå¼•ãç®—ã‚’è¡Œã†*/
 Tabaicho *_privatesub(Tabaicho *a, Tabaicho *b)
 {
     Tabaicho *c = mkList();
@@ -346,23 +346,23 @@ Tabaicho *_privatesub(Tabaicho *a, Tabaicho *b)
     {
         addAt((a->len < b->len) ? a : b, 0, 0);
     }
-    int carry = 0; // ƒLƒƒƒŠ[
+    int carry = 0; // ã‚­ãƒ£ãƒªãƒ¼
     for (int i = a->len - 1; i >= 0; i--)
-    {                                                // ––”ö‚©‚çæ“ª‚Ü‚Å
-        int tmp = numAt(a, i) - numAt(b, i) - carry; // ’Pƒ‚Éˆø‚¢‚½’l
+    {                                                // æœ«å°¾ã‹ã‚‰å…ˆé ­ã¾ã§
+        int tmp = numAt(a, i) - numAt(b, i) - carry; // å˜ç´”ã«å¼•ã„ãŸå€¤
         if (tmp < 0)
-        {              // ˆø‚¢‚½‚à‚Ì‚ª•‰‚È‚ç
-            carry = 1; // ƒLƒƒƒŠ[‚ğİ’è
-            tmp += 10; // 10‘«‚µ‚Ä³‚É‚·‚é
+        {              // å¼•ã„ãŸã‚‚ã®ãŒè² ãªã‚‰
+            carry = 1; // ã‚­ãƒ£ãƒªãƒ¼ã‚’è¨­å®š
+            tmp += 10; // 10è¶³ã—ã¦æ­£ã«ã™ã‚‹
         }
         else
             carry = 0;
-        addAt(c, tmp % 10, 1); // Œ‹‰Ê‚ğ“ü‚ê‚é
+        addAt(c, tmp % 10, 1); // çµæœã‚’å…¥ã‚Œã‚‹
     }
 }
 
 /**
- * @brief ‘½”{’·®”“¯m‚Ìˆø‚«Z(a-b)
+ * @brief å¤šå€é•·æ•´æ•°åŒå£«ã®å¼•ãç®—(a-b)
  *
  * @return Tabaicho* a-b
  */
@@ -370,7 +370,7 @@ Tabaicho *sub(Tabaicho *a, Tabaicho *b)
 {
     Tabaicho *c;
     if (a->minus == !b->minus)
-    { //ˆÙ•„†‚È‚ç‰Á–@‚É
+    { //ç•°ç¬¦å·ãªã‚‰åŠ æ³•ã«
         b->minus = !b->minus;
         c = sum(a, b);
         b->minus = !b->minus;
@@ -378,7 +378,7 @@ Tabaicho *sub(Tabaicho *a, Tabaicho *b)
     }
     int size = cmp(a, b);
     if (size >= 0)
-    { //‘å¬‚Å•„†Aa,b‚Ì•„†‚ÅŒvZ•û–@‚ğ•Ï‚¦‚é(a,b“¯m‚Í“¯•„†‚µ‚©‚ ‚è‚¦‚È‚¢)
+    { //å¤§å°ã§ç¬¦å·ã€a,bã®ç¬¦å·ã§è¨ˆç®—æ–¹æ³•ã‚’å¤‰ãˆã‚‹(a,båŒå£«ã¯åŒç¬¦å·ã—ã‹ã‚ã‚Šãˆãªã„)
         if (!a->minus)
             c = _privatesub(a, b);
         else
@@ -397,7 +397,7 @@ Tabaicho *sub(Tabaicho *a, Tabaicho *b)
 }
 
 /**
- * @brief ‘½”{’·®”“¯m‚Ì‚©‚¯Z(a*b)
+ * @brief å¤šå€é•·æ•´æ•°åŒå£«ã®ã‹ã‘ç®—(a*b)
  *
  * @return Tabaicho* a*b
  */
@@ -405,55 +405,55 @@ Tabaicho *mul(Tabaicho *a, Tabaicho *b)
 {
     Tabaicho *c = mkList();
     for (int i = b->len - 1; i >= 0; i--)
-    {                              //––”ö‚©‚çæ“ª‚Ü‚Å
+    {                              //æœ«å°¾ã‹ã‚‰å…ˆé ­ã¾ã§
         Tabaicho *a_bi = mkList(); // a*b[i]
         int b_keta = numAt(b, i);  // b[i]
-        int carry = 0;             //ƒLƒƒƒŠ[
+        int carry = 0;             //ã‚­ãƒ£ãƒªãƒ¼
         for (int j = a->len - 1; j >= 0; j--)
-        {                                           // b‚ÌŒ…‚²‚Æ‚É‚©‚¯Z‚ğs‚¤
+        {                                           // bã®æ¡ã”ã¨ã«ã‹ã‘ç®—ã‚’è¡Œã†
             int tmp = numAt(a, j) * b_keta + carry; // tmp=a[j]*b[i]+carry
             carry = tmp / 10;
             tmp = tmp % 10;
             addAt(a_bi, tmp, 1);
-        } // ƒŠƒXƒg‚ÌÅ‰‚Í0‚ª“ü‚é‚Ì‚ÅÅãˆÊŒ…‚Ö‚ÌƒLƒƒƒŠ[‚Íl‚¦‚È‚­‚Ä‚æ‚¢
+        } // ãƒªã‚¹ãƒˆã®æœ€åˆã¯0ãŒå…¥ã‚‹ã®ã§æœ€ä¸Šä½æ¡ã¸ã®ã‚­ãƒ£ãƒªãƒ¼ã¯è€ƒãˆãªãã¦ã‚ˆã„
         for (int j = b->len - 1; j > i; j--)
-            add(a_bi, 0); // a*b[i]‚ğ“KØ‚ÈŒ…”‚É‚·‚é
-        c = sum(c, a_bi); // c‚Éa*b[i]‚ğ‘«‚·
+            add(a_bi, 0); // a*b[i]ã‚’é©åˆ‡ãªæ¡æ•°ã«ã™ã‚‹
+        c = sum(c, a_bi); // cã«a*b[i]ã‚’è¶³ã™
         delList(a_bi);
     }
     if (a->minus == !b->minus)
-        c->minus = 1; //•„†İ’è
+        c->minus = 1; //ç¬¦å·è¨­å®š
     return c;
 }
 
 /**
- * @brief ‘½”{’·®”“¯m‚ÌŠ„‚èZ(a/b)
+ * @brief å¤šå€é•·æ•´æ•°åŒå£«ã®å‰²ã‚Šç®—(a/b)
  *
  * @return Tabaicho* a/b
  */
 Tabaicho *divi(Tabaicho *a, Tabaicho *b)
 {
     Tabaicho *c = mkList();
-    Tabaicho *rem = mkList(); // —]‚è
+    Tabaicho *rem = mkList(); // ä½™ã‚Š
     for (int i = 0; i < a->len; i++)
-    {                                  // æ“ª‚©‚ç––”ö‚Ü‚Å
-        Tabaicho *keta_sum = mkList(); // b‚ğ‘«‚µ‚½˜a
-        add(rem, 0);                   // —]‚è‚ğ*10
+    {                                  // å…ˆé ­ã‹ã‚‰æœ«å°¾ã¾ã§
+        Tabaicho *keta_sum = mkList(); // bã‚’è¶³ã—ãŸå’Œ
+        add(rem, 0);                   // ä½™ã‚Šã‚’*10
         for (int j = 0; j < 10; j++)
-        {                             // Š„‚èZ
+        {                             // å‰²ã‚Šç®—
             Tabaicho *a_i = mkList(); // =a[i]
             add(a_i, numAt(a, i));
             keta_sum = sum(keta_sum, b); // keta_sum+=b
             if (cmp(sum(rem, a_i), keta_sum) == -1)
-            {                                               // b‚ğ‘«‚µ‚Ä‚¢‚Á‚ÄA(rem*a[i])‚ğ’´‚¦‚½‚ç
-                add(c, j);                                  // c‚Ì––”ö‚É(rem*a[i])/b(‚Â‚Ü‚èAŒJ‚è•Ô‚µ‚Ì‰ñ”-1‚Å‚ ‚éj)‚ğ’Ç‰Á
-                rem = sub(sum(rem, a_i), sub(keta_sum, b)); // —]‚è‚Æ‚µ‚ÄA(rem*a[i])%b(‚Â‚Ü‚èArem*a[i]-(b*j))‚ğ’Ç‰Á
+            {                                               // bã‚’è¶³ã—ã¦ã„ã£ã¦ã€(rem*a[i])ã‚’è¶…ãˆãŸã‚‰
+                add(c, j);                                  // cã®æœ«å°¾ã«(rem*a[i])/b(ã¤ã¾ã‚Šã€ç¹°ã‚Šè¿”ã—ã®å›æ•°-1ã§ã‚ã‚‹j)ã‚’è¿½åŠ 
+                rem = sub(sum(rem, a_i), sub(keta_sum, b)); // ä½™ã‚Šã¨ã—ã¦ã€(rem*a[i])%b(ã¤ã¾ã‚Šã€rem*a[i]-(b*j))ã‚’è¿½åŠ 
                 break;
             }
         }
     }
     if (a->minus == !b->minus)
-        c->minus = 1; //•„†İ’è
+        c->minus = 1; //ç¬¦å·è¨­å®š
     return c;
 }
 
