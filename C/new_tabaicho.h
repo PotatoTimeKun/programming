@@ -1,4 +1,3 @@
-// This is writed using shift-jis
 /**
  * @file new_tabaicho.h
  * @author PotatoTimeKun (https://github.com/PotatoTimeKun)
