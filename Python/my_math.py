@@ -186,11 +186,14 @@ class mathVector:
     """
     平面のベクトルを扱うクラスです。
     コンストラクタ:x成分,y成分を指定
-    onGraph:クラスメソッド、始点と終点を指定してベクトルを返す
+    onGraph:始点と終点を指定してベクトルを返す
     naiseki:内積
+    size:ベクトルの大きさ
+    set:ベクトルの更新
     +:ベクトル同士の加法
     -:ベクトル同士の減法
     *:ベクトルと数値の乗法
+    /:ベクトルと数値の除法
     ==:等しいかどうか
     !=:等しくないかどうか
     """
@@ -203,55 +206,85 @@ class mathVector:
         v_x:ベクトルのx成分
         v_y:ベクトルのy成分
         """
+        self.set(v_x, v_y)
+
+    def set(self, v_x, v_y):
+        """
+        v_x:ベクトルのx成分
+        v_y:ベクトルのy成分
+        """
         self.v1 = v_x
         self.v2 = v_y
         if v_y == 0 and v_x == 0:
-            ang = None
+            self.ang = None
         else:
-            v = cos_theorem(self.v1, self.v2, m.pi/2)
-            self.ang = m.asin(self.v2/v)
-            if(self.v1 < 0):
+            v = (v_x**2+v_y**2)**0.5
+            self.ang = m.asin(v_y/v)
+            if(v_x < 0):
                 self.ang = m.pi-self.ang
 
     @classmethod
-    def onGraph(x1: float, y1: float, x2: float, y2: float):
+    def onGraph(self,x1: float, y1: float, x2: float, y2: float):
         """
         mathVectorを返します。
         (x1,y1):ベクトルの始点
         (x2,y2):ベクトルの終点
         """
-        ret = mathVector(x2-x1, y2-y1)
-        return ret
+        return __class__(x2-x1, y2-y1)
+
+    def size(self):
+        """
+        ベクトルの大きさ(|→V|)を返します
+        """
+        return (self.v1**2+self.v2**2)**0.5
 
     def naiseki(self, otherVector):
-        return self.v1*otherVector.v1+self.v2*otherVector.v2
+        """
+        自身と引数のベクトルとの内積を返します。
+        """
+        if(isinstance(otherVector, self.__class__)):
+            return self.v1*otherVector.v1+self.v2*otherVector.v2
+        else:
+            raise Exception("内積はベクトルを引数としてください")
 
-    def __add__(self, otherVector):
-        ret = mathVector(self.v1+otherVector.v1, self.v2+otherVector.v2)
-        return ret
+    def __add__(self, otherVector):  # vec(self) + vec(otherVector)
+        if(isinstance(otherVector, self.__class__)):
+            return self.__class__(self.v1+otherVector.v1, self.v2+otherVector.v2)
+        else:
+            raise Exception("+はベクトル量との加算です")
 
-    def __sub__(self, otherVector):
-        ret = mathVector(self.v1-otherVector.v1, self.v2-otherVector.v2)
-        return ret
+    def __sub__(self, otherVector):  # vec(self) - vec(otherVector)
+        if(isinstance(otherVector, self.__class__)):
+            return self.__class__(self.v1-otherVector.v1, self.v2-otherVector.v2)
+        else:
+            raise Exception("-はベクトル量との減算です")
 
-    def __mul__(self, other):
+    def __mul__(self, other):  # vec(self) * sca(other)
         if(isinstance(other, int) or isinstance(other, float)):
-            ret = mathVector(other*self.v1, other*self.v2)
-            return ret
+            return self.__class__(other*self.v1, other*self.v2)
+        else:
+            raise Exception("*はスカラー量との乗算です")
 
-    def __rmul__(self, other):
+    def __rmul__(self, other):  # sca(other) * vec(self)
         if(isinstance(other, int) or isinstance(other, float)):
-            ret = mathVector(other*self.v1, other*self.v2)
-            return ret
+            return self.__class__(other*self.v1, other*self.v2)
+        else:
+            raise Exception("*はスカラー量との乗算です")
 
-    def __eq__(self, other) -> bool:
-        if(isinstance(other, mathVector)):
+    def __truediv__(self, other):  # vec(self) / sca(other)
+        if(isinstance(other, int) or isinstance(other, float)):
+            return self.__class__(self.v1/other, self.v2/other)
+        else:
+            raise Exception("/はスカラー量との除算です")
+
+    def __eq__(self, other):  # self == other
+        if(isinstance(other, self.__class__)):
             return (self.v1 == other.v1) and (self.v2 == other.v2)
         else:
             return False
 
-    def __ne__(self, other) -> bool:
-        if(isinstance(other, mathVector)):
+    def __ne__(self, other):  # self != other
+        if(isinstance(other, self.__class__)):
             return (self.v1 != other.v1) or (self.v2 != other.v2)
         else:
             return True
