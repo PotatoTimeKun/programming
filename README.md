@@ -1086,6 +1086,12 @@ docstring追加済み
 ## mouseclicking.py
 指定した座標をマウスを動かすまでクリックし続けます。  
 
+## pote_jp.py
+日本語(SHIFT-JIS文字)をポテ語にします。  
+
+## pote_jp_rev.py
+ポテ語を日本語に直します。  
+
 # JavaScript
 JavaScriptとHTML・CSSが入っています。
 
