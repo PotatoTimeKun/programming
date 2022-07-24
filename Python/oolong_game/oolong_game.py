@@ -14,8 +14,9 @@ pressed=[]
 table=[]
 """文字を並べたテーブル、2次元リストとする"""
 nowPress=False
-"""クリックしたかどうか"""
+"""クリックしたかどうか(瞬時)"""
 nowRelease=True
+"""クリックしていないかどうか"""
 mouseX=0
 """マウスのx座標"""
 mouseY=0
@@ -27,9 +28,11 @@ index=0
 point=0
 """現在のポイント"""
 timer=0
-"""0.1秒ごとに1足す"""
+"""約0.1秒ごとに約1足す"""
 fontList=["New Times Roman","メイリオ","MS 明朝","Yu Gothic UI Semibold"]
+"""フォントのリスト(現在のフォントは含まない)"""
 font="Yu Gothic UI Semilight"
+""""現在のフォント"""
 def getHigh():
     """ハイスコアの取得"""
     if os.path.exists('C:\\findoolong\\high.txt'):
@@ -118,11 +121,11 @@ def delTable():
     """テーブルの非表示"""
     global c
     c.delete("table")
-def press(e): # クリックしたらnowPressにTrueを代入
+def press(e): # クリックしたらnowPressをTrueに、nowReleaseをFalseに
     global nowPress,nowRelease
     nowRelease=False
     nowPress=True
-def release(e):
+def release(e): # マウスボタンを離したらnowReleaseをTrueに
     global nowRelease
     nowRelease=True
 def mouseMove(e): # マウスを動かしたら座標をmouseX,mouseYに代入
@@ -149,15 +152,18 @@ def main():
         timer%=60
         c.create_image(550+450*cos(timer/30*pi),350-250*sin(timer/30*pi),image=tensin,tag="table")
         c.create_image(550+450*cos((timer+30)/30*pi),350-250*sin((timer+30)/30*pi),image=tensin,tag="table")
-        if(nowPress and (mouseX-60)**2+(mouseY-60)**2-50**2<0):
+        if(nowPress and (mouseX-60)**2+(mouseY-60)**2-50**2<0): # フォント切り替えボタンの表示・動作の設定
+            # ボタンを押したとき
             fontList.insert(0,font)
             font=fontList.pop()
             c.create_oval(13,13,113,113,fill="white",tag="table")
             text(63,63,"font","black",20)
         elif(not nowRelease and (mouseX-60)**2+(mouseY-60)**2-50**2<0):
+            # 動作が終わったがボタンを押し続けているとき
             c.create_oval(13,13,113,113,fill="white",tag="table")
             text(63,63,"font","black",20)
         else:
+            # ボタンを押していないとき
             c.create_oval(10,10,113,113,fill="#AAAAAA",tag="table")
             c.create_oval(10,10,110,110,fill="white",tag="table")
             text(60,60,"font","black",20)
@@ -176,7 +182,7 @@ def main():
         delTable()
         c.create_oval(700,50,1050,150,fill="white",outline="black",width=3,tag="table")
         text(875,100,f'{point}ポイント!','black',30)
-        if(50<mouseX<650 and 50<mouseY<650 and nowPress and pressed[(mouseX-50)//50][(mouseY-80)//50]!=2):
+        if(50<mouseX<650 and 50<mouseY<650 and nowPress and pressed[(mouseX-50)//50][(mouseY-50)//50]!=2):
             pressed[(mouseX-50)//50][(mouseY-50)//50]=1
         c.create_image(900,500,image=timer_oo,tag="table")
         text(800,500,f'{int(61-timer/10)}','red',50)
