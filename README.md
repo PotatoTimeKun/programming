@@ -7,17 +7,18 @@
 ここでは最新バージョンの説明を書きます。  
 Flutterで作ったwebページはflutter_webレポジトリにあります。  
 (ビルド前のプロジェクト自体はこのレポジトリにあります。)  
+  
 
 # C
-C言語のソースコードが入っています。
 
 ## heron.c
 **(関数化したものがnew_math.hに入っています。)**  
 ヘロンの公式によって三角形の面積を求めるプログラムです。  
-ヘロンの公式は、面積をSとして△ABCで次の式のようになります。  
-S=√(s(s-a)(s-b)(s-c))  
+ヘロンの公式は、面積をSとしてABCで次の式のようになります。  
+S=(s(s-a)(s-b)(s-c))  
 ただしs=(a+b+c)/2とする  
 doxygen追加済み
+
 
 ## tousasuretu.c
 **(関数化したものがnew_math.hに入っています。)**  
@@ -28,6 +29,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## touhisuretu.c
 **(関数化したものがnew_math.hに入っています。)**  
 標準入出力で等比数列を扱います。  
@@ -36,6 +38,7 @@ doxygen追加済み
 * int touhi_kou(int 初項,int 公比,int n) :第n項を求めます。  
 
 doxygen追加済み
+
 
 ## new_math.h
 以下に示す数学関係の関数が入っています。  
@@ -88,6 +91,7 @@ MATH_PIを使ってラジアンを60分法に変換します。
 
 doxygen追加済み  
 
+
 ## Cipher.h
 暗号を扱う関数が入っています。  
 全ての関数の引数にある**modeという引数は暗号化を行うか復号化を行うかを決めるための引数で、'm'で暗号化，'r'で復号化となります。**  
@@ -103,13 +107,14 @@ doxygen追加済み
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
 * void scytale(char mode,char\* sentence,int sen_size,char\* return_array)
 スキュタレー暗号を扱います。  
-5列に分けて暗号化・復号化を行います。  
+5列に分けて暗号化復号化を行います。  
 return_arrayは少し余裕をもって宣言しておいたほうがいいです。  
 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。  
 マクロSCYTALE_LENGTHを書き換えることによって最大文字数を変更できます。  
 SCYTALE_LENGTHは5の倍数にしてください。
 
 doxygen追加済み
+
 
 ## sort.h
 色々な整列アルゴリズムが入っています。  
@@ -124,6 +129,7 @@ doxygen追加済み
 * void marge(引数リスト):マージソート  
 
 doxygen追加済み
+
 
 ## physics.h
 物理関係の公式を使った関数が入っています。  
@@ -157,6 +163,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## acceleration.h
 加速度の単位を変換するための下の関数が入っています。  
 double accchange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -177,6 +184,7 @@ double accchange(double 変換前の値,int 変換前の単位,int 変換後の�
 
 doxygen追加済み
 
+
 ## area.h
 面積の単位を変換するための下の関数が入っています。  
 double areachange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -195,6 +203,7 @@ double areachange(double 変換前の値,int 変換前の単位,int 変換後の
  * 11番="yd2":平方ヤード(0.83612736m^2)
 
 doxygen追加済み
+
 
 ## length.h
 長さの単位を変換するための下の関数が入っています。  
@@ -216,6 +225,7 @@ double lengthchange(double 変換前の値,int 変換前の単位,int 変換後�
 
 doxygen追加済み
 
+
 ## mass.h
 質量の単位を変換するための下の関数が入っています。  
 double masschange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -234,6 +244,7 @@ double masschange(double 変換前の値,int 変換前の単位,int 変換後の
  * 11番="KIN":斤(600g)
 
 doxygen追加済み
+
 
 ## prefix.h
 接頭辞の単位を変換するための下の関数が入っています。  
@@ -263,6 +274,7 @@ double prefixchange(double 変換前の値,int 変換前の単位,int 変換後�
 
 doxygen追加済み
 
+
 ## speed.h
 速度の単位を変換するための下の関数が入っています。  
 double speedchange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -282,6 +294,7 @@ double speedchange(double 変換前の値,int 変換前の単位,int 変換後�
 
 doxygen追加済み
 
+
 ## temperature.h
 温度の単位を変換するための下の関数が入っています。  
 double temperaturechange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -292,6 +305,7 @@ double temperaturechange(double 変換前の値,int 変換前の単位,int 変�
  * 3番="Ra":ランキン度
 
 doxygen追加済み
+
 
 ## time_unit.h
 時間の単位を変換するための下の関数が入っています。  
@@ -323,6 +337,7 @@ double time_unitchange(double 変換前の値,int 変換前の単位,int 変換�
 
 doxygen追加済み
 
+
 ## volume.h
 体積の単位を変換するための下の関数が入っています。  
 double volumechange(double 変換前の値,int 変換前の単位,int 変換後の単位)  
@@ -333,7 +348,7 @@ double volumechange(double 変換前の値,int 変換前の単位,int 変換後�
  * 3番="OSAJI":大さじ(0.000015m^3)
  * 4番="c":カップ(0.00025m^3)
  * 5番="lambda":λ(0.000000001m^3)
- * 6番="acft":エーカー・フィート(1233.48183754752m^3)
+ * 6番="acft":エーカーフィート(1233.48183754752m^3)
  * 7番="drop":ドロップ(0.00000005m^3)
  * 8番="in3":立方インチ(0.000016387064m^3)
  * 9番="ft3":立方フィート(0.028316846592m^3)
@@ -346,6 +361,7 @@ double volumechange(double 変換前の値,int 変換前の単位,int 変換後�
  * 16番="SHAKU":勺(0.000018039m^3)
 
 doxygen追加済み
+
 
 ## unit_change.h
 以下のヘッダファイルの機能が全て入っています。  
@@ -361,6 +377,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## rnd.h
 疑似乱数を生成する関数が入っています。  
 以下の関数があります。  
@@ -368,6 +385,7 @@ doxygen追加済み
 合同法乱数を計算します。
 * void BBS(int p,int q,int a,int n,int *return_array)
 B.B.S.で疑似乱数を生成します。
+
 
 ## my_list.h
 構造体を使ったリストが入っています。  
@@ -407,6 +425,7 @@ int,long long,float,double,char
 * Char  
 0
 
+
 ## new_tabaicho.h
 リストによって、多倍長整数と多倍長整数間の四則演算を扱う関数が入ったヘッダファイルです。  
 多倍長整数はmkList関数によって返されたTabaicho*型の変数を使用します。  
@@ -417,30 +436,35 @@ cmp関数は引数の多倍長整数同士の大きさを比較します。
 多倍長整数のリストは、my_list.hのリストと同じように使えます。  
 (ただし、データ型は「」(つまりなし)として扱います。例外としてat関数は既にあったのでnumAt関数とします。)  
 
+
 ## tabaicho.c
 new_tabaicho.hを用いています。  
 キーボード入力で得た2つの多倍長整数から、四則演算を行って結果を返します。  
+
 
 ## marubatu.c
 コンピュータとマルバツゲームを行います。  
 コンピュータはその盤面で最適なマスを選んでxを付けます。  
 (マルバツゲームにおける必勝法は使用してないです。それは使ったもん勝ちなのでwww)  
 
+
 ## pote_jp.c
 日本語(2バイト文字もしくはASCII文字)をポテ語にします。  
+
 
 ## pote_jp_rev.c
 ポテ語を日本語に直します。  
 
 # Cpp
-C++のソースコードが入っています。
 
 ## keisan_int.cpp
 文字列として式を入力すると、値を多倍長整数として演算して結果を返します。  
 多倍長整数は、同じフォルダで公開してる**newint.hをインポートして使っています**。  
 doxygen追加済み
 
+
 ## ~newint.h~
+
 ## newint.hpp
 **多倍長整数**を扱うヘッダファイルです。  
 newintというクラス名で、インスタンスに対するpublicメンバ関数は以下のようになります。  
@@ -460,14 +484,17 @@ newintというクラス名で、インスタンスに対するpublicメンバ�
 
 doxygen追加済み  
 
+
 ## tabaicho.hpp
 newint.hppの多倍長整数を利用し、キーボード入力で受け取った値で四則演算等を行います。  
+
 
 ## newfloat.h
 多倍長整数の小数版です。これにも**newint.hをインポートして使用**しています。  
 除算に関しては小数点以下20桁以下程の小さい値には対応できないことがあります。  
 newint.hと同じメンバ関数、コンストラクタを持ちます。  
 doxygen追加済み
+
 
 ## sort.hpp
 色々な整列アルゴリズムが入っています。  
@@ -484,6 +511,7 @@ doxygen追加済み
 因みにほとんどの場合でクイックソートが一番速いです。  
 doxygen追加済み
 
+
 ## vij.hpp
 **(ヴィジュネル暗号を扱う関数はChipher.hppにもあります。)**  
 ヴィジュネル暗号を作成、解読する関数を扱います。  
@@ -493,19 +521,23 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## vijuneru_ango.cpp
-標準入出力でヴィジュネル暗号の作成・解読を行います。  
+標準入出力でヴィジュネル暗号の作成解読を行います。  
 **vij.hppをインポートして使っています。**  
 doxygen追加済み
 
+
 ## math_C_P.cpp
-標準入出力で数学の順列・組み合わせの計算を行います。  
+標準入出力で数学の順列組み合わせの計算を行います。  
 doxygen追加済み
+
 
 ## babanuki.cpp
 CPUとプレイヤーの1対1でのババ抜きです。  
 (CUIのゲームです。)  
 doxygen追加済み
+
 
 ## length.hpp
 長さの単位を変換するための**length::change関数**が入っています。  
@@ -527,6 +559,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## mass.hpp
 重さの単位を変換するための**mass::change関数**が入っています。  
 引数として(double 値, string 値の単位,string 変換後の単位)を渡し、戻り値はdoubleです。  
@@ -546,6 +579,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## temperature.hpp
 温度の単位を変換するための**temperature::change関数**が入っています。  
 引数として(double 値, string 値の単位,string 変換後の単位)を渡し、戻り値はdoubleです。  
@@ -556,6 +590,7 @@ doxygen追加済み
 * "Ra":ランキン度
 
 doxygen追加済み
+
 
 ## area.hpp
 面積の単位を変換するための**area::change関数**が入っています。  
@@ -576,6 +611,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## volume.hpp
 体積の単位を変換するための**volume::change関数**が入っています。  
 引数として(double 値, string 値の単位,string 変換後の単位)を渡し、戻り値はdoubleです。  
@@ -586,7 +622,7 @@ doxygen追加済み
 * "OSAJI":大さじ(0.000015m^3)  
 * "c":カップ(0.00025m^3)  
 * "lambda":λ(0.000000001m^3)  
-* "acft":エーカー・フィート(1233.48183754752m^3)  
+* "acft":エーカーフィート(1233.48183754752m^3)  
 * "drop":ドロップ(0.00000005m^3)  
 * "in3":立方インチ(0.000016387064m^3)  
 * "ft3":立方フィート(0.028316846592m^3)  
@@ -599,6 +635,7 @@ doxygen追加済み
 * "SHAKU":勺(0.000018039m^3)  
 
 doxygen追加済み
+
 
 ## prefix.hpp
 接頭辞を変換するための**prefix::change関数**が入っています。  
@@ -629,6 +666,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## speed.hpp
 速度の単位を変換するための**speed::change関数**が入っています。  
 引数として(double 値, string 値の単位,string 変換後の単位)を渡し、戻り値はdoubleです。  
@@ -647,6 +685,7 @@ doxygen追加済み
 * "c":真空中の光速度(299792458m/s)  
 
 doxygen追加済み
+
 
 ## acceleration.hpp
 加速度の単位を変換するための**acc::change関数**が入っています。  
@@ -667,6 +706,7 @@ doxygen追加済み
 * "g":標準重力加速度(9.80665m/s^2)  
 
 doxygen追加済み
+
 
 ## time_unit.hpp
 時間の単位を変換するための**time_unit::change関数**が入っています。  
@@ -698,6 +738,7 @@ doxygen追加済み
 
 doxygen追加済み
 
+
 ## unit_change.hpp
 以下のヘッダファイルを1つのファイルにまとめたものです。  
 * acceleration.hpp  
@@ -711,6 +752,7 @@ doxygen追加済み
 * volume.hpp  
 
 doxygen追加済み
+
 
 ## Cipher.hpp
 暗号を扱うCipherクラスが入っています。  
@@ -727,25 +769,29 @@ doxygen追加済み
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
 * string Cipher::scytale(string モード，string 平文or暗号文)
 スキュタレー暗号を扱います。  
-5列に分けて暗号化・復号化を行います。  
+5列に分けて暗号化復号化を行います。  
 言語の仕様上変数の値を配列の要素数の宣言に使用できなかったので、500個(499文字)までに対応させました。  
 マクロSCYTALE_LENGTHを書き換えることによって最大文字数を変更できます。  
 SCYTALE_LENGTHは5の倍数にしてください。
 
 doxygen追加済み
 
+
 ## soinsubunkai.hpp
 void prime_fact(int,\*int)関数が入っています。第一引数には素因数分解したい整数値，第二引数には素因数分解後の結果を入れるための**要素数が101以上の配列**を渡してください(101以上の要素数の配列を渡しても結果は変わりません)。  
 素因数を(重複する場合はそれぞれ別の値として格納し)最大100個まで先頭から格納します。  
-**配列の使用されてないインデックス100以下の要素は―1で埋められます。**  
+**配列の使用されてないインデックス100以下の要素は1で埋められます。**  
 doxygen追加済み
+
 
 ## 2line.cpp
 プログラムを2行にまとめてみました()  
 2行でなくなるのでdoxygenは追加しません。
 
+
 ## vijuneru_ojosama.cpp
 こちらのソースコードはお嬢様コーディングで書いたのですわ  
+
 
 ## BrainPotato_language.cpp
 **GUIで使用できるC#版が別で存在します。言語の仕様上の変更点があります。**  
@@ -771,7 +817,7 @@ Brainf\*ckより命令数を多くしました、potatotimekunとかpotatochips�
 
 BrainPotatoを実行する部分のクラスについて示します。  
 クラス名:BrainPotato
-|メンバ名|データ型(関数は返り値)|実行結果・表すもの|
+|メンバ名|データ型(関数は返り値)|実行結果表すもの|
 | --- | --- | --- |
 |BrainPotato()|-|コンストラクタ(何もしない)|
 |setCode(string)|void|ソースコードを設定する|
@@ -782,7 +828,6 @@ runCode関数では日本語に対応させるためにwstringを使っていま
 doxygen追加
 
 # Java
-Javaのソースコードが入っています。
 
 ## RPN.java
 RPNとは、逆ポーランド記法という計算式の記述方法です。  
@@ -791,13 +836,16 @@ String RPN.makeRPN関数は引数の文字列からRPNを作って文字列で�
 double RPN.RPN_cal関数はRPN(数値と四則演算記号のみの式を上の関数で変換した文字列)を計算し、結果を返します。  
 Javadoc追加済み
 
+
 ## minecraft_endyosai.java
 マインクラフトのエンド要塞の位置を特定するためのツールです。  
 Javadoc追加済み
 
+
 ## nullpo.java
 ネタです。  
 Javadoc追加済み
+
 
 ## Cipher.java
 暗号を扱うクラスが入っています。  
@@ -813,13 +861,15 @@ Javadoc追加済み
 5\*5の方式ではjとiの暗号が同じ結果になります。そのため、復号結果ではiはiのままjをiとします。
 * string Cipher.scytale(string モード，string 平文or暗号文)
 スキュタレー暗号を扱います。  
-5列に分けて暗号化・復号化を行います。  
+5列に分けて暗号化復号化を行います。  
 
 Javadoc追加済み
+
 
 ## unit_change.java
 Cpp\\**unit_change.hpp**のjava版です。  
 Javadoc追加済み
+
 
 ## calculate.java
 引数の文字列の計算式から四則演算を行う**double calculate.normal関数**と、それを一部の数学関数にも対応させた**double calculate.adavance関数**が入っています。  
@@ -828,9 +878,10 @@ advance関数の対応関数一覧
 * cos()  
 * tan()  
 * ** :累乗  
-* root() :√  
+* root() :  
 
 Javadoc追加済み
+
 
 ## MyKusoGame/mainfile(Android)
 AndroidStudioで開発したスマホアプリの主要なファイルが入っています。  
@@ -838,23 +889,25 @@ AndroidStudioで開発したスマホアプリの主要なファイルが入っ�
 MITライセンスなので、解析でも改変でも何でもしてください。  
 AndroidStudioで作り直す場合、パッケージ名等に気をつけてください。
 
+
 ## nullpo_game.java
 1/3の確率でぬるぽ(NullPointerException)が投げられます。  
 ぬるぽを引かずにどこまで続けられるかというゲームです。
+
 
 ## mod
 マイクラJava版用に作成したMODが入っています。  
 サブフォルダはマイクラのバージョン毎に分けています。  
 マイクラJava版とForge必須。  
 
-### mod/1.16.5/test
+
+## mod/1.16.5/test
 MOD開発初歩の試作的な感じで作ったチートMODです。  
 土から「新アイテム」が作られ、新アイテムから「新ブロック」が作れます。  
 新アイテムをかまどで燃やすと、一瞬でダイアモンド1つと10万経験値が得られます。  
 詳しくはフォルダ内のREADME.txtを見て下さい。  
 
 # Processing
-processingのソースコードが入っています。  
 
 ## beki.pde
 べき関数のグラフを表示します。  
@@ -864,66 +917,81 @@ processingのソースコードが入っています。
 (yがウィンドウサイズを超えるもしくは最大値(Infinity)に達するまで計算します。)  
 べき関数の対称性を利用して、xが負数値の場合の演算をなくしました。  
 
+
 ## game.pde
 学校の課題で作ったゲームです。  
+
 
 ## hansha.pde
 game.pdeのキャラが跳ね返るところだけを取り出したものです。
 
+
 ## po.pde
 3次関数が回転します。
 
+
 ## jan_code_make.pde
 キーボード入力した11桁の数をJANコード(バーコード)に変換して表示します。
+
 
 ## sin_wave.pde
 正弦波を2つ組み合わせた波を表示します。  
 実行中でも、各波の周期T,波長lambda,振幅Aを上の文字ボタンから変更できます。  
 Enterでボタンが行う加算の符号を変化させます。  
 
+
 ## loading.pde
 ロード画面みたいなものを表示します。
+
 
 ## ellipse_button.pde
 円形のボタンを表示します。  
 円の領域を示す不等式(x^2+y^2<=r^2)から、ボタンを押したかどうか判定します。  
 
+
 ## vector_clock.pde
 秒針、分針、時針を長さが等しいベクトルと見て、総和のベクトルを表示する時計です。  
 
+
 ## LCGs.pde
 線形合同法の疑似乱数の格子規則性がよく分かる図を計算で表示します。  
+
 
 ## test_3d.pde
 3Dグラフィックのテストです。  
 視点移動、回転ができます。  
 
+
 ## e_is_2.pde
-床・天井とボールの反発係数eが2になってます。  
+床天井とボールの反発係数eが2になってます。  
 重いのかよく落ちます。  
+
 
 ## triangle_center_py.pde
 ProcessingでPythonを使うテストです。  
 triリストが頂点を表す三角形を表示し、その重心を表示します。  
 
 # Python
-Pythonのソースコードが入っています。
 
 ## hitohude.py
 一筆書き迷路のゲームです。  
 
+
 ## oolong_game.py
 ウーロンを探せゲームです。ゲシュタルト崩壊しそうになります()  
+
 
 ## reverse_char.py
 標準入力で渡された文字列を、a-z,あ-んで右からx文字目の文字を左からx文字目の文字に変換して返します。
 
+
 ## souinsubunkai.py
-引数の値で素因数分解を行い素因数をリストで返す(昇順・重複あり)、prime_fact関数が入っています。  
+引数の値で素因数分解を行い素因数をリストで返す(昇順重複あり)、prime_fact関数が入っています。  
 他のプログラムでの使用もでき、メインで実行すると、引数をキーボード入力で受け取って結果を表示します。  
-引数が1以下・小数である場合、エラーとして\[-1\]が返されます。  
+引数が1以下小数である場合、エラーとして\[-1\]が返されます。  
 my_math.pyにも追加したので、インポートするならそっちでもいいと思います。  
 docstring追加済み
+
 
 ## sosu.py
 第一引数から第二引数-1までの素数をリストで返すprime_num関数が入っています。  
@@ -931,33 +999,41 @@ docstring追加済み
 my_math.pyにも追加したので、インポートするならそっちでもいいと思います。  
 docstring追加済み
 
+
 ## sosuchecker.py
 引数が素数かどうか判断し、素数ならTrue、素数でなければFalseを返すcheck_prime関数が入っています。  
 他のプログラムでの使用もでき、メインで実行すると、引数をキーボード入力で受け取って結果を表示します。  
 my_math.pyにも追加したので、インポートするならそっちでもいいと思います。  
 docstring追加済み
 
+
 ## sugoroku.py
 CUIでスゴロクができます。
+
 
 ## sugoroku_gui.py
 GUIでスゴロクができます。
 
+
 ## toppo.py
 文字列からtoppoを探し出します。
+
 
 ## vijuneru_ango_make.py
 第一引数に鍵、第二引数に平文を受け取りヴィジュネル暗号の暗号文を返すmake_vij関数が入っています。  
 他のプログラムからも使用でき、メインで実行しても使用できます。  
 docstring追加済み
 
+
 ## vijuneru_ango_read.py
 第一引数に鍵、第二引数に暗号文を受け取りヴィジュネル暗号の平文を返すread_vij関数が入っています。  
 他のプログラムからも使用でき、メインで実行しても使用できます。  
 docstring追加済み
 
+
 ## xor_char.py
 標準入力で渡された文字列を、それぞれの文字が16bitのUnicodeポイントとしてビット反転して文字列を表示します。
+
 
 ## unit_change.py
 Cppファイルの**unit_change.hpp**と同じ方式のクラス、関数を扱います。  
@@ -967,6 +1043,7 @@ import unit_change
 unit_change.クラス名.change(引数)  
 として扱うことになります。  
 docstring追加済み
+
 
 ## parity.py
 odd_parity関数では奇数、even_parity関数では偶数のパリティビットを文字列で返します。  
@@ -979,12 +1056,15 @@ docstring追加済み
 今までの全ての関数で引数のデータを数値で渡せるようにしました。  
 また，strかint以外の型の値を渡すと"-1"が返されるようにしました。
 
+
 ## rightleftupdown.py
-2次元配列を行・列で動かします。  
+2次元配列を行列で動かします。  
 動かして't','o','p','p','o'にしてみましょう(?)
+
 
 ## sortchar.py
 文字列をUnicodeポイントで昇順に整列し、文字列を出力します。
+
 
 ## sort.py
 色々な整列アルゴリズムが入っています。  
@@ -999,6 +1079,7 @@ docstring追加済み
 * marge(リスト):マージソート  
 
 docstring追加済み
+
 
 ## Cipher.py
 暗号を扱うクラスが入っています。  
@@ -1018,22 +1099,24 @@ docstring追加済み
 
 docstring追加済み
 
+
 ## ABsize.py
-A・B判のサイズを返すABsize関数が入っています。  
+AB判のサイズを返すABsize関数が入っています。  
 引数に("A"か"B",サイズ番号)を渡します。  
 指定したA判、B判のサイズをmmでリストを返します。  
 リストは縦長になる向きで\[縦,横\]となります。  
 docstring追加済み
 
+
 ## my_math.py
 C\\new_math.hのpython版です。
 docstring追加済み
 ベクトルクラスmathVectorを追加しました。  
-メソッド・演算子として以下があります。
-| メソッド・演算子 | 説明 |
+メソッド演算子として以下があります。
+| メソッド演算子 | 説明 |
 | --- | --- |
 | \_\_init\_\_(self,v_x=0,v_y=0) | コンストラクタ。x成分,y成分から新しいベクトルを作成する。 |
-| onGraph(self,x1,y1,x2,y2) | クラスメソッド。新しいベクトル→(x1,y1)(x2,y2)を作成する。 |
+| onGraph(self,x1,y1,x2,y2) | クラスメソッド。新しいベクトル(x1,y1)(x2,y2)を作成する。 |
 | size(self) | ベクトルの大きさを返す。 |
 | (ベクトル)+または-(ベクトル) | ベクトル同士の加減算 |
 | (ベクトル)*または/(intまたはfloat) | ベクトルと数値の乗除法 |
@@ -1062,7 +1145,7 @@ firstList (list): 要素が関数の第一引数となるリスト
 secondList (list): 要素が関数の代に引数となるリスト  
 strLen (int, デフォルト:10): 表の列の横幅(左寄せに使う)  
 * prime_fact(i: int) -> int  
-引数の値で素因数分解を行い、素因数をリストで返します。(昇順・重複あり)  
+引数の値で素因数分解を行い、素因数をリストで返します。(昇順重複あり)  
 引数が小数や1以下の場合\[-1\]が返されます。  
 soinsubunkai.pyの関数と同じです。  
 * yakubun(a, b)->str  
@@ -1074,43 +1157,52 @@ start\~end-1までの範囲で素数をリストで返します。
 * check_prime(i: int) -> bool  
 引数が素数かどうかを判断し、素数ならTrueを返します。  
 
+
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
 読み込んだファイルのパスを表示し、そのファイルを開けなかったり文字列として読めなかったときは"this file is not text"と表示します。
+
 
 ## count_time.py
 処理を実行してから完了するまでの時間を計測するデコレータfuncTimerが入っています。  
 計測結果は同ファイル内で宣言している変数countedに入っています。
 docstring追加済み
 
+
 ## mouseclicking.py
 指定した座標をマウスを動かすまでクリックし続けます。  
+
 
 ## pote_jp.py
 日本語(SHIFT-JIS文字)をポテ語にします。  
 
+
 ## pote_jp_rev.py
 ポテ語を日本語に直します。  
 
+
 # JavaScript
-JavaScriptとHTML・CSSが入っています。
 
 ## kakezann1000.html
-掛け算を1×1から1000×1000まで表示します。  
+掛け算を11から10001000まで表示します。  
 重すぎるのかスマホからだと表示できなかったりします。
+
 
 ## game1.html
 game1.cssとgame1.jsを使っています。  
 ボタンを押して数字を揃えるゲームです。
 JSDoc追加済み
 
+
 ## count_birthday.html
 count_birthday.css/jsを使っています。  
 誕生日の日数をカウントするページです。  
 JSDoc追加済み
 
+
 ## tweetdeck_gaming.js
 ChromeでTweetDeckを開いて、デベロッパーツールのコンソールでこのコードを実行するとTweetDeckがゲーミングします。
+
 
 ## serihu.js
 文字列を装飾する関数が入っています。  
@@ -1139,18 +1231,20 @@ kobun 任意、構文番号(デフォルトはランダム)
 |5|～です。なので、～です。|
 |6|～を見て下さい、～があります。|
 
+
 ## test
 JavaScriptの機能を試すためのファイルを入れてます。
 
 # Csharp
-C#のソースコードが入っています。
 
 ## babanuki.cs
 ババ抜きを扱うクラスbabanukiが入っています。  
 動作確認等はまだなので細かい説明は今のところなしです。
 
+
 ## unit_change.cs
 Cpp/unit_change.cppのC#版です。ただし単位の指定はC/unit_change.cの番号方式を使っています。
+
 
 ## BrainPotato.cs
 Cpp/BrainPotato.cppのC#版です。  
@@ -1175,31 +1269,32 @@ C#なのでポインタではなく、リストを使用しています。
 * h:ポインタの値を1/2倍する(\*ptr/=2)
 * s:キーボード入力を1文字受け取りポインタに格納する
 
+
 ## test
 テスト用のファイルです。
 
+
 # BrainPotato
-BrainPotatoのソースコード等が入っています。(BrainPotato言語についてはCSharp/BrainPotato.csを参照)  
-BrainPotatoのソースコードの拡張子名はbrptです。(テキストファイルとして認識できれば別の拡張子名のものを読み込んでも構いません)  
-既定の命令以外は無視されますが、処理を分かりやすくするために改行や空白、インデントなどをつけています。  
-また、プログラム中の数字は基本的にその時のリスト(仮想ポインタ)のインデックスです。  
-メモは命令に被らないように日本語や大文字の英字を使っています。  
 
 ## BrainPotato.exe
 CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです。
 
+
 ## helloworld.brpt
 "Hello World"を表示します。
 
+
 ## helloworld_ja.brpt
 "ハローワールド"を表示します。
+
 
 ## shift_minus1.brpt
 入力に  
 文字数(1文字)文字(文字数分)  
 を渡すと文字コードを-1して返します。  
-例:"3あいう"→"ぁぃぅ"  
-"4bcde"→"abcd"
+例:"3あいう""ぁぃぅ"  
+"4bcde""abcd"
+
 
 ## countwhile.brpt
 他のプログラムで使う関数的なプログラムとすることを想定したプログラムです。  
@@ -1207,40 +1302,48 @@ CSharp/BrainPotato.csをexe化したBrainPotatoを実行するためのGUIです
 入力でwhile文をループする回数を設定します。  
 回数(複数文字化)/文字列(回数分以上)  
 で文字列を出力します。  
-例:"12/abcdefghijkl"→"abedefghijkl"  
-"5/aaaaaaaa"→"aaaaa"
+例:"12/abcdefghijkl""abedefghijkl"  
+"5/aaaaaaaa""aaaaa"
+
 
 ## Unicode_print.brpt
 とにかくUnicode文字を順番に表示するだけのプログラムです。  
 理論上1～2^16のUnicode文字を出力しますが、そこまで来るとどこかの時点で文字が定められてないUnicodeポイントもでてくるような感じですね。 
 
+
 ## Unicode_from_to.brpt
 入力で  
 数字列A/数字列B/  
 と渡すと、数字列Aから数字列BまでのUnicode文字を出力します。  
-例:"12353/12362/"→"ぁあぃいぅうぇえぉお"
+例:"12353/12362/""ぁあぃいぅうぇえぉお"
+
 
 ## helloworld2.brpt
 helloworldをできるだけコードを短く書こうと思ったのですが、helloworld.brptと大した差はありませんでした。  
 原因はc命令の存在でそもそも短いのとBrainf*ck特有のwhile文の回数制限の構文の長さがあると思います
 
 # Dart
-Dart言語のプログラムが入っています。
 
 ## Cipher.dart
 他言語のCipherプログラムと同じです。  
 返り値はString型で返し、モードはString型で渡します。
 
+
 ## cipher
 Cipher.dartを利用したFlutterプロジェクトです。
+
 
 
 ## shogi
 (合同法)乱数による将棋です。  
 自分の駒ですら自分の意志で動かせない将棋なのでばりばり運ゲーです...w
 
+
 ## test.dart
 テスト用ファイルです。
 
+
 ## test
 flutterのテストです。
+
+
