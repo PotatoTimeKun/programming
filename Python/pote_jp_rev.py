@@ -5,3 +5,5 @@ def printJP(ptStr):
     else:
         ptBytes=ptInt.to_bytes(1,"big")
     print(ptBytes.decode("SHIFT_JIS"))
+while(True):
+    printJP(input())
