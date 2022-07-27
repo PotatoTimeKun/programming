@@ -100,6 +100,15 @@ int atInt(IntList *lis, int list_index)
 int delAtInt(IntList *lis, int list_index)
 {
     IntList *index_for = lis;
+    if(list_index==0){
+        index_for=lis->next;
+        if(index_for==NULL)return 0;
+        int ret=lis->value;
+        lis->value=index_for->value;
+        lis->next=index_for->next;
+        free(index_for);
+        return ret;
+    }
     for (int i = 0; i < list_index - 1; i++)
     {
         if (index_for == NULL)
@@ -246,6 +255,15 @@ long long atLong(LongList *lis, int list_index)
 long long delAtLong(LongList *lis, int list_index)
 {
     LongList *index_for = lis;
+    if(list_index==0){
+        index_for=lis->next;
+        if(index_for==NULL)return 0;
+        long long ret=lis->value;
+        lis->value=index_for->value;
+        lis->next=index_for->next;
+        free(index_for);
+        return ret;
+    }
     for (int i = 0; i < list_index - 1; i++)
     {
         if (index_for == NULL)
@@ -377,6 +395,15 @@ char atChar(CharList *lis, int list_index)
 char delAtChar(CharList *lis, int list_index)
 {
     CharList *index_for = lis;
+    if(list_index==0){
+        index_for=lis->next;
+        if(index_for==NULL)return 0;
+        char ret=lis->value;
+        lis->value=index_for->value;
+        lis->next=index_for->next;
+        free(index_for);
+        return ret;
+    }
     for (int i = 0; i < list_index - 1; i++)
     {
         if (index_for == NULL)
@@ -508,6 +535,15 @@ float atFloat(FloatList *lis, int list_index)
 float delAtFloat(FloatList *lis, int list_index)
 {
     FloatList *index_for = lis;
+    if(list_index==0){
+        index_for=lis->next;
+        if(index_for==NULL)return 0;
+        float ret=lis->value;
+        lis->value=index_for->value;
+        lis->next=index_for->next;
+        free(index_for);
+        return ret;
+    }
     for (int i = 0; i < list_index - 1; i++)
     {
         if (index_for == NULL)
@@ -639,6 +675,15 @@ double atDouble(DoubleList *lis, int list_index)
 double delAtDouble(DoubleList *lis, int list_index)
 {
     DoubleList *index_for = lis;
+    if(list_index==0){
+        index_for=lis->next;
+        if(index_for==NULL)return 0;
+        double ret=lis->value;
+        lis->value=index_for->value;
+        lis->next=index_for->next;
+        free(index_for);
+        return ret;
+    }
     for (int i = 0; i < list_index - 1; i++)
     {
         if (index_for == NULL)
