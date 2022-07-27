@@ -160,7 +160,7 @@ typedef struct mylist_1
  * @param lis 要素を入れるリスト
  * @param val 追加する値
  */
-void addLong(LongList *lis, int val)
+void addLong(LongList *lis, long long val)
 {
     LongList *newLong = (LongList *)malloc(sizeof(LongList));
     newLong->value = val;
@@ -179,7 +179,7 @@ void addLong(LongList *lis, int val)
  * @param val 追加する値
  * @param list_index 追加する要素のインデックス
  */
-void addAtLong(LongList *lis, int val, int list_index)
+void addAtLong(LongList *lis, long long val, int list_index)
 {
     LongList *newLong = (LongList *)malloc(sizeof(LongList));
     newLong->value = val;
@@ -256,7 +256,7 @@ long long delAtLong(LongList *lis, int list_index)
     if (index == NULL)
         return -9223372036854775807;
     index_for->next = index->next;
-    int ret = index->value;
+    long long ret = index->value;
     free(index);
     return ret;
 }
@@ -291,7 +291,7 @@ typedef struct mylist_2
  * @param lis 要素を入れるリスト
  * @param val 追加する値
  */
-void addChar(CharList *lis, int val)
+void addChar(CharList *lis, char val)
 {
     CharList *newChar = (CharList *)malloc(sizeof(CharList));
     newChar->value = val;
@@ -310,7 +310,7 @@ void addChar(CharList *lis, int val)
  * @param val 追加する値
  * @param list_index 追加する要素のインデックス
  */
-void addAtChar(CharList *lis, int val, int list_index)
+void addAtChar(CharList *lis, char val, int list_index)
 {
     CharList *newChar = (CharList *)malloc(sizeof(CharList));
     newChar->value = val;
@@ -333,7 +333,7 @@ void addAtChar(CharList *lis, int val, int list_index)
  * @param val 初期化の値(インデックス0に入る値)
  * @return リスト
  */
-CharList *mkCharList(int val)
+CharList *mkCharList(char val)
 {
     CharList *newChar = (CharList *)malloc(sizeof(CharList));
     newChar->value = val;
@@ -352,7 +352,7 @@ CharList *mkCharList(int val)
  * @param list_index 指定するインデックス
  * @return 指定した要素の値
  */
-int atChar(CharList *lis, int list_index)
+char atChar(CharList *lis, int list_index)
 {
     CharList *index = lis;
     for (int i = 0; i < list_index; i++)
@@ -374,7 +374,7 @@ int atChar(CharList *lis, int list_index)
  * @param list_index 指定するインデックス
  * @return 削除された要素の値
  */
-int delAtChar(CharList *lis, int list_index)
+char delAtChar(CharList *lis, int list_index)
 {
     CharList *index_for = lis;
     for (int i = 0; i < list_index - 1; i++)
@@ -387,7 +387,7 @@ int delAtChar(CharList *lis, int list_index)
     if (index == NULL)
         return 0;
     index_for->next = index->next;
-    int ret = index->value;
+    char ret = index->value;
     free(index);
     return ret;
 }
@@ -422,7 +422,7 @@ typedef struct mylist_3
  * @param lis 要素を入れるリスト
  * @param val 追加する値
  */
-void addFloat(FloatList *lis, int val)
+void addFloat(FloatList *lis, float val)
 {
     FloatList *newFloat = (FloatList *)malloc(sizeof(FloatList));
     newFloat->value = val;
@@ -441,7 +441,7 @@ void addFloat(FloatList *lis, int val)
  * @param val 追加する値
  * @param list_index 追加する要素のインデックス
  */
-void addAtFloat(FloatList *lis, int val, int list_index)
+void addAtFloat(FloatList *lis, float val, int list_index)
 {
     FloatList *newFloat = (FloatList *)malloc(sizeof(FloatList));
     newFloat->value = val;
@@ -464,7 +464,7 @@ void addAtFloat(FloatList *lis, int val, int list_index)
  * @param val 初期化の値(インデックス0に入る値)
  * @return リスト
  */
-FloatList *mkFloatList(int val)
+FloatList *mkFloatList(float val)
 {
     FloatList *newFloat = (FloatList *)malloc(sizeof(FloatList));
     newFloat->value = val;
@@ -518,7 +518,7 @@ float delAtFloat(FloatList *lis, int list_index)
     if (index == NULL)
         return -3.402823e+38;
     index_for->next = index->next;
-    int ret = index->value;
+    float ret = index->value;
     free(index);
     return ret;
 }
@@ -553,7 +553,7 @@ typedef struct mylist_4
  * @param lis 要素を入れるリスト
  * @param val 追加する値
  */
-void addDouble(DoubleList *lis, int val)
+void addDouble(DoubleList *lis, double val)
 {
     DoubleList *newDouble = (DoubleList *)malloc(sizeof(DoubleList));
     newDouble->value = val;
@@ -572,7 +572,7 @@ void addDouble(DoubleList *lis, int val)
  * @param val 追加する値
  * @param list_index 追加する要素のインデックス
  */
-void addAtDouble(DoubleList *lis, int val, int list_index)
+void addAtDouble(DoubleList *lis, double val, int list_index)
 {
     DoubleList *newDouble = (DoubleList *)malloc(sizeof(DoubleList));
     newDouble->value = val;
@@ -595,7 +595,7 @@ void addAtDouble(DoubleList *lis, int val, int list_index)
  * @param val 初期化の値(インデックス0に入る値)
  * @return リスト
  */
-DoubleList *mkDoubleList(int val)
+DoubleList *mkDoubleList(double val)
 {
     DoubleList *newDouble = (DoubleList *)malloc(sizeof(DoubleList));
     newDouble->value = val;
@@ -649,7 +649,7 @@ double delAtDouble(DoubleList *lis, int list_index)
     if (index == NULL)
         return -1.797693e+308;
     index_for->next = index->next;
-    int ret = index->value;
+    double ret = index->value;
     free(index);
     return ret;
 }
