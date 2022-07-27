@@ -455,6 +455,20 @@ new_tabaicho.hを用いています。
 ## pote_jp_rev.c
 ポテ語を日本語に直します。  
 
+## mystr.h
+string型のようなものを扱うヘッダファイルです。  
+以下の関数が入っています。  
+* string* makeStr()  
+空の文字列を作成します。  
+* void scanStr(string* str)  
+改行を受け取るまでキーボード入力を受け取ります。  
+* void printStr(string* str)  
+文字列を表示します。  
+* string* sumStr(string* str1,string* str2)  
+str1+str2  
+* void addStr(string* added,string* adding)  
+added+=adding  
+
 # Cpp
 
 ## keisan_int.cpp

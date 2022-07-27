@@ -1,3 +1,5 @@
+# このプログラムは自分用(READMEの操作用)です。
+# 操作ミスってもそのフォルダにあるREADMEが書き換わるだけなので触ってもらっても構いません()
 import json
 import codecs
 from unittest import case
@@ -19,13 +21,14 @@ def makeReadme(data):
     to=codecs.open("README.md","w","utf-8")
     print(text,file=to)
     to.close()
-commands=["make","new","getLang","getTitle","get","add","update","verUp","locVerUp","delete","delLang","back"]
+commands=["make","new","getLang","getTitle","get","getVer","add","update","verUp","locVerUp","delete","delLang","back"]
 descs=[
     "変更結果を適用します。",
     "新しい項目を作ります。",
     "言語の一覧を取得します。",
     "指定した言語の項目一覧を取得します。",
     "指定した項目の内容を取得します。",
+    "グローバル及びローカルバージョンを取得します。",
     "指定した項目に差分的に内容を追加します。",
     "指定した項目の内容を書き換えます。",
     "グローバルバージョンを1つ上げます。(ローカルバージョンは0になります。)",
@@ -84,6 +87,9 @@ while(True):
                 title=list(settings[lang].keys())[int(input())]
             print(settings[lang][title])
             print("")
+            continue
+        elif(command=="getVer"):
+            print(f"{settings['vertion']}.{settings['localVertion']}\n")
             continue
         elif(command=="add"):
             beforSet=dCopy(settings)
