@@ -113,4 +113,99 @@ void addStr(string* added,string* adding){
     free(ret);
 }
 
+/**
+ * @brief start~end-1の文字列を取得します。
+ * start,endの値が不適切な場合(文字列長を超える、負数値、大小が逆)、空の文字列を返します。
+ * 
+ * @param str string*
+ * @param start 最初のインデックス
+ * @param end 最後のインデックス-1
+ * @return string* 
+ */
+string* subStr(string* str,int start,int end){
+    string* ret=makeStr();
+    if(start>=str->len || end>str->len || start>=end)return ret;
+    for(int i=start;i<end;i++){
+        addChar(ret->chars,atChar(str->chars,i));
+    }
+    delAtChar(ret->chars,0);
+    addChar(ret->chars,'\0');
+    ret->len=end-start;
+    return ret;
+}
+
+/**
+ * @brief charによる文字列をstring*に変換します。
+ * 
+ * @param str char*(char[])
+ * @return string* 
+ */
+string* charsToStr(char* str){
+    string* ret=makeStr();
+    for(int i=0;str[i]!='\0';i++){
+        addChar(ret->chars,str[i]);
+        ret->len++;
+    }
+    delAtChar(ret->chars,0);
+    addChar(ret->chars,'\0');
+    return ret;
+}
+
+/**
+ * @brief stringによる文字列をchar*に変換します。
+ * 
+ * @param str string*
+ * @return char* 
+ */
+char* strToChars(string* str){
+    char* ret=(char*)malloc(sizeof(char));
+    for(int i=0;atChar(str->chars,i)!='\0';i++){
+        ret[i]=atChar(str->chars,i);
+        ret[i+1]='\0';
+    }
+    return ret;
+}
+
+/**
+ * @brief 指定したインデックスの文字を取得します。
+ * 
+ * @param str string*
+ * @param index インデックス
+ * @return char 
+ */
+char atStr(string* str,int index){
+    if(index<0 || index>=str->len)return '\0';
+    return atChar(str->chars,index);
+}
+
+/**
+ * @brief 指定したインデックスの文字を削除します。
+ * 
+ * @param str string*
+ * @param index インデックス
+ * @return char 
+ */
+char delAtStr(string* str,int index){
+    if(index<0 || index>=str->len)return '\0';
+    char ret=atChar(str->chars,index);
+    delAtChar(str->chars,index);
+    str->len--;
+    return ret;
+}
+
+/**
+ * @brief start~end-1の文字を削除します。
+ * 
+ * @param str string*
+ * @param start 最初のインデックス
+ * @param end 最後のインデックス-1
+ */
+void delStr(string* str,int start,int end){
+    if(start>=str->len || end>str->len || start>=end)return;
+    for(int i=end-1;i>=start;i--){
+        delAtChar(str->chars,i);
+    }
+    str->len-=end-start;
+}
+
 #endif
