@@ -468,6 +468,19 @@ string型のようなものを扱うヘッダファイルです。
 str1+str2  
 * void addStr(string* added,string* adding)  
 added+=adding  
+* string* subStr(string* str,int start,int end)  
+start\~end-1の文字列を取得します。  
+start,endの値が不適切な場合(文字列長を超える、負数値、大小が逆)、空の文字列を返します。  
+* string* charsToStr(char* str)  
+charによる文字列をstring*に変換します。  
+* char* strToChars(string* str)  
+stringによる文字列をchar*に変換します。  
+* char atStr(string* str,int index)  
+指定したインデックスの文字を取得します。  
+* char delAtStr(string* str,int index)  
+指定したインデックスの文字を削除します。  
+* void delStr(string* str,int start,int end)  
+start~end-1の文字を削除します。  
 
 # Cpp
 
