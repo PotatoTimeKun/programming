@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "my_list.h"
 #include <stdlib.h>
+#include <stdarg.h>
 
 /**
  * @brief リストで文字列を扱う構造体です。
@@ -206,6 +207,192 @@ void delStr(string* str,int start,int end){
         delAtChar(str->chars,i);
     }
     str->len-=end-start;
+}
+
+/**
+ * @brief ホワイトスペースがでるまでキーボード入力を受け取ります。
+ * scanfでいう%sです。
+ * 
+ * @param str string* 文字列を入れるリスト
+ */
+void scanStrPs(string* str){
+    delChar(str->chars);
+    str->chars=mkCharList('\0');
+    while(1){ // 最低でも1文字目が入るまでループ
+        char c;
+        scanf("%c",&c);
+        str->chars->value=c;
+        if(c>0x20)break;
+    }
+    int length=1;
+    while (1)
+    { // ホワイトスペースがでるまでループ
+        char c;
+        scanf("%c", &c);
+        if (c <= 0x20)
+            break;
+        addChar(str->chars, c);
+        length++;
+    }
+    str->len=length;
+    addChar(str->chars, '\0');
+}
+
+/**
+ * @brief string*をintに変換します。
+ * +,-,0~9以外の文字があっても動きますが、おすすめはしません。
+ * 
+ * @param str string*
+ * @return int 
+ */
+int strToInt(string* str){
+    int ret=0,start=0,sign=1;
+    if(atChar(str->chars,0)=='-'){
+        sign=-1;
+        start++;
+    }
+    if(atChar(str->chars,0)=='+')
+        start++;
+    for(int i=start;i<str->len;i++){
+        ret*=10;
+        ret+=atChar(str->chars,i)-'0';
+    }
+    return ret*sign;
+}
+
+/**
+ * @brief string*をlong longに変換します。
+ * +,-,0~9以外の文字があっても動きますが、おすすめはしません。
+ * 
+ * @param str string*
+ * @return long long
+ */
+long long strToLong(string* str){
+    long long ret=0,start=0,sign=1;
+    if(atChar(str->chars,0)=='-'){
+        sign=-1;
+        start++;
+    }
+    if(atChar(str->chars,0)=='+')
+        start++;
+    for(int i=start;i<str->len;i++){
+        ret*=10;
+        ret+=atChar(str->chars,i)-'0';
+    }
+    return ret*sign;
+}
+
+/**
+ * @brief string*をfloatに変換します。
+ * +,-,.,0~9以外の文字があっても動きますが、おすすめはしません。
+ * 
+ * @param str string*
+ * @return float 
+ */
+float strToFloat(string* str){
+    float ret=0,start=0,sign=1;
+    int point=str->len;
+    if(atChar(str->chars,0)=='-'){
+        sign=-1;
+        start++;
+    }
+    if(atChar(str->chars,0)=='+')
+        start++;
+    for(int i=start;i<str->len;i++){
+        ret*=10;
+        int c=atChar(str->chars,i);
+        if(c=='.'){
+            point=i;
+            ret/=10;
+            continue;
+        }
+        ret+=c-'0';
+    }
+    for(int i=0;i<str->len-point-1;i++)ret/=10;
+    return ret*sign;
+}
+
+/**
+ * @brief string*をdoubleに変換します。
+ * +,-,.,0~9以外の文字があっても動きますが、おすすめはしません。
+ * 
+ * @param str string*
+ * @return double
+ */
+double strToDouble(string* str){
+    double ret=0,start=0,sign=1;
+    int point=str->len;
+    if(atChar(str->chars,0)=='-'){
+        sign=-1;
+        start++;
+    }
+    if(atChar(str->chars,0)=='+')
+        start++;
+    for(int i=start;i<str->len;i++){
+        ret*=10;
+        int c=atChar(str->chars,i);
+        if(c=='.'){
+            point=i;
+            ret/=10;
+            continue;
+        }
+        ret+=c-'0';
+    }
+    for(int i=0;i<str->len-point-1;i++)ret/=10;
+    return ret*sign;
+}
+
+/**
+ * @brief 文字列中で一致する場所を探し、最初のインデックスを返します。
+ * 
+ * @param str string* 探される文字列
+ * @param searched string* 探す文字列
+ * @return int 
+ */
+int indexStr(string* str,string* searched){
+    if(searched->len>str->len)return -1;
+    for(int i=0;i<str->len-searched->len+1;i++){
+        int matched=1;
+        for(int j=0;j<searched->len;j++){
+            if(atChar(str->chars,i+j)!=atChar(searched->chars,j)){
+                matched=0;
+                break;
+            }
+        }
+        if(matched)return i;
+    }
+    return -1;
+}
+
+/**
+ * @brief 文字列中で一致する場所を探し、最初のインデックスを返します。
+ * 
+ * @param str string* 探される文字列
+ * @param searched char* 探す文字列
+ * @return int 
+ */
+int indexStrC(string* str,char* searched){
+    return indexStr(str,charsToStr(searched));
+}
+
+/**
+ * @brief printf関数のように、%Sをstringの値に書き換えて表示します。
+ * 
+ * @param arg char*
+ * @param ... string*
+ */
+void printfStr(char *arg,...){
+    va_list lis;
+    va_start(lis,arg);
+    string* str=charsToStr(arg);
+    string* per=charsToStr("%S");
+    while(indexStr(str,per)!=-1){
+        printStr(subStr(str,0,indexStr(str,per)));
+        printStr(va_arg(lis,string*));
+        str=subStr(str,indexStr(str,per)+2,str->len);
+    }
+    printStr(str);
+    va_end(lis);
 }
 
 #endif
