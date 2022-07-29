@@ -481,6 +481,24 @@ stringによる文字列をchar*に変換します。
 指定したインデックスの文字を削除します。  
 * void delStr(string* str,int start,int end)  
 start~end-1の文字を削除します。  
+* void scanStrPs(string* str)  
+ホワイトスペースがでるまでキーボード入力を受け取ります。  
+scanfでいう%sです。  
+* int strToInt(string* str)  
+string*をintに変換します。  
++,-,0~9以外の文字があっても動きますが、おすすめはしません。  
+* long long strToLong(string* str)  
+long longに変換します。  
+* float strToFloat(string* str)  
+floatに変換します。  
+* double strToDouble(string* str)  
+doubleに変換します。  
+* int indexStr(string* str,string* searched)  
+文字列中で一致する場所を探し、最初のインデックスを返します。  
+* int indexStrC(string* str,char* searched)  
+indexStr関数と動きはほぼ同じです。  
+* void printfStr(char *arg,...)  
+printf関数のように、%Sをstringの値に書き換えて表示します。  
 
 # Cpp
 
