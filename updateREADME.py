@@ -2,7 +2,6 @@
 # 操作ミスってもそのフォルダにあるREADMEが書き換わるだけなので触ってもらっても構いません()
 import json
 import codecs
-from unittest import case
 from copy import deepcopy as dCopy
 file=open("settings.json","r")
 settings=json.load(file)
