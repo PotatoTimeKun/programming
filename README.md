@@ -1228,6 +1228,14 @@ docstring追加済み
 ポテ語を日本語に直します。  
 
 
+## change_str.py
+pote_jp.pyとpote_jp_rev.pyの置き換える文字(ポとテ)を自由に変更できるようにしました。  
+以下の関数が入っています。  
+* printJPTo(jpStr,p,t)  
+printJPPoteより  
+* printToJP(ptStr,p,t)  
+printJPより  
+
 # JavaScript
 
 ## kakezann1000.html
