@@ -20,7 +20,7 @@ def makeReadme(data):
     to=codecs.open("README.md","w","utf-8")
     print(text,file=to)
     to.close()
-commands=["make","new","getLang","getTitle","get","getVer","add","update","verUp","locVerUp","delete","delLang","back"]
+commands=["make","new","getLang","getTitle","get","getVer","add","update","verUp","locVerUp","delete","delLang","updFirst","getFirst","back"]
 descs=[
     "変更結果を適用します。",
     "新しい項目を作ります。",
@@ -34,6 +34,8 @@ descs=[
     "ローカルバージョンを1つ上げます。",
     "指定した項目を削除します。",
     "指定した言語を削除します。",
+    "最初の文を変更します。",
+    "最初の文を取得します。",
     "1つ前の状態に戻ります(2回実行しても2つ前には戻れません)"
 ]
 while(True):
@@ -158,6 +160,19 @@ while(True):
             lang=input()
             settings["language"].remove(lang)
             del settings[lang]
+        elif(command=="updFirst"):
+            beforSet=dCopy(settings)
+            print(f"now description:\n{settings['first']}\n")
+            print("new description(write '.end' to finish):")
+            desc=""
+            while(True):
+                text=input()
+                if(text==".end"):break
+                desc+=text+"  \n"
+            settings["first"]=desc
+        elif(command=="getFirst"):
+            print(f"{settings['first']}\n")
+            continue
         elif(command=="back"):
             settings=dCopy(beforSet)
         elif(command=="help"):
