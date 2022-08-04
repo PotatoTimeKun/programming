@@ -500,6 +500,9 @@ indexStr関数と動きはほぼ同じです。
 * void printfStr(char *arg,...)  
 printf関数のように、%Sをstringの値に書き換えて表示します。  
 
+## testStr.c
+mystr.hを試すためのプログラムです。  
+
 # Cpp
 
 ## keisan_int.cpp
