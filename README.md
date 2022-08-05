@@ -499,6 +499,11 @@ doubleに変換します。
 indexStr関数と動きはほぼ同じです。  
 * void printfStr(char *arg,...)  
 printf関数のように、%Sをstringの値に書き換えて表示します。  
+* void addStrC(string* added,char adding)  
+文字列の最後に文字を追加します。  
+* void printfs(char *arg,...)  
+printf関数の形式で文字列を表示します。  
+string*型は%Sで変換可能です。  
 
 ## testStr.c
 mystr.hを試すためのプログラムです。  

@@ -115,6 +115,19 @@ void addStr(string* added,string* adding){
 }
 
 /**
+ * @brief 文字列の最後に文字を追加します。
+ * 
+ * @param added 
+ * @param adding 
+ */
+void addStrC(string* added,char adding){
+    addChar(added->chars,adding);
+    delAtChar(added->chars,added->len);
+    addChar(added->chars,'\0');
+    added->len++;
+}
+
+/**
  * @brief start~end-1の文字列を取得します。
  * start,endの値が不適切な場合(文字列長を超える、負数値、大小が逆)、空の文字列を返します。
  * 
@@ -392,6 +405,89 @@ void printfStr(char *arg,...){
         str=subStr(str,indexStr(str,per)+2,str->len);
     }
     printStr(str);
+    va_end(lis);
+}
+
+/**
+ * @brief printf関数の形式で文字列を表示します。
+ * string*型は%Sで変換可能です。
+ * 
+ * @param arg char*
+ * @param ... 各変換指定子に対応した型
+ */
+void printfs(char *arg,...){
+    va_list lis;
+    va_start(lis,arg);
+    string* str=charsToStr(arg);
+    string* per;
+    while(1){
+        per=makeStr();
+        while(atStr(str,0)!='%'){
+            if(str->len==0)break;
+            printf("%c",delAtStr(str,0));
+        }
+        if(str->len==0)break;
+            addStrC(per,delAtStr(str,0));
+            while(atStr(str,0)<'A')addStrC(per,delAtStr(str,0));
+            char c=delAtStr(str,0);
+            addStrC(per,c);
+            if(c!='l'){
+                switch (c)
+                {
+                case 'c':
+                    printf(strToChars(per),va_arg(lis,int));
+                    break;
+                case 's':
+                    printf(strToChars(per),va_arg(lis,char*));
+                    break;
+                case 'd':
+                    printf(strToChars(per),va_arg(lis,int));
+                    break;
+                case 'u':
+                    printf(strToChars(per),va_arg(lis,int));
+                    break;
+                case 'o':
+                    printf(strToChars(per),va_arg(lis,int));
+                    break;
+                case 'x':
+                    printf(strToChars(per),va_arg(lis,int));
+                    break;
+                case 'f':
+                    printf(strToChars(per),va_arg(lis,double));
+                    break;
+                case 'e':
+                    printf(strToChars(per),va_arg(lis,double));
+                    break;
+                case 'g':
+                    printf(strToChars(per),va_arg(lis,double));
+                    break;
+                case 'S':
+                    printStr(va_arg(lis,string*));
+                    break;
+                }
+            }else{
+                c=delAtStr(str,0);
+                addStrC(per,c);
+                switch (c)
+                {
+                case 'd':
+                    printf(strToChars(per),va_arg(lis,long));
+                    break;
+                case 'u':
+                    printf(strToChars(per),va_arg(lis,long));
+                    break;
+                case 'o':
+                    printf(strToChars(per),va_arg(lis,long));
+                    break;
+                case 'x':
+                    printf(strToChars(per),va_arg(lis,long));
+                    break;
+                case 'f':
+                    printf(strToChars(per),va_arg(lis,double));
+                    break;
+                }
+            }
+    }
     va_end(lis);
 }
 
