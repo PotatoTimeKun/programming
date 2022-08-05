@@ -61,4 +61,5 @@ int main(){
     scanStr(str7);
     printf("g's index(abc):%d",indexStr(str7,charsToStr("abc")));
     printfStr("\n\"%f and %g\",f,g=%S and %S",str6,str7);
+    printfs("\nf=%S,g=%S,len(f)=%d,len(g)=%f",str6,str7,str6->len,str7->len);
 }
