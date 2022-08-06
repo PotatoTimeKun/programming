@@ -15,26 +15,29 @@ void draw(){}
 
 // グラフを表示する関数、引数は指数
 void show_graph(int x_pow){
-  if(x_pow==power)show_graph(x_pow-1); // 微分を表示(1度だけ)
-  else{ // 表示するのが微分のグラフでないとき
+  if(x_pow==power){
     background(0);
     stroke(255);
-    line(0, y_window/2, x_window, y_window/2);
-    line(x_window/2, 0, x_window/2, y_window); // x,y軸を表示
+    line(0, y_window/2, x_window, y_window/2); // x軸
+    line(x_window/2, 0, x_window/2, y_window); // y軸
+    show_graph(x_pow-1); // 微分を表示(1度だけ)
+    show_graph(x_pow+1); // 積分を表示(1度だけ)
   }
   x_old = 0; //座標は0で初期化しておく
   y_old = 0;
   x=0;
   y=0;
   stroke(255,0,0);
-  if(x_pow!=power)stroke(0,0,255); // 微分を表示するときは線を青く
+  if(x_pow==power-1)stroke(0,0,255); // 微分を表示するときは線を青く
+  if(x_pow==power+1)stroke(0,255,0); // 積分を表示するときは線を緑に
   if(x_pow==0){ // 0乗のグラフは直線を表示して終了
-    line(0, y_window/2, x_window, y_window/2);
+    line(0, y_window/2-1/y_wide, x_window, y_window/2-1/y_wide);
     return;
   }
-  while(y<y_window*y_wide && y!=Float.valueOf("Infinity")){ // yが表示域を超える かつ yの値が∞でないとき
+  while(y<y_window*y_wide && y!=Float.valueOf("Infinity")){ // yが表示域を超えない かつ yの値が∞でないとき
     y=pow(x,x_pow); // yを計算
-    if(x_pow!=power)y*=power; // 微分のときは乗数をかける
+    if(x_pow==power-1)y*=power; // 微分のときは乗数をかける
+    if(x_pow==power+1)y/=power+1; // 積分のときは乗数+1で割る
     line(x/x_wide+x_window/2, -y/y_wide+y_window/2, x_old/x_wide+x_window/2, -y_old/y_wide+y_window/2); // 前回の点から計算した点を線でつなぐ
     if(x_pow%2==0)line(-x/x_wide+x_window/2, -y/y_wide+y_window/2, -x_old/x_wide+x_window/2, -y_old/y_wide+y_window/2); // 乗数が偶数なら、負方向はxを反転して表示
     else line(-x/x_wide+x_window/2, y/y_wide+y_window/2, -x_old/x_wide+x_window/2, y_old/y_wide+y_window/2); // 乗数が奇数なら、負方向はx,yを反転して表示
@@ -86,10 +89,10 @@ void mousePressed(){
           y_wide/=2;
           break;
         case 4:
-          if(x<99)power++;
+          power++;
           break;
         case 5:
-          if(x>1)power--;
+          if(power>1)power--;
           break;
       }
     }
