@@ -425,6 +425,9 @@ int,long long,float,double,char
 * Char  
 0
 
+以下の関数を追加しました。  
+* void set[データ型]([データ型]List \*lis, [データ型] val, int list_index)  
+指定したインデックスの要素を更新します。  
 
 ## new_tabaicho.h
 リストによって、多倍長整数と多倍長整数間の四則演算を扱う関数が入ったヘッダファイルです。  
@@ -504,6 +507,12 @@ printf関数のように、%Sをstringの値に書き換えて表示します。
 * void printfs(char *arg,...)  
 printf関数の形式で文字列を表示します。  
 string*型は%Sで変換可能です。  
+* void addAtStr(string\* added,string\* adding,int index)  
+指定したインデックスに文字列を挿入します。  
+* void reverseStr(string\* str)  
+渡された文字列を逆順にします。  
+* void setStr(string\* str,char value,int index)  
+指定したインデックスの値を書き換えます。  
 
 ## testStr.c
 mystr.hを試すためのプログラムです。  
