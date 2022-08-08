@@ -121,6 +121,21 @@ void addStr(string *added, string *adding)
 }
 
 /**
+ * @brief 指定したインデックスに文字列を挿入します。
+ * added(0~index-1)+adding+added(index~adding->len)
+ *
+ * @param added string*
+ * @param adding string*
+ * @param index int
+*/
+void addAtStr(string* added,string* adding,int index){
+    for(int i=0;i<adding->len;i++){
+        addAtChar(added->chars,atChar(adding->chars,i),index++);
+        added->len++;
+    }
+}
+
+/**
  * @brief 文字列の最後に文字を追加します。
  *
  * @param added
@@ -547,6 +562,32 @@ void printfs(char *arg, ...)
         }
     }
     va_end(lis);
+}
+
+/**
+ * @brief 渡された文字列を逆順にします。
+ *
+ * @param str string*
+ */
+void reverseStr(string* str){
+    for(int i=0;i<(str->len)/2;i++){
+        char swap=atChar(str->chars,i);
+        setChar(str->chars,atChar(str->chars,str->len-1-i),i);
+        setChar(str->chars,swap,str->len-1-i);
+    }
+}
+
+/**
+ * @brief 指定したインデックスの値を書き換えます。
+ *
+ * @param str string*
+ * @param value char
+ * @param index int
+ */
+void setStr(string* str,char value,int index){
+    if(index>=0 && index<str->len){
+        setChar(str->chars,value,index);
+    }
 }
 
 #endif
