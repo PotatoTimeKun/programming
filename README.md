@@ -513,6 +513,9 @@ string*型は%Sで変換可能です。
 渡された文字列を逆順にします。  
 * void setStr(string\* str,char value,int index)  
 指定したインデックスの値を書き換えます。  
+* string\* copyStr(string* str)  
+文字列の中身の値をコピーした文字列を作成します。  
+コピー元とコピー先のアドレスは干渉しません。  
 
 ## testStr.c
 mystr.hを試すためのプログラムです。  

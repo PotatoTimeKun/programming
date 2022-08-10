@@ -590,4 +590,22 @@ void setStr(string* str,char value,int index){
     }
 }
 
+/**
+ * @brief 文字列の中身の値をコピーした文字列を作成します。
+ * コピー元とコピー先のアドレスは干渉しません。
+ * 
+ * @param str string*
+ * @return string* 
+ */
+string* copyStr(string* str){
+    string* ret=makeStr();
+    for(int i=0;i<str->len;i++){
+        addChar(ret->chars,atChar(str->len,i));
+    }
+    delAtChar(ret->chars,0);
+    addChar(ret->chars,'\0');
+    ret->len=str->len;
+    return ret;
+}
+
 #endif
