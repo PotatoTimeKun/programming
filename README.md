@@ -1257,6 +1257,10 @@ printJPPoteより
 * printToJP(ptStr,p,t)  
 printJPより  
 
+## potatoRPG
+「ポテトしかおらんRPG」のソースコード等です。  
+勝手にいじりまくっていいですが、一応他のところから画像素材借りてるのでREADMEは読んでおいてください。  
+
 # JavaScript
 
 ## kakezann1000.html
