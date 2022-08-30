@@ -1042,6 +1042,9 @@ Enterでボタンが行う加算の符号を変化させます。
 ProcessingでPythonを使うテストです。  
 triリストが頂点を表す三角形を表示し、その重心を表示します。  
 
+## logi_bunrui.pde
+ロジスティクス回帰(x=(1,x1,x1**2,x2))で分類を行います。  
+
 # Python
 
 ## hitohude.py
