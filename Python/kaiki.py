@@ -8,7 +8,7 @@ train_x=train_x.tolist()
 train_y=train_y.tolist()
 test_x=[]
 test_y=[]
-print("最急降下法\nデータはdata.csvより\n次数を入力:")
+print("最急降下法\nデータはdata.csvより(z-score正規化を通す)\n次数を入力:")
 jisu=int(input())
 for i in range(int(len(train_x)*3/10)):
      j=randint(0,len(train_x)-1)
@@ -25,15 +25,20 @@ sigma=train_x.std()
 standardize=lambda x:(x-mu)/sigma
 train_z=standardize(train_x)
 t=np.array([1]*(jisu+1))
+t2=np.array([1]*(jisu+1))
 f=lambda x:np.dot(np.array([x**i for i in range(jisu+1)]).T,t)
+f2=lambda x:np.dot(np.array([x**i for i in range(jisu+1)]).T,t2)
 E=lambda:0.5*np.sum((train_y-f(train_z))**2)
 diff=1
 error=E()
 print("学習率を入力:")
 ETA=float(input())
-print("青:学習用データ,オレンジ:テスト用データ,緑:得られた関数")
-while diff>0.0001:
-    t=t-ETA*np.dot(f(train_z)-train_y,np.array([train_z**i for i in range(jisu+1)]).T)
+print("正則化の定数を入力")
+LAMBDA=float(input())
+print("青:学習用データ,オレンジ:テスト用データ,緑:得られた関数,赤:正則化なしで得られた関数")
+while diff>0.000001:
+    t=t-ETA*(np.dot(f(train_z)-train_y,np.array([train_z**i for i in range(jisu+1)]).T)+LAMBDA*np.hstack([0,t[1:]]))
+    t2=t2-ETA*(np.dot(f(train_z)-train_y,np.array([train_z**i for i in range(jisu+1)]).T))
     currentError=E()
     diff=error-currentError
     error=currentError
@@ -41,6 +46,8 @@ x=np.linspace(3,-3,100)
 plt.plot(train_z,train_y,'o')
 plt.plot(standardize(test_x),test_y,'o')
 plt.plot(x,f(x))
+plt.plot(x,f2(x))
+print("\n正則化あり")
 MSE=lambda x,y: np.sum((y-f(x))**2)/x.shape[0]
 print(f"パラメータΘ={t.tolist()}")
 print(f"平均2乗誤差(MSE)={round(MSE(standardize(test_x),test_y),2)}")
@@ -49,4 +56,13 @@ MAE=lambda x,y:np.sum(np.abs(y-f(x)))/x.shape[0]
 MAPE=lambda x,y:np.sum(np.abs((f(x)-y)/y))*100/x.shape[0]
 print(f"平均絶対値誤差(MAE)={round(MAE(standardize(test_x),test_y),2)}")
 print(f"平均絶対値誤差率(MAPE)={round(MAPE(standardize(test_x),test_y),2)}%")
+print("\n正則化なし")
+MSE2=lambda x,y: np.sum((y-f2(x))**2)/x.shape[0]
+print(f"パラメータΘ={t2.tolist()}")
+print(f"平均2乗誤差(MSE)={round(MSE2(standardize(test_x),test_y),2)}")
+print(f"2乗平均平方根誤差(RMSE)={round(MSE2(standardize(test_x),test_y)**0.5,2)}")
+MAE2=lambda x,y:np.sum(np.abs(y-f2(x)))/x.shape[0]
+MAPE2=lambda x,y:np.sum(np.abs((f2(x)-y)/y))*100/x.shape[0]
+print(f"平均絶対値誤差(MAE)={round(MAE2(standardize(test_x),test_y),2)}")
+print(f"平均絶対値誤差率(MAPE)={round(MAPE2(standardize(test_x),test_y),2)}%")
 plt.show()
