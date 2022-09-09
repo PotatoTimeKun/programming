@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 #include <regex>
-#include "newint.h"
+#include "newint.hpp"
 using namespace std;
 string kei(string);
 main(){
