@@ -15,7 +15,6 @@
  */
 #ifndef SORT
 #define SORT
-#include <vector>
 #include <algorithm>
 #include <iostream>
 using namespace std;
@@ -130,6 +129,38 @@ void quick(int array[],int array_size){
     a.array_size=array_size;
     a.sort(0,a.array_size-1);
 }
+
+/**
+ * @brief 最小値を根とするヒープを作成します。
+ * 
+ * @param array 目的の配列
+ * @param array_size arrayの要素数
+ */
+void toHeap(int array[],int array_size){
+    int howDeep=0;
+    for(int volume=array_size;volume>0;volume>>=1)howDeep++;
+    for(int i=howDeep-1;i>0;i--){
+        int maxIndex=(1<<(i+1))-2;
+        if(maxIndex>array_size-1)maxIndex=array_size-1;
+        for(int j=0;j<(1<<i)-1;j++){
+            if(2*j+1<=maxIndex){
+                if(array[2*j+1]<array[j]){
+                    int swap=array[2*j+1];
+                    array[2*j+1]=array[j];
+                    array[j]=swap;
+                }
+            }else break;
+            if(2*j+2<=maxIndex){
+                if(array[2*j+2]<array[j]){
+                    int swap=array[2*j+2];
+                    array[2*j+2]=array[j];
+                    array[j]=swap;
+                }
+            }else break;
+        }
+    }
+}
+
 /**
  * @brief ヒープソートで昇順に整列を行います。
  * 
@@ -137,11 +168,12 @@ void quick(int array[],int array_size){
  * @param array_size arrayの要素数
  */
 void heap(int array[],int array_size){
-    vector<int> v(&array[0],&array[array_size]);
-    make_heap(v.begin(),v.end());
-    sort_heap(v.begin(),v.end());
-    copy(v.begin(),v.end(),array);
+    for(int i=0;i<array_size-1;i++){
+        toHeap(array,array_size-i);
+        array++;
+    }
 }
+
 /**
  * @brief マージソートで昇順に整列を行います。
  * 
@@ -153,7 +185,8 @@ void marge(int array[],int array_size){
         int *array,array_size;
         void marge(int st,int mid,int en){
             int sn=mid-st,enn=en-mid;
-            int S[sn+1],E[enn+1];
+            int* S=new int[sn+1];
+            int* E=new int[enn+1];
             copy(&array[st],&array[mid+1],S);
             copy(&array[mid],&array[en+1],E);
             S[sn]=INT_MAX;

@@ -10,7 +10,7 @@
 #include <string>
 #include <algorithm>
 #include <regex>
-#include "newint.h"
+#include "newint.hpp"
 using namespace std;
 /**
  * @brief 多倍長小数?を扱います。
@@ -332,7 +332,7 @@ newfloat newfloat::operator*(newfloat a)
     a.set(a.str());
     newfloat ret, b(this);
     int bs = b.val.size()+b.under.size(), as = a.val.size()+a.under.size(), v = 0;
-    int n[as + bs];
+    int* n=new int[as + bs];
     for (int i = 0; i < as + bs; i++)
     {
         n[i] = 0;
