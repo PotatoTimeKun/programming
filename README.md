@@ -520,6 +520,10 @@ string*型は%Sで変換可能です。
 ## testStr.c
 mystr.hを試すためのプログラムです。  
 
+## rectangle.h
+三角関数と逆三角関数が入っています。基本的にテイラー展開して求めています。  
+関数はmySin(x),myCos(x),myTan(x),arcsin(x),arccos(x),arctan(x)です。  
+
 # Cpp
 
 ## keisan_int.cpp
@@ -1236,6 +1240,8 @@ start\~end-1までの範囲で素数をリストで返します。
 * check_prime(i: int) -> bool  
 引数が素数かどうかを判断し、素数ならTrueを返します。  
 
+* asin(x),acos(x),atan(x)  
+逆三角関数です。100桁計算してstrで返します。  
 
 ## countfilechar.py
 入力したパスのフォルダ内にある全てのファイルを文字列として読んで文字数を表示します。  
