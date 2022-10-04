@@ -1,5 +1,6 @@
 import math as m
 import decimal as d
+from decimal import Decimal as deci
 
 
 def heron(a: float, b: float, c: float) -> float:
@@ -41,7 +42,7 @@ def GP_sum(a1: float, r: float, n: int) -> float:
     r:公比
     n:第n項
     """
-    if(r == 1.0):
+    if (r == 1.0):
         return a1*n
     return a1*(1-r**n/(1-r))
 
@@ -121,10 +122,10 @@ def tri_cent(x1: float, y1: float, x2: float, y2: float, x3: float, y3: float) -
 
 def focus(a: float, b: float) -> list:
     """楕円(x^2/a^2 + y^2/b^2 = 1)の2焦点を[x1,y1,x2,y2]のリストで返します。"""
-    if(a > b):
+    if (a > b):
         c = m.sqrt(a * a - b * b)
         return [c, 0, -c, 0]
-    if(a < b):
+    if (a < b):
         c = m.sqrt(b * b - a * a)
         return [0, c, 0, -c]
     return [0, 0, 0, 0]
@@ -135,10 +136,10 @@ def hyperbola_focus(a: float, b: float, n: int) -> list:
     双曲線(x^2/a^2 + y^2/b^2 = n)の焦点を[x1,y1,x2,y2]のリストで返します。
     n:1か-1
     """
-    if(int(n) == 1):
+    if (int(n) == 1):
         c = m.sqrt(a * a + b * b)
         return [c, 0, -c, 0]
-    if(int(n) == -1):
+    if (int(n) == -1):
         c = m.sqrt(a * a + b * b)
         return [0, c, 0, -c]
     return [0, 0, 0, 0]
@@ -220,11 +221,11 @@ class mathVector:
         else:
             v = (v_x**2+v_y**2)**0.5
             self.ang = m.asin(v_y/v)
-            if(v_x < 0):
+            if (v_x < 0):
                 self.ang = m.pi-self.ang
 
     @classmethod
-    def onGraph(self,x1: float, y1: float, x2: float, y2: float):
+    def onGraph(self, x1: float, y1: float, x2: float, y2: float):
         """
         mathVectorを返します。
         (x1,y1):ベクトルの始点
@@ -242,49 +243,49 @@ class mathVector:
         """
         自身と引数のベクトルとの内積を返します。
         """
-        if(isinstance(otherVector, self.__class__)):
+        if (isinstance(otherVector, self.__class__)):
             return self.v1*otherVector.v1+self.v2*otherVector.v2
         else:
             raise Exception("内積はベクトルを引数としてください")
 
     def __add__(self, otherVector):  # vec(self) + vec(otherVector)
-        if(isinstance(otherVector, self.__class__)):
+        if (isinstance(otherVector, self.__class__)):
             return self.__class__(self.v1+otherVector.v1, self.v2+otherVector.v2)
         else:
             raise Exception("+はベクトル量との加算です")
 
     def __sub__(self, otherVector):  # vec(self) - vec(otherVector)
-        if(isinstance(otherVector, self.__class__)):
+        if (isinstance(otherVector, self.__class__)):
             return self.__class__(self.v1-otherVector.v1, self.v2-otherVector.v2)
         else:
             raise Exception("-はベクトル量との減算です")
 
     def __mul__(self, other):  # vec(self) * sca(other)
-        if(isinstance(other, int) or isinstance(other, float)):
+        if (isinstance(other, int) or isinstance(other, float)):
             return self.__class__(other*self.v1, other*self.v2)
         else:
             raise Exception("*はスカラー量との乗算です")
 
     def __rmul__(self, other):  # sca(other) * vec(self)
-        if(isinstance(other, int) or isinstance(other, float)):
+        if (isinstance(other, int) or isinstance(other, float)):
             return self.__class__(other*self.v1, other*self.v2)
         else:
             raise Exception("*はスカラー量との乗算です")
 
     def __truediv__(self, other):  # vec(self) / sca(other)
-        if(isinstance(other, int) or isinstance(other, float)):
+        if (isinstance(other, int) or isinstance(other, float)):
             return self.__class__(self.v1/other, self.v2/other)
         else:
             raise Exception("/はスカラー量との除算です")
 
     def __eq__(self, other):  # self == other
-        if(isinstance(other, self.__class__)):
+        if (isinstance(other, self.__class__)):
             return (self.v1 == other.v1) and (self.v2 == other.v2)
         else:
             return False
 
     def __ne__(self, other):  # self != other
-        if(isinstance(other, self.__class__)):
+        if (isinstance(other, self.__class__)):
             return (self.v1 != other.v1) or (self.v2 != other.v2)
         else:
             return True
@@ -365,14 +366,14 @@ def yakubun(a, b) -> str:
     bに0を入れるとエラーを返します。  
     a,bは数字でも文字列でもいいですが、一応小数は文字列にすることをおすすめします
     """
-    if(float(b) == 0):
+    if (float(b) == 0):
         raise Exception("function yakubun:0で割らないでください")
     sign = float(a)/abs(float(a))*float(b)/abs(float(b))  # 結果の符号
     a = str(a)
     b = str(b)
-    if(a[0] == '-'):  # -は取る
+    if (a[0] == '-'):  # -は取る
         a = a[1:]
-    if(b[0] == '-'):
+    if (b[0] == '-'):
         b = b[1:]
     # 以下は小数点以下の桁数を揃える
     a = a[::-1]  # 逆順に
@@ -387,10 +388,10 @@ def yakubun(a, b) -> str:
         b_dot = b.index('.')
     except:
         b = '.'+b
-    if(a_dot == b_dot):  # 小数点以下の桁数が同じ
+    if (a_dot == b_dot):  # 小数点以下の桁数が同じ
         a = a[:a_dot]+a[a_dot+1:]  # .を消す
         b = b[:b_dot]+b[b_dot+1:]
-    elif(a_dot > b_dot):  # aの方が小数点以下の桁数が多い
+    elif (a_dot > b_dot):  # aの方が小数点以下の桁数が多い
         a = a[:a_dot]+a[a_dot+1:]  # aは.を消す
         b = '0'*(a_dot-b_dot)+b[:b_dot]+b[b_dot+1:]  # bは差の分0を追加し.を消す
     else:  # a_dot < b_dot
@@ -400,15 +401,15 @@ def yakubun(a, b) -> str:
     b = int(b[::-1])
     # 以下は素因数分解して同じ値を消す
     a_lis = prime_fact(a)  # 素因数分解
-    if(a_lis[0] == -1):
+    if (a_lis[0] == -1):
         a_lis = [a]  # 素因数分解不可→0もしくは1
     b_lis = prime_fact(b)
-    if(b_lis[0] == -1):
+    if (b_lis[0] == -1):
         b_lis = [1]  # 素因数分解不可→1
     i = 0
-    while(i < len(a_lis)):
+    while (i < len(a_lis)):
         for j in range(len(b_lis)):
-            if(a_lis[i] == b_lis[j] != 1):
+            if (a_lis[i] == b_lis[j] != 1):
                 a_lis = a_lis[:i]+a_lis[i+1:]
                 b_lis = b_lis[:j]+b_lis[j+1:]
                 i -= 1
@@ -421,10 +422,10 @@ def yakubun(a, b) -> str:
     for i in b_lis:
         b *= i
     ret = ""
-    if(sign < 0):
+    if (sign < 0):
         ret = "-"
     ret += str(a)
-    if(a != 0 and b != 1):
+    if (a != 0 and b != 1):
         ret += "/"+str(b)
     return ret
 
@@ -458,3 +459,56 @@ def check_prime(i: int) -> bool:
         if i % ic == 0:
             return False
     return True
+
+
+def atan(x):
+    """
+    arctan(x)をテイラー展開して求めています。
+    桁数を保持するために、strで返します。
+    """
+    savedContext = d.getcontext().prec
+    d.getcontext().prec = 100  # 桁数設定
+    powerdX = x
+    sumValue = deci(0)
+    sign = 1
+    for i in range(5000):  # arctan(x)=x-(x**3)/3+(x**5)/5-(x**7)/7...
+        sumValue += sign/(deci(2)*i+1)*powerdX
+        powerdX *= x*x
+        sign *= -1
+    strSumValue=str(sumValue)
+    d.getcontext().prec = savedContext
+    return strSumValue
+
+def asin(x):
+    """
+    arcsin(x)をテイラー展開して求めています。
+    桁数を保持するために、strで返します。
+    """
+    savedContext=d.getcontext().prec
+    d.getcontext().prec=100
+    poweredX=x
+    n2kaijo=deci(1)
+    nkaijo=deci(1)
+    njou4=deci(1)
+    sumValue=deci(0)
+    for i in range(5000):
+        sumValue+=poweredX*(n2kaijo/(njou4*nkaijo*nkaijo*(2*i+1)))
+        poweredX*=x*x
+        n2kaijo*=(2*i+1)*(2*i+2)
+        nkaijo*=2*i+1
+        njou4*=4
+    strSumValue=str(sumValue)
+    d.getcontext().prec=savedContext
+    return strSumValue
+
+def acos(x):
+    """
+    arccos(x) = pi/2 - arcsin(x)
+    strで返します。
+    """
+    savedContext=d.getcontext().prec
+    d.getcontext().prec=100
+    piPer2=2*(2*deci(atan(deci(1)/3))+deci(atan(deci(1)/7)))
+    deciAcos= piPer2 - deci(asin(deci(x)))
+    d.getcontext().prec=savedContext
+    return str(deciAcos)
