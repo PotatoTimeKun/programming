@@ -1,4 +1,4 @@
-final int[] windowSize={600, 700};
+final int[] windowSize={550, 800};
 final float r=10;
 float mouseAngle=0;
 PImage siki;
@@ -15,20 +15,37 @@ void setup() {
 void draw() {
   background(255);
 
+  final int ellipseWidth=300;
   pushMatrix();
-  translate(windowSize[0]/2, 400/2+100);
-  showHalfEllipse(mouseAngle, 400);
+
+  translate(ellipseWidth/2+50, ellipseWidth+110);
+  float minAngle=PI/2;
+  final float blueMenseki=menseki(mouseAngle, r);
+  final float redMenseki=PI*r*r/2-blueMenseki; // 半円-青い部分
+  for (float i=PI/2; menseki(i, r)<=redMenseki; i-=0.001)
+    minAngle=i; // 赤い部分の面積になる角度を求める
+  showHalfEllipse(0, ellipseWidth);
+  stroke(255, 0, 0);
+  for (float i=minAngle; i<PI/2; i+=0.01)
+    showLineInEllipse(i, ellipseWidth); // 複数重ねてSの範囲を埋める
+
+  translate(ellipseWidth/2, -ellipseWidth/2-10);
+  showHalfEllipse(mouseAngle, ellipseWidth);
+  stroke(0, 0, 255);
   for (float i=mouseAngle; i<PI/2; i+=0.01)
-    showLineInEllipse(i, 400); // 複数重ねてSの範囲を埋める
+    showLineInEllipse(i, ellipseWidth);
+
   popMatrix();
-  
+
   image(siki, (windowSize[0]-siki.width)/2, 20);
-  
-  // 文字情報の表示
-  fill(0);
-  text("半径:r = "+r, 100, 550);
-  text("傾き[rad]:θ = "+nf(mouseAngle, 1, 2), 100, 600);
-  text("青い部分の面積:S = "+int(menseki(mouseAngle, r)), 100, 650);
+
+  translate(100, windowSize[1]-150);
+  fill(255, 0, 0);
+  showText(minAngle, r);
+
+  translate(200, 0);
+  fill(0, 0, 255);
+  showText(mouseAngle, r);
 }
 
 void showHalfEllipse(final float angle, final int width) {
@@ -47,13 +64,19 @@ void showHalfEllipse(final float angle, final int width) {
 void showLineInEllipse(final float angle, final int width) {
   // 直径widthの円内で中心から-angle[rad]の向きの点からx軸に平行な直線
   strokeWeight(4);
-  stroke(0, 0, 255);
   line(-width/2*cos(angle), width/2*sin(angle), width/2*cos(angle), width/2*sin(angle));
 }
 
 float menseki(final float angle, final float r) {
   // 半円と直線に囲まれた面積Sを求める、angle = 0 ~ pi/2
-  return r*r*(PI/2-angle)+r*r*sin(2*angle)-2*r*r*cos(angle)*sin(angle);
+  return r*r*(PI-2*angle-sin(2*angle))/2;
+}
+
+void showText(float angle, float r) {
+  // 文字情報の表示
+  text("半径:r = "+r, 0, 0);
+  text("傾き[rad]:θ = "+nf(angle, 1, 2), 0, 50);
+  text("面積:S = "+round(menseki(angle, r)), 0, 100);
 }
 
 void mouseMoved() {
