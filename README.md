@@ -1060,6 +1060,9 @@ triリストが頂点を表す三角形を表示し、その重心を表示し�
 ## rotate_half_ellipse.pde
 回転する半円と直線に囲まれた面積を積分で求めます。  
 
+## rotate_half_sphere.pde
+半球と平面に囲まれた体積を積分によって求めます。  
+
 # Python
 
 ## hitohude.py
