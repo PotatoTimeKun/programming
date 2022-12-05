@@ -8,8 +8,8 @@ for i in range(int(len(train_x)*3/10)): # データの3割をテスト用デー�
     j=randint(0,train_x.shape[0]-1) # ランダムなインデックス
     test_x=np.append(test_x,train_x[j])
     test_y=np.append(test_y,train_y[j])
-    np.delete(train_x,j)
-    np.delete(train_y,j)
+    train_x=np.delete(train_x,j)
+    train_y=np.delete(train_y,j)
 mu=train_x.mean() # 平均
 sigma=train_x.std() # 標準偏差
 standardize=lambda x:(x-mu)/sigma # z-score正規化を行う関数
