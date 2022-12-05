@@ -509,6 +509,6 @@ def acos(x):
     savedContext=d.getcontext().prec
     d.getcontext().prec=100
     piPer2=2*(2*deci(atan(deci(1)/3))+deci(atan(deci(1)/7)))
-    deciAcos= piPer2 - deci(asin(deci(x)))
+    deciAcos=str(piPer2 - deci(asin(deci(x))))
     d.getcontext().prec=savedContext
-    return str(deciAcos)
+    return deciAcos

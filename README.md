@@ -1290,6 +1290,10 @@ printJPより
 ## kaiki.py
 最急降下法によって、data.csvにあるデータの近くを通る関数を予測します。  
 
+## bunrui.py
+ロジスティクス回帰で分類を行います  
+データはbunruiData.csvから入力します  
+
 # JavaScript
 
 ## kakezann1000.html
