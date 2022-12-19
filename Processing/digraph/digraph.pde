@@ -1,18 +1,19 @@
 // 隣接行列
-final int adjacencyMatrix[][]=
+int adjacencyMatrix[][]=
 {
-{0,1,0,0,0},
-{0,0,1,0,0},
-{0,0,0,1,0},
-{0,0,0,0,1},
-{0,0,0,0,0}
+{1,1,0,0,0,0},
+{1,1,0,0,0,0},
+{0,0,1,1,1,0},
+{0,0,1,1,1,0},
+{0,0,1,1,1,0},
+{0,0,0,0,0,1},
 };
 
 // 位数(=頂点数)
-final int order=5;
+int order=6;
 
 void setup(){
-  size(500,500);
+  size(1000,600);
   strokeWeight(2);
   final PFont font = createFont("Yu Gothic", 20, true);
   textFont(font);
@@ -22,7 +23,16 @@ void draw(){
   background(255);
   drawEdges(adjacencyMatrix,order);
   drawVerteces(order);
-  noLoop();
+  drawMatrix(adjacencyMatrix,order);
+  fill(0);
+  text("directed graph",200,500);
+  text("adjacency matrix(red=1,blue=0)",600,500);
+  fill(255);
+  rect(100,540,200,50);
+  rect(400,540,200,50);
+  fill(0);
+  text("order increase",120,570);
+  text("order decrease",420,570);
 }
 
 float getX(int n,int order){return 250+150*cos(2*PI*n/order);} // 頂点の座標
@@ -83,4 +93,36 @@ void drawArrow(int n0,int n1,int order){ // 有向辺n0->n1
   rotate(-angle);
   triangle(-5,-20,5,-20,0,-10);
   popMatrix();
+}
+
+void drawMatrix(int matrix[][],int order){
+  for(int i=0;i<order;i++){
+    for(int j=0;j<order;j++){
+      fill(255,100,100);
+      if(matrix[i][j]==0)fill(100,100,255);
+      rect(500+460*j/order,20+460*i/order,460/order,460/order);
+    }
+  }
+}
+
+void mousePressed(){
+  if(mouseY>=540 && mouseY<=590){
+    if(mouseX>=100 && mouseX<=300){
+      order+=1;
+      adjacencyMatrix=new int[order][order];
+      for(int i=0;i<order;i++)
+        for(int j=0;j<order;j++)
+          adjacencyMatrix[i][j]=0;
+    }
+    if(mouseX>=400 && mouseX<=700 && order>=2){
+      order-=1;
+      adjacencyMatrix=new int[order][order];
+      for(int i=0;i<order;i++)
+        for(int j=0;j<order;j++)
+          adjacencyMatrix[i][j]=0;
+    }
+  }
+  int i=int((mouseY-20.)*order/460),j=int((mouseX-500.)*order/460);
+  if(i<0 || i>order-1 || j<0 || j>order-1)return;
+  adjacencyMatrix[i][j]=adjacencyMatrix[i][j]==0?1:0;
 }
