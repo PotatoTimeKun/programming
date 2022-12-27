@@ -516,6 +516,9 @@ string*型は%Sで変換可能です。
 * string\* copyStr(string* str)  
 文字列の中身の値をコピーした文字列を作成します。  
 コピー元とコピー先のアドレスは干渉しません。  
+*int checkDyck(string* str,char left,char right)  
+leftを[,rightを]と見たとき、strがダイク言語かどうかを返します  
+(すなわち、括弧が対応しているかどうか)  
 
 ## testStr.c
 mystr.hを試すためのプログラムです。  
@@ -523,6 +526,59 @@ mystr.hを試すためのプログラムです。
 ## rectangle.h
 三角関数と逆三角関数が入っています。基本的にテイラー展開して求めています。  
 関数はmySin(x),myCos(x),myTan(x),arcsin(x),arccos(x),arctan(x)です。  
+
+## tree.h
+2分木をリスト的に扱う構造体Treeとその操作を行う関数が入っています  
+関数:  
+* Tree\* newTree()  
+新しい2分木を作成します  
+* Tree\* getLeftTree(Tree\* tree)  
+treeの左部分木を取得します  
+* Tree\* getRightTree(Tree\* tree)  
+同様に右部分木  
+* Tree\* getSubtree(Tree\* tree,int index)  
+指定したインデックスを根とする部分木を返します  
+ただし、アドレスはtreeの要素と共有されています  
+Treeにおいてのインデックスとは先行順で最初を0としたときの順序とします  
+* stackInit(int size)  
+sizeを最大の要素数とするTree*型のスタックを初期化します  
+使用後はfree(stack)を実行することを推奨します(無駄なメモリ開放のため)  
+* push(Tree\* data)  
+スタックにプッシュします  
+* Tree\* pop()  
+スタックからポップします  
+* deleteTree(Tree\* tree)  
+2分木全体をメモリから開放します  
+* setNotFollowed(Tree\* tree)  
+Tree構造体にはその節にフラグを立てることができるようになっています(followedメンバ  
+そのフラグを全て0にします  
+* int addLeftChild(Tree\* tree,int index,string\* child)  
+指定したインデックスの節に左の子を追加します  
+成功で1,失敗で0を返します  
+* addRightChild  
+同様に右  
+* addChild  
+同様(左優先)  
+* int addLeftTree(Tree\* tree,int index,Tree\* addedTree)  
+treeの指定したインデックスの節に左部分木addedTreeを追加します  
+ただし、アドレスは共有  
+* addRightTree  
+同様に右  
+* addTree  
+同様(左優先)  
+  
+Tree構造体のメンバ:  
+* string\* root  
+その節の値(stringはmystr.hより)  
+* int followed  
+フラグ(例えば、後行順で2分木を走査するときにたどったことを示すことなどで使います)  
+* Tree\* leftTree  
+左部分木  
+* Tree\* rightTree  
+右部分木  
+
+## culcurateByTree.c
+計算式を2分木に変換し、ポーランド記法と逆ポーランド記法にして出力します  
 
 # Cpp
 
