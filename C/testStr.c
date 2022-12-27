@@ -4,6 +4,7 @@ int main(){
     string* str=makeStr(); // 文字列の作成
     printf("a=");
     scanStr(str); // 文字列のキーボード入力
+    printf("Dyck Language(alphabet={ ( , ) }):%s",checkDyck(str,'(',')')?"True":"False");
     printf("a\'s length=");
     printf("%d\n",str->len); // 長さの取得
     string* str2=makeStr();
@@ -61,7 +62,7 @@ int main(){
     scanStr(str7);
     printf("g's index(abc):%d",indexStr(str7,charsToStr("abc"))); // 文字列の走査
     printfStr("\n\"%f and %g\",f,g=%S and %S",str6,str7); // printfStrによる表示
-    printfs("\nf=%S,g=%S,len(f)=%d,len(g)=%f",str6,str7,str6->len,str7->len); // printfsによる表示
+    printfs("\nf=%S,g=%S,len(f)=%d,len(g)=%d",str6,str7,str6->len,str7->len); // printfsによる表示
     reverseStr(str6); // 文字列を逆順に
     printfs("\nf=reversed f=%S",str6);
     setStr(str7,'a',1); // 文字の書き換え

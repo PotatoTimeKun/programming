@@ -564,6 +564,26 @@ void printfs(char *arg, ...)
     va_end(lis);
 }
 
+
+/**
+ * @brief Charリストlisのインデックスlist_indexの要素を文字newCharに書き換えます
+ * 
+ * @param lis CharList
+ * @param newChar char
+ * @param list_index int
+ */
+void setChar(CharList *lis,char newChar,int list_index)
+{
+    CharList *index = lis;
+    for (int i = 0; i < list_index; i++)
+    {
+        if (index == NULL)
+            return;
+        index = index->next;
+    }
+    index->value=newChar;
+}
+
 /**
  * @brief 渡された文字列を逆順にします。
  *
@@ -600,12 +620,35 @@ void setStr(string* str,char value,int index){
 string* copyStr(string* str){
     string* ret=makeStr();
     for(int i=0;i<str->len;i++){
-        addChar(ret->chars,atChar(str->len,i));
+        addChar(ret->chars,atChar(str->chars,i));
     }
     delAtChar(ret->chars,0);
     addChar(ret->chars,'\0');
     ret->len=str->len;
     return ret;
+}
+
+/**
+ * leftを[,rightを]と見たとき、strがダイク言語かどうかを返します
+ * (すなわち、括弧が対応しているかどうか)
+ * 
+ * @param str string*
+ * @param left char 左括弧とするもの
+ * @param right char 右括弧とするもの
+ * @return int 0|1
+*/
+int checkDyck(string* str,char left,char right){
+    CharList *charElement=str->chars;
+    int count=0;
+    for(int i=0;i<str->len;i++){
+        // 全ての接頭語について [の数 - ]の数 >= 0
+        if(charElement->value==left)count++;
+        if(charElement->value==right)count--;
+        if(count<0)return 0;
+        charElement=charElement->next;
+    }
+    if(count==0)return 1; // 文字列全体で [の数 - ]の数 = 0
+    return 0;
 }
 
 #endif
