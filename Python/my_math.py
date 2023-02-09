@@ -1,7 +1,7 @@
 import math as m
 import decimal as d
 from decimal import Decimal as deci
-
+from copy import deepcopy
 
 def heron(a: float, b: float, c: float) -> float:
     """
@@ -512,3 +512,177 @@ def acos(x):
     deciAcos=str(piPer2 - deci(asin(deci(x))))
     d.getcontext().prec=savedContext
     return deciAcos
+
+class mathMatrix:
+    """
+    行列を扱う
+    コンストラクタ:行数,列数,内容(2次元リスト)
+    determinant:行列式の計算
+    """
+    value=[]
+    rowSize=0
+    columnSize=0
+    def __init__(self,row=1,column=1,lists=[[0]]):
+        self.rowSize=row
+        self.columnSize=column
+        if(len(lists)!=row):
+            raise Exception("error:(mathMatrix class constructor)illegal size")
+        for i in range(row):
+            if(len(lists[i])!=column):
+                raise Exception("error:(mathMatrix class constuctor)illegal size")
+        self.value=lists
+    def determinant(self):
+        """
+        行列式を計算して返す
+        """
+        if(self.rowSize!=self.columnSize):
+            raise Exception("error:(mathMatrix class function determinant)must be square")
+        def split(lists): # 行列式を1行目に関する小行列式に分解して再帰的に計算
+            if(len(lists)==1):return lists[0][0]
+            if(len(lists)==2):return lists[0][0]*lists[1][1]-lists[0][1]*lists[1][0]
+            sumValue=0
+            for i in range(len(lists)):
+                splited=[]
+                for j in range(1,len(lists)):
+                    splited.append([])
+                    for k in range(len(lists)):
+                        if(k==i):continue
+                        splited[j-1].append(lists[j][k])
+                sign=1
+                if(i%2==1):sign=-1
+                sumValue+=sign*lists[0][i]*split(splited)
+            return sumValue
+        return split(self.value)
+    def inverse(self):
+        """
+        逆行列を計算してmathMatrixクラスのインスタンスで返す
+        """
+        if(self.rowSize!=self.columnSize):
+            raise Exception("error:(mathMatrix class function inverse)must be square")
+        selfDeterminant=self.determinant()
+        if(selfDeterminant==0):
+            raise Exception("error:(mathMatrix class function inverse)must be regular")
+            # 行列式が0->正則でない
+        invLists=[]
+        for i in range(self.rowSize):
+            sign=1
+            if(i%2==1):sign=-1
+            invLists.append([])
+            for j in range(self.columnSize):
+                minor=[] # 余因子(j,i)
+                for k in range(self.rowSize):
+                    if(k==j):continue
+                    minor.append([])
+                    for l in range(self.columnSize):
+                        if(l==i):continue
+                        minor[-1].append(self.value[k][l])
+                minorDeterminant=self.__class__(self.rowSize-1,self.columnSize-1,minor).determinant()
+                invLists[i].append(sign*minorDeterminant/selfDeterminant) # A^-1(i,j)=符号*余因子(j,i)/|A|
+                sign*=-1
+        return self.__class__(self.rowSize,self.columnSize,invLists)
+    def transpose(self):
+        """
+        転置行列を返す
+        """
+        lists=[]
+        for i in range(self.columnSize): # (i,j)=(j,i)
+            lists.append([])
+            for j in range(self.rowSize):
+                lists[i].append(self.value[j][i])
+        return self.__class__(self.columnSize,self.rowSize,lists)
+    def __add__(self, otherMatrix):
+        if (not isinstance(otherMatrix, self.__class__)):
+            raise Exception("error:(mathMatrix class operator)not defined type")
+        if(self.rowSize!=otherMatrix.rowSize or self.columnSize!=otherMatrix.columnSize):
+            raise Exception("error:(mathMatrix class operator)illegal size")
+        addLists=deepcopy(self.value)
+        for i in range(self.rowSize):
+            for j in range(self.columnSize):
+                addLists[i][j]+=otherMatrix.value[i][j]
+        return self.__class__(self.rowSize,self.columnSize,addLists)
+    def __sub__(self, otherMatrix):
+        if (not isinstance(otherMatrix, self.__class__)):
+            raise Exception("error:(mathMatrix class operator)not defined type")
+        if(self.rowSize!=otherMatrix.rowSize or self.columnSize!=otherMatrix.columnSize):
+            raise Exception("error:(mathMatrix class operator)illegal size")
+        addLists=deepcopy(self.value)
+        for i in range(self.rowSize):
+            for j in range(self.columnSize):
+                addLists[i][j]-=otherMatrix.value[i][j]
+        return self.__class__(self.rowSize,self.columnSize,addLists)
+    def __mul__(self,operand):
+        if(isinstance(operand,int) or isinstance(operand,float)): # スカラー量との乗算,各要素をoperand倍に
+            lists=deepcopy(self.value)
+            for i in range(self.rowSize):
+                for j in range(self.columnSize):
+                    lists[i][j]*=operand
+            return self.__class__(self.rowSize,self.columnSize,lists)
+        if(not isinstance(operand,self.__class__)):
+            raise Exception("error:(mathMatrix class operator)not defined type")
+        if(self.columnSize!=operand.rowSize):
+            raise Exception("error:(mathMatrix class operator)illegal size")
+        # 行列同士の乗算
+        mulLists=[]
+        for i in range(self.rowSize):
+            mulLists.append([])
+            for j in range(operand.columnSize):
+                mulLists[i].append(0)
+                for k in range(self.columnSize):
+                    mulLists[i][j]+=self.value[i][k]*operand.value[k][j] #(i,j)=Σ[k=1->n]A(i,k)*B(k,j)
+        return self.__class__(self.rowSize,operand.columnSize,mulLists)
+    def __rmul__(self,operand):
+        if(isinstance(operand,int) or isinstance(operand,float)): # スカラー量との乗算,各要素をoperand倍に
+            lists=deepcopy(self.value)
+            for i in range(self.rowSize):
+                for j in range(self.columnSize):
+                    lists[i][j]*=operand
+            return self.__class__(self.rowSize,self.columnSize,lists)
+        raise Exception("error:(mathMatrix class operator)not defined type")
+    def __truediv__(self,operand):
+        if(isinstance(operand,int) or isinstance(operand,float)): # スカラー量との除算
+            lists=deepcopy(self.value)
+            for i in range(self.rowSize):
+                for j in range(self.columnSize):
+                    lists[i][j]/=operand
+            return self.__class__(self.rowSize,self.columnSize,lists)
+        raise Exception("error:(mathMatrix class operator)not defined type")
+    def __eq__(self,operand):
+        if(not isinstance(operand,self.__class__)):return False
+        if(self.value==operand.value):return True
+        return False
+    def __ne__(self,operand):
+        return not(self==operand)
+
+def cramer(argument,equals):
+    """
+    クラメルの公式を用いて連立方程式を解く
+    argumentは係数行列(2次元リスト)
+    equalsは連立する式の定数(ax+by=cのc,リスト)
+    解をリストで返す、解がない場合空リストを返す
+    """
+    argMatrix=mathMatrix(len(argument),len(argument),argument)
+    argDeterminant=argMatrix.determinant()
+    if(argDeterminant==0): # 係数行列の行列式が0->解なし
+        return []
+    answer=[]
+    for i in range(len(argument)):
+        iArgument=deepcopy(argument)
+        for j in range(len(argument)):
+            iArgument[j][i]=equals[j]
+        iArgMatrix=mathMatrix(len(argument),len(argument),iArgument)
+        answer.append(iArgMatrix.determinant()/argDeterminant)
+    return answer
+
+def gcd(a,b):
+    """
+    最大公約数(gcd)を返す
+    """
+    if(not isinstance(a,int) or not isinstance(b,int)):
+        raise Exception("error:(function gcd)a,b must be int")
+    if(a<=0 or b<=0):
+        raise Exception("error:(function gcd)a,b must be positive")
+    # ユークリッドの互除法
+    r=max(a,b)%min(a,b)
+    if(r==0):
+        return min(a,b)
+    return gcd(r,min(a,b))
