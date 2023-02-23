@@ -1,4 +1,5 @@
 MIT License
+But only code(exclude mp3 file,png file...etc)
 
 Copyright (c) 2022 PotatoTimeKun
 
