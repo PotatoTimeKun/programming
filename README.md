@@ -696,6 +696,10 @@ triリストが頂点を表す三角形を表示し、その重心を表示し�
 右に隣接行列を表示し、クリックで隣接を切り替えられるようにしました  
 位数も変更可能です  
 
+## SpaceWarII.pde
+インベーダーゲームのようなものを作りました  
+効果音はフリー音源です(https://soundeffect-lab.info/sound/battle/battle2.htmlより)  
+
 # Python
 
 ## hitohude.py
