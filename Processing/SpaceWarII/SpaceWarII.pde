@@ -5,8 +5,7 @@ boolean moveDirect[]={false,false,false,false};
 page currentPage=new Start();
 import ddf.minim.*;
 Minim minim;
-AudioPlayer shotSound[]=new AudioPlayer[3];
-AudioPlayer audioPlayer;
+AudioPlayer sounds[]=new AudioPlayer[10];
 void settings(){
   size(windowX,windowY);
 }
@@ -14,15 +13,22 @@ void setup(){
   final PFont font = createFont("Yu Gothic", 20, true);
   textFont(font);
   minim=new Minim(this);
-  shotSound[0]=minim.loadFile("./sound/shot.mp3");
-  shotSound[1]=minim.loadFile("./sound/bom.mp3");
-  shotSound[2]=minim.loadFile("./sound/shot_attack.mp3");
 }
 void draw(){
   frameRate(framerate);
   currentPage=currentPage.next();
   currentPage.draws();
   clicked=false;
+}
+int audioIndex=-1;
+void sound(AudioPlayer audio){
+  audioIndex=(audioIndex+1)%10;
+  try{
+    sounds[audioIndex].close();
+  }
+  catch(Exception e){}
+  sounds[audioIndex]=audio;
+  sounds[audioIndex].play();
 }
 
 interface page{
@@ -112,9 +118,7 @@ class Game implements page{
     beams.move(1);
     if(clicked){
       beams.addBeam(airplane.x,airplane.y-20);
-      audioPlayer = shotSound[0];
-      shotSound[0]=minim.loadFile("./sound/shot.mp3");
-      audioPlayer.play();
+      sound(minim.loadFile("./sound/shot.mp3"));
     }
     for(int i=0;i<10;i++)enemies[i]=enemies[i].move(this);
     airplane.move();
@@ -312,9 +316,7 @@ class EmptyEnemy implements Enemy{
     beams.draws(true);
   }
   void shotDamageSound(){
-    audioPlayer = shotSound[2];
-    shotSound[2]=minim.loadFile("./sound/shot_attack.mp3");
-    audioPlayer.play();
+    sound(minim.loadFile("./sound/shot_attack.mp3"));
   }
   boolean isEmpty(){return true;}
 }
@@ -402,14 +404,10 @@ class EnemyPlane implements Enemy{
     beams.draws(true);
   }
   void crashSound(){
-    audioPlayer = shotSound[1];
-    shotSound[1]=minim.loadFile("./sound/bom.mp3");
-    audioPlayer.play();
+    sound(minim.loadFile("./sound/bom.mp3"));
   }
   void shotDamageSound(){
-    audioPlayer = shotSound[2];
-    shotSound[2]=minim.loadFile("./sound/shot_attack.mp3");
-    audioPlayer.play();
+    sound(minim.loadFile("./sound/shot_attack.mp3"));
   }
   boolean isEmpty(){return false;}
 }
