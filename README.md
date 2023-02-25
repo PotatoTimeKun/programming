@@ -700,6 +700,9 @@ triリストが頂点を表す三角形を表示し、その重心を表示し�
 インベーダーゲームのようなものを作りました  
 効果音はフリー音源です(https://soundeffect-lab.info/sound/battle/battle2.htmlより)  
 
+## line_3d
+線で3次元空間を再現します、edges配列が線の始点と終点の情報を持ちます  
+
 # Python
 
 ## hitohude.py
