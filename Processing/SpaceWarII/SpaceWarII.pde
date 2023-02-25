@@ -1,11 +1,12 @@
 final int windowX=800,windowY=600;
 final int framerate=40;
 boolean clicked=false;
-boolean moveDirect[]={false,false,false,false};
+boolean moveDirect[]={false,false,false,false}; // wasdに対応
 page currentPage=new Start();
+
 import ddf.minim.*;
 Minim minim;
-AudioPlayer sounds[]=new AudioPlayer[10];
+
 void settings(){
   size(windowX,windowY);
 }
@@ -20,7 +21,10 @@ void draw(){
   currentPage.draws();
   clicked=false;
 }
+
+AudioPlayer sounds[]=new AudioPlayer[10];
 int audioIndex=-1;
+// 音をならす、10個まで重複可能
 void sound(AudioPlayer audio){
   audioIndex=(audioIndex+1)%10;
   try{
@@ -31,9 +35,10 @@ void sound(AudioPlayer audio){
   sounds[audioIndex].play();
 }
 
+// 表示画面
 interface page{
-  page next();
-  void draws();
+  page next(); // 画面遷移
+  void draws(); // 表示
 }
 
 class Start implements page{
@@ -220,6 +225,7 @@ class Result implements page{
   }
 }
 
+// 飛行機(自分自身)
 class Airplane{
   float x;
   float y;
@@ -253,13 +259,13 @@ class Beams{
   float moveSpeed=10;
   Beams(){
     x=new float[100];
-    y=new float[100];
+    y=new float[100]; // -1 → 存在しない
     for(int i=0;i<100;i++){
       x[i]=-1;
       y[i]=-1;
     }
   }
-  void move(int sign){
+  void move(int sign){ // 自分から見た正面を正の方向とする,1か-1でビームの動く向きを決める
     for(int i=0;i<100;i++){
       if(y[i]==-1)continue;
       y[i]-=sign*moveSpeed;
