@@ -669,6 +669,9 @@ class HealBall extends Enemy{
     y+=moveSpeed;
     x=xInit+50*cos(timer);
     timer+=1./framerate;
+    if(y>windowY+20){
+      return new EmptyEnemy();
+    }
     return this;
   }
   void draws(){
