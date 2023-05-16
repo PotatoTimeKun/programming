@@ -1026,6 +1026,9 @@ kobun 任意、構文番号(デフォルトはランダム)
 ## test
 JavaScriptの機能を試すためのファイルを入れてます。
 
+## birthdayParadox.html/.js
+誕生日パラドックスを実践的に体感するためのプログラムです。  
+
 # Csharp
 
 ## babanuki.cs
