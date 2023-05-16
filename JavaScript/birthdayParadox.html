@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="keywords" content="誕生日,パラドックス">
+        <title>誕生日パラドックスを体感するためのページ</title>
+    </head>
+    <body>
+        <h3>誕生日パラドックス</h3>
+        <p>グループの中で自分と同じ誕生日の人はなかなか見つからないが、他人同士が同じ誕生日であることはよくある</p>
+        <p>自分の誕生日</p><input type="date" id="date"><br>
+        <p>グループの人数(自分を含む)</p><input type="number" id="peopleNumber"><br>
+        <button id="showTable">実行</button><br>
+        <table border="1" id="resultTable"></table>
+        <p id="probability"></p>
+        <script src="birthdayParadox.js"></script>
+    </body>
+</html>
