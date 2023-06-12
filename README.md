@@ -980,6 +980,9 @@ printJPより
 ロジスティクス回帰で分類を行います  
 データはbunruiData.csvから入力します  
 
+## boxMuller.ipynb
+ボックスミュラー法を実際に確かめるプログラムです  
+
 # JavaScript
 
 ## kakezann1000.html
