@@ -746,6 +746,15 @@ zバッファ法によって立方体を表示します
 ## yugami.pde
 ラスタスクロールで正弦波に沿った歪んだスクロールをします  
 
+## crossRectCircle.pde
+長方形と円の当たり判定です  
+
+## crossStickCircle.pde
+棒と円の当たり判定です  
+
+## crossSectorCircle.pde
+扇形と円の当たり判定です  
+
 # Python
 
 ## hitohude.py
