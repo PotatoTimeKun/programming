@@ -755,6 +755,12 @@ zバッファ法によって立方体を表示します
 ## crossSectorCircle.pde
 扇形と円の当たり判定です  
 
+## homingLaser.pde
+マウス位置を追うホーミングレーザを描画します  
+
+## potential.pde
+ポテンシャル図とその運動を描画します  
+
 # Python
 
 ## hitohude.py
