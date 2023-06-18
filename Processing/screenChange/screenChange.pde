@@ -8,6 +8,7 @@ void setup(){
 }
 void draw(){
   background(255);
+  tint(255,255);
   beginShape();
   texture(imgA);
   vertex(0,0,0,0);
@@ -20,5 +21,15 @@ void draw(){
   vertex(600,-600+t,imgB.width,imgB.height*(-600+t)/600.);
   vertex(-600+t,600,imgB.width*(-600+t)/600.,imgB.height);
   endShape();
+  for(int i=0;i<255;i+=10){
+  tint(255,255-i);
+  beginShape();
+  texture(imgB);
+  vertex(t-i,0,imgB.width*(t-i-1)/600.,0);
+  vertex(t-i+10,0,imgB.width*(t-i+10)/600.,0);
+  vertex(t-600-i+10,600,imgB.width*(t-600-i+10)/600.,imgB.height);
+  vertex(t-600-i,600,imgB.width*(t-600-i)/600.,imgB.height);
+  endShape();
+  }
   t+=4;
 }
