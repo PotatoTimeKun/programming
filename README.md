@@ -761,6 +761,9 @@ zバッファ法によって立方体を表示します
 ## potential.pde
 ポテンシャル図とその運動を描画します  
 
+## screenChange.pde
+グラデーションを含む画面切り替えです  
+
 # Python
 
 ## hitohude.py
