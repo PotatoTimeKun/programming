@@ -764,6 +764,9 @@ zバッファ法によって立方体を表示します
 ## screenChange.pde
 グラデーションを含む画面切り替えです  
 
+## translateRGBtoHSB.pde
+RGBをHSBに変換します  
+
 # Python
 
 ## hitohude.py
