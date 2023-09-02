@@ -20,4 +20,24 @@ int main(){
     ChaCha20(message,17,key,nonce);
     printf("\ndecode:\n");
     printMessage(message,17);
+    char sha[32];
+    sha_3_256(message,18,sha);
+    printf("SHA-3-256(\"%s\")=0b\n",message);
+    for(int i=0;i<32;i++){
+        for(int j=0;j<8;j++){
+            printf("%c",(sha[i]>>(7-j))%2==0?'0':'1');
+        }
+        printf(" ");
+        if(i%5==4)printf("\n");
+    }
+    message[0]+=1;
+    sha_3_256(message,18,sha);
+    printf("\n\nSHA-3-256(\"%s\")=0b\n",message);
+    for(int i=0;i<32;i++){
+        for(int j=0;j<8;j++){
+            printf("%c",(sha[i]>>(7-j))%2==0?'0':'1');
+        }
+        printf(" ");
+        if(i%5==4)printf("\n");
+    }
 }

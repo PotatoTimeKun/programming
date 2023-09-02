@@ -372,6 +372,9 @@ Tree構造体のメンバ:
 message:平文or暗号文,size:messageの文字数,key:鍵(32バイト),nonce:ナンス(12バイト)  
 chacha20によって暗号化または復号化を行います  
 鍵は秘密にしますが、ナンスは公開しても問題ありません(同じ鍵とナンスの組み合わせを繰り返し使わないことを推奨します)  
+* void sha_3_256(char\* data,int dataLen,char\* returnArray)  
+data:データ、dataLen:dataの長さ、returnArray:ハッシュ値を返す配列  
+Sha-3-256によるハッシュ値を返します(少し規格通りでない処理があるかもしれませんが)  
 
 ## binary32.c
 IEEE754のbinary32の浮動小数点数形式のデータが保存された配列binから、そのデータが表す数を表示します(初期値は最大値)  
@@ -767,6 +770,9 @@ zバッファ法によって立方体を表示します
 ## translateRGBtoHSB.pde
 RGBをHSBに変換します  
 
+## te
+手を積み上げるテトリス(手トリス)です  
+
 # Python
 
 ## hitohude.py
@@ -1009,6 +1015,9 @@ printJPより
 
 ## boxMuller.ipynb
 ボックスミュラー法を実際に確かめるプログラムです  
+
+## dajare.py
+ダジャレを検知します  
 
 # JavaScript
 
