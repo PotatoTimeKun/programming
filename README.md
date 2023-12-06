@@ -773,6 +773,9 @@ RGBをHSBに変換します
 ## te
 手を積み上げるテトリス(手トリス)です  
 
+## fourier.pde
+フーリエ級数によって元の関数が得られることを確かめます  
+
 # Python
 
 ## hitohude.py
@@ -1018,6 +1021,9 @@ printJPより
 
 ## dajare.py
 ダジャレを検知します  
+
+## mul_peano.py
+かけ算をペアノ算術で分解します  
 
 # JavaScript
 
