@@ -1025,6 +1025,9 @@ printJPより
 ## mul_peano.py
 かけ算をペアノ算術で分解します  
 
+## if?
+条件推測ゲームです  
+
 # JavaScript
 
 ## kakezann1000.html
