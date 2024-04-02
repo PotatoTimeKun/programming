@@ -1,0 +1,2 @@
+G:\programming\GitHub\Private_Programm\processing\minecraft_road\
+小さめの道路のサンプル.txt
