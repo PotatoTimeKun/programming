@@ -1,0 +1,488 @@
+:: _func {
+    @makeCard(card_data){
+        var key=Obj:keys(card_data)
+        var default_card={
+            name: ""
+            icon: ""
+            explane: ""
+            rank: null
+            cost: 1
+            joined: 0
+            type: null
+            is_keep: false
+            count: 0
+            all_attack: false
+            no_escape: false
+            damage: 0
+            jibaku: 0
+            attack_rate: 1
+            block_rate: 1
+            block_add: 0
+            escape_rate: 0
+            heal_value: 0
+            success_rate: 1
+            effect_id: 0
+            only_once: false
+            skip: false
+            id: null
+        }
+        let default_key=Obj:keys(default_card)
+        each let e, key {
+            if (!MyUtil:existIn(default_key,e)) {
+                Mk:dialog("エラー",`存在しないカードパラメータ`,"error")
+            }
+            default_card[e]=card_data[e]
+        }
+        return default_card
+    }
+    @makeQuest(quest_data){
+        var default_quest={
+            explane: ""
+            type: ""
+            need: {
+                login: false
+                kill: 0
+                clear_normal: 0
+                play_normal: 0
+                buy_card: 0
+                join_card: 0
+                damage_count: 0
+                heal_count: 0
+            }
+            quest_id: 0
+            quest_value: 0
+            give: {
+                money: 0
+                card: null
+                subname_id: null
+            }
+            next_quest: null
+            due: [-1,-1,-1] //-1:無期限
+        }
+        var default_key=Obj:keys(default_quest)
+        var key=Obj:keys(quest_data)
+        each let k, key {
+            if (!MyUtil:existIn(default_key,k)) {
+                Mk:dialog("エラー",`存在しないクエストパラメータ`,"error")
+            }
+            if (k=="next_quest") {
+                default_quest[k]=_func:makeQuest(quest_data[k])
+            }
+            else if (Core:type(quest_data[k])=="obj") {
+                each let inner_k, Obj:keys(quest_data[k]) {
+                    if (!MyUtil:existIn(Obj:keys(default_quest[k]),inner_k)) {
+                        Mk:dialog("エラー",`存在しないクエストパラメータ`,"error")
+                    }
+                    default_quest[k][inner_k]=MyUtil:deepCopy(quest_data[k][inner_k])
+                }
+            }
+            else {
+                default_quest[k]=MyUtil:deepCopy(quest_data[k])
+            }
+        }
+        return default_quest
+    }
+    @makeEnemy(enemy_data){
+        var default_enemy={
+            name: ""
+            icon: ""
+            hp: 0
+            max_hp: 0
+            cooldown: 0
+            count: 1
+            attack_rate: 1
+            block: 0
+            block_rate: 1
+            used_block: 0
+            escape_rate: 0
+            attack: []
+            used_attack: []
+            magic: []
+            used_magic: []
+        }
+        var default_key=Obj:keys(default_enemy)
+        var key=Obj:keys(enemy_data)
+        each let k, key {
+            if (!MyUtil:existIn(default_key,k)) {
+                Mk:dialog("エラー",`存在しない敵パラメータ`,"error")
+            }
+            default_enemy[k]=MyUtil:deepCopy(enemy_data[k])
+        }
+        default_enemy["max_hp"]=default_enemy["hp"]
+        return default_enemy
+    }
+    @makeAttack(attack_data){
+        var default_attack={
+            name: ""
+            damage: 0
+            jibaku: 0
+            is_keep: false
+            count: 0
+            no_escape: false
+            delay: 0
+            only_once: false
+        }
+        var default_key=Obj:keys(default_attack)
+        var key=Obj:keys(attack_data)
+        each let k, key {
+            if (!MyUtil:existIn(default_key,k)) {
+                Mk:dialog("エラー",`存在しない敵パラメータ`,"error")
+            }
+            default_attack[k]=attack_data[k]
+        }
+        return default_attack
+    }
+    @makeMagic(magic_data){
+        var default_magic={
+            name: ""
+            power: 0
+            attack_effect: false
+            block_effect: false
+            escape_effect: false
+            heal_effect: false
+            count: 0
+            delay: 0
+            success_rate: 1
+            only_once: false
+        }
+        var default_key=Obj:keys(default_magic)
+        var key=Obj:keys(magic_data)
+        each let k, key {
+            if (!MyUtil:existIn(default_key,k)) {
+                Mk:dialog("エラー",`存在しない敵パラメータ`,"error")
+            }
+            default_magic[k]=magic_data[k]
+        }
+        return default_magic
+    }
+}
+:: Card {
+    let Rank1 = {
+        cards: [
+            _func:makeCard({name: "包丁",icon: "🔪",explane: "料理の相棒、少しダメージを与える",type: "attack",damage: 10,rank: 1})
+            _func:makeCard({name: "初心者の盾",icon: "🔰",explane: "ちょっとだけ守れる",type: "magic",is_keep: true,count: 1,block_add: 5,rank: 1})
+            _func:makeCard({name: "ハートの贈り物",icon: ":gustafgaveyoumyheart:",explane: "体力がちょっとだけ回復する",type: "magic",heal_value: 5,rank: 1})
+            _func:makeCard({name: "毒",icon: ":doku_mark:",explane: "持続ダメージを与える",type: "attack",damage: 4,is_keep: true,count: 3,rank: 1})
+            _func:makeCard({name: "ロボの足",icon: "🦿",explane: "回避率が上がる",type: "magic",escape_rate: 0.5,is_keep: true,count: 1,rank: 1})
+            _func:makeCard({name: "暴れる",icon: ":polarbear_flips:",explane: "敵全体に攻撃する",type: "attack",damage: 5,all_attack: true,rank: 1})
+            _func:makeCard({name: "体当たり",icon: ":polarbear_hayasugi:",explane: "ダメージを受ける代わりに大きなダメージを与える",type: "attack",damage: 20,jibaku: 10,cost: 1.5,rank: 1})
+            _func:makeCard({name: "怒り",icon: ":polarbear_rage:",explane: "攻撃力が増加する",type: "magic",is_keep: true,count: 1,attack_rate: 1.5,rank: 1})
+            _func:makeCard({name: "ラグいアタック",icon: ":polarbear_loading:",explane: "大きなダメージを与えるが、失敗する可能性がある",type: "attack",damage: 20,success_rate: 0.5,rank: 1})
+            _func:makeCard({name: "覚醒",icon: ":polarbear_strangedemonic:",explane: "攻撃力が上がり、防御力が下がる",cost: 2,type: "magic",attack_rate: 2,block_rate: 0.5,only_once: true,is_keep: true,count: 2,rank: 1})
+        ]
+    }
+    let Rank2 = {
+        cards: [
+            _func:makeCard({name: "ザシュッ",icon: ":ablobcat_throwing:",explane: "ザシュッて感じで攻撃する",type: "attack",damage: 30,cost: 2,attack_rate: 1.1,rank: 2})
+            _func:makeCard({name: "やめてよぉ！",icon: ":blobcatnotlikethiscry:",explane: "同情を買って敵のターンをスキップする",type: "magic",success_rate: 0.5,skip: true,cost: 2,rank: 2})
+            _func:makeCard({name: "ステルス",icon: ":blobcat_medashibo:",explane: "怪しいものではないので回避率が上がる",type: "magic",is_keep: true,count: 3,escape_rate: 0.5,cost: 3,rank: 2})
+            _func:makeCard({name: "なでなで",icon: ":ablobcat_nadenadeyou:",explane: "なでなでパワーで持続的に回復する",type: "magic",is_keep: true,count: 3,heal_value: 10,cost: 2,rank: 2})
+            _func:makeCard({name: "燃やす",icon: ":blobcatonfire:",explane: "持続的にダメージを与える、熱い",type: "attack",damage: 15,is_keep: true,count: 3,cost: 2,rank: 2})
+            _func:makeCard({name: "やってやる！！",icon: ":blobcat_grumpy:",explane: "この戦闘中攻撃力が上がる",type: "magic",attack_rate: 1.1,cost: 3,is_keep: true,count: -1,only_once: true,rank: 2})
+            _func:makeCard({name: "プリンっと跳ね返す",icon: ":flanhyperwubbel:",explane: "防御力が上がる",block_add: 30,block_rate: 1.1,type: "magic",cost: 2,is_keep: true,count: 1,rank: 2})
+            _func:makeCard({name: "弱点をギュッとする",icon: ":blobcat_gyu:",explane: "防御力と回避率が上がる",type: "magic",block_add: 10,escape_rate: 0.3,is_keep: true,count: 1,rank: 2})
+            _func:makeCard({name: "ギャンブラー",icon: ":sunglasses_delta:",explane: "低確率で大ダメージを与える",type: "attack",damage: 100,success_rate: 0.1,rank: 2})
+            _func:makeCard({name: "ぬあみ",icon: ":nuami:",explane: "この温泉には回復効果があります",type: "magic",heal_value: 30,cost: 2,rank: 2})
+        ]
+    }
+    let Rank3 = { // 特殊効果(effect_id)を付ける
+        cards: [
+            _func:makeCard({name: "無駄無駄！！",icon: ":blob_kuchibashi_MUDAMUDAMUDA:",explane: "くちばしのパンチは強い",type: "attack",cost: 4,damage: 40,rank: 3,effect_id: 1}) // effect_id 1:使用するとコストが1下がる(最小:1)
+            _func:makeCard({name: "もっと！ギャンブラー",icon: ":meowsurprised_delta:",explane: "低確率でステータスが全体的に上昇する",type: "magic",cost: 2,attack_rate: 2,block_rate: 2,rank: 3,escape_rate: 0.5,success_rate: 0.1,is_keep: true,count: 2,effect_id: 2}) // effect_id 2:使用すると成功率が0.1上がる(最大:0.5)
+            _func:makeCard({name: "なんか凄そうです！",icon: ":blob_izt:",explane: "なんか凄そうな攻撃",type: "attack",cost: 0,all_attack: true,damage: 10,rank: 3,effect_id: 3}) // effect_id 3:0.5の確率で増殖し、カードの枚数に応じて攻撃力が上がる
+            _func:makeCard({name: "アンコリーノ警備隊",icon: ":kuchibashi_ankorino:",explane: "お前は警備隊に監視されている",type: "magic",cost: 3,is_keep: true,count: -1,rank: 3,effect_id: 4}) // effect_id 4:毎ターンランダムな効果が付与される
+            _func:makeCard({name: "幽霊になる",icon: ":blobcatghostreach:",explane: "その引き換えに能力を得る",type: "magic",cost: 3,escape_rate: 0.8,is_keep: true,count: -1,rank: 3,effect_id: 5}) // effect_id 5:攻撃を受けるとき4倍のダメージを受ける
+        ]
+    }
+    @join(a,b){
+        let key=["cost","count","damage","jibaku","attack_rate", "block_rate","block_add","escape_rate","heal_value","success_rate"]
+        let up=[0.1,0.1,0,0,0, 0,0,0.01,0,0.01]
+        let time=[0,0,0.1,0.05,0.05, 0.05,0.1,0,0.1,0]
+        let valueMax=[999999999,999,999999,999999,999, 999,999999,1,999999,1]
+        let exceptValue=[[0],[-1,0],[0],[0],[1], [1],[0],[0],[0],[1]]
+        for let i, key.len {
+            var flag=false
+            for let j, exceptValue[i].len {
+                if (a[key[i]]==exceptValue[i][j]) {flag=true}
+            }
+            if (flag) {continue}
+            a[key[i]]=a[key[i]]+(b["joined"]+1)*up[i]+time[i]*b[key[i]]
+            if (a[key[i]]>valueMax[i]) a[key[i]]=valueMax[i]
+        }
+        a["joined"]+=1
+    }
+}
+:: Notice {
+    let title=["Welcome！"]
+    let explane=[`すしすき－カードゲームへようこそ！{Str:lf}楽しんでってね:ablobcat9mp_playgame:`]
+}
+:: Gacha {
+    let count=[5,1,-1] //引ける回数、-1:infinity
+    let title=["初心者応援ガチャ","日替わりガチャ","ノーマルガチャ"]
+    let cost=[0,0,100]
+    let mfm=[
+        "$[position $[x4 ⬜]]$[position.x=-8,y=-1 $[x2 $[position.x=0.4,y=-1 🔰]:ablobcat9mp_playgame:]]",
+        "$[position $[x4 ⬜]]$[position.x=-8,y=-0.5 $[x2 $[position.x=0.8 $[scale.x=1.5,y=1.5 📒]]$[position.x=-1.4,y=-1.2 $[scale.x=0.5,y=0.5 $[fg.color=000 デイリー]]]]]",
+        "$[position $[x4 ⬜]]$[position.x=-5.5,y=-1 $[scale.x=2,y=1.6 $[bounce :blobcataww:]]]"
+    ]
+    let cards=[
+        [{rate: 200*4-10,cards: Card:Rank1},{rate: 200,cards: Card:Rank2},{rate: 10,cards: Card:Rank3}]
+        [{rate: 900-5,cards: Card:Rank1},{rate: 100,cards: Card:Rank2},{rate: 5,cards: Card:Rank3}]
+        [{rate: 900-5,cards: Card:Rank1},{rate: 100,cards: Card:Rank2},{rate: 5,cards: Card:Rank3}]
+    ]
+}
+:: Profile {
+    let subname=["初めての","ベテラン","100日後に","冒険者","勝ち組","勇者","歴戦の","猛者","ループする","エンドウレス","えんどう豆","無敵","ギャンブル","ブルブル","コレクター","廃人","にゃんぷっぷ－","カードゲーマー","友達100人の","溢れそうな","大人気","人助け","ボランティア","実績のある","合体","筋トレ","キメラ"]
+}
+:: Quest {
+    let All=[
+        _func:makeQuest({
+            type: "all",explane: "初めてログインする",quest_id: 1,quest_value: 1,give: {subname_id: 0},
+            next_quest: {
+                type: "all",explane: "累計50日間ログインする",quest_id: 1,quest_value: 50,give: {subname_id: 1},
+                next_quest: {
+                    type: "all",explane: "累計100日間ログインする",quest_id: 1,quest_value: 100,give: {subname_id: 2}
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "初めてゲームをプレイする",quest_id: 2,quest_value: 1,give: {money: 100,subname_id: 3},
+            next_quest: {
+                type: "all",explane: "初めてノーマルモードをクリアする",quest_id: 3,quest_value: 1,give: {money: 500,subname_id: 4},
+                next_quest: {
+                    type: "all",explane: "ノーマルモードを10回クリアする",quest_id: 3,quest_value: 10,give: {money: 1000,subname_id: 5},
+                    next_quest: {
+                        type: "all",explane: "ノーマルモードを30回クリアする",quest_id: 3,quest_value: 30,give: {money: 1000},
+                        next_quest: {
+                            type: "all",explane: "ノーマルモードを50回クリアする",quest_id: 3,quest_value: 50,give: {money: 1000,subname_id: 6},
+                            next_quest: {
+                                type: "all",explane: "ノーマルモードを100回クリアする",quest_id: 3,quest_value: 100,give: {money: 5000,subname_id: 7},
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "エンドレスモードで1階をクリアする",quest_id: 4,quest_value: 1,give: {money: 100,subname_id: 8},
+            next_quest: {
+                type: "all",explane: "エンドレスモードで10階をクリアする",quest_id: 4,quest_value: 10,give: {money: 300,subname_id: 9},
+                next_quest: {
+                    type: "all",explane: "エンドレスモードで30階をクリアする",quest_id: 4,quest_value: 30,give: {money: 1000},
+                    next_quest: {
+                        type: "all",explane: "エンドレスモードで50階をクリアする",quest_id: 4,quest_value: 50,give: {money: 1000,subname_id: 10},
+                        next_quest: {
+                            type: "all",explane: "エンドレスモードで100階をクリアする",quest_id: 4,quest_value: 100,give: {money: 10000,subname_id: 11}
+                        }
+                    }
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "ガチャを1回引く",quest_id: 5,quest_value: 1,give: {money: 100,subname_id: 12},
+            next_quest: {
+                type: "all",explane: "ガチャを10回引く",quest_id: 5,quest_value: 10,give: {money: 300,subname_id: 13},
+                next_quest: {
+                    type: "all",explane: "ガチャを50回引く",quest_id: 5,quest_value: 50,give: {money: 1000},
+                    next_quest: {
+                        type: "all",explane: "ガチャを100回引く",quest_id: 5,quest_value: 100,give: {money: 3000,subname_id: 14},
+                        next_quest: {
+                            type: "all",explane: "ガチャを1000回引く",quest_id: 5,quest_value: 1000,give: {money: 10000,subname_id: 15}
+                        }
+                    }
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "カードを1枚入手する",quest_id: 6,quest_value: 1,give: {money: 100,subname_id: 16},
+            next_quest: {
+                type: "all",explane: "カードを30枚入手する",quest_id: 6,quest_value: 30,give: {money: 500,subname_id: 17},
+                next_quest: {
+                    type: "all",explane: "カードを100枚入手する",quest_id: 6,quest_value: 100,give: {money: 1000,subname_id: 18},
+                    next_quest: {
+                        type: "all",explane: "カードを500枚入手する",quest_id: 6,quest_value: 500,give: {money: 3000,subname_id: 19},
+                        next_quest: {
+                            type: "all",explane: "カードを1000枚入手する",quest_id: 6,quest_value: 1000,give: {money: 10000,subname_id: 20}
+                        }
+                    }
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "クエストを1回クリアする",quest_id: 7,quest_value: 1,give: {money: 100,subname_id: 21},
+            next_quest: {
+                type: "all",explane: "クエストを10回クリアする",quest_id: 7,quest_value: 10,give: {money: 500,subname_id: 22},
+                next_quest: {
+                    type: "all",explane: "クエストを100回クリアする",quest_id: 7,quest_value: 100,give: {money: 1000,subname_id: 23}
+                }
+            }
+        })
+        _func:makeQuest({
+            type: "all",explane: "カードを1回合成する",quest_id: 8,quest_value: 1,give: {money: 100,subname_id: 24},
+            next_quest: {
+                type: "all",explane: "カードを10回合成する",quest_id: 8,quest_value: 10,give: {money: 300,subname_id: 25},
+                next_quest: {
+                    type: "all",explane: "カードを100回合成する",quest_id: 8,quest_value: 100,give: {money: 1000,subname_id: 26}
+                }
+            }
+        })
+    ]
+    let Day=[
+        _func:makeQuest({type: "day",explane: "ログインする",need: {login: true},give: {money: 50}}),
+        _func:makeQuest({type: "day",explane: "10体敵を倒す",need: {kill: 10},give: {money: 100}}),
+        _func:makeQuest({type: "day",explane: "ノーマルモードを1回クリアする",need: {clear_normal: 1},give: {money: 100}}),
+        _func:makeQuest({type: "day",explane: "ノーマルモードを2回プレイする",need: {play_normal: 2},give: {money: 100}}),
+        _func:makeQuest({type: "day",explane: "カードを1回購入する",need: {buy_card: 1},give: {money: 50}}),
+        _func:makeQuest({type: "day",explane: "合計1000ダメージを与える",need: {damage_count: 1000},give: {money: 100}}),
+    ]
+    @isClear(quest,data){
+        if (quest["type"]=="day") {
+            each let k, Obj:keys(quest["need"]) {
+                if (Core:type(quest["need"][k])=="bool") {
+                    if (quest["need"][k] && (!data["status"]["quest_data_day"]["need"][k])) {return false}
+                }
+                if (Core:type(quest["need"][k])=="num") {
+                    if (quest["need"][k] > data["status"]["quest_data_day"]["need"][k]) {return false}
+                }
+            }
+            return true
+        }
+        if (quest["type"]=="season") {
+            each let k, Obj:keys(quest["need"]) {
+                if (Core:type(quest["need"][k])=="bool") {
+                    if (quest["need"][k] && (!data["status"]["quest_data_season"]["need"][k])) {return false}
+                }
+                if (Core:type(quest["need"][k])=="num") {
+                    if (quest["need"][k] > data["status"]["quest_data_season"]["need"][k]) {return false}
+                }
+            }
+            return true
+        }
+        if (quest["type"]=="all") {
+            if (quest["quest_id"]==1 && data["status"]["login_count"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==2 && data["status"]["play_count"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==3 && MyUtil:sum(data["status"]["clear"])>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==4 && data["status"]["endless_max"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==5 && data["status"]["gacha_count_all"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==6 && data["status"]["card_count"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==7 && data["status"]["quest_count"]>=quest["quest_value"]) {
+                return true
+            }
+            if (quest["quest_id"]==8 && data["status"]["join_count"]>=quest["quest_value"]) {
+                return true
+            }
+        }
+        return false
+    }
+}
+:: Enemy {
+    let Rank1 = {
+        enemies: [
+            _func:makeEnemy({name: "スライム",icon: ":blobcat_haguremetal:",hp: 60,
+                attack: [_func:makeAttack({name: "叩く",damage: 7}),_func:makeAttack({name: "頑張って叩く",damage: 11}),_func:makeAttack({name: "毒を吐く",damage: 5,count: 2,is_keep: true})],
+                magic: [_func:makeMagic({name: "回復",heal_effect: true,power: 10}),_func:makeMagic({name: "溶ける",escape_effect: true,power: 0.5,count: 2}),_func:makeMagic({name: "本気",attack_effect: true,power: 1.5,count: 2})]})
+            _func:makeEnemy({name: "ウンチゲボザウルス",icon: ":poop_vomiting_saurus:",hp: 100,block: 5
+                attack: [_func:makeAttack({name: "体当たり",damage: 3})],
+                magic: [_func:makeMagic({name: "ゲボ",escape_effect: true,power: 0.5,count: 2}),_func:makeMagic({name: "便秘",block_effect: true,power: 1.5,count: 2})]})
+            _func:makeEnemy({name: "爆弾ベア",icon: ":polarbear_intheshadows:",hp: 50,
+                attack: [_func:makeAttack({name: "自爆",damage: 50,jibaku: 999999999,delay: 6,only_once: true})],
+                magic: [_func:makeMagic({name: "準備",attack_effect: true,power: 1.1,count: 10,success_rate: 0.5}),_func:makeMagic({name: "回復",heal_effect: true,power: 5})]})
+            _func:makeEnemy({name: "ぺしぺしにゃんぷぷ",icon: ":ameowbongo:",hp: 100,
+                attack: [_func:makeAttack({name: "ぺしぺし",damage: 5,no_escape: true})]})
+            _func:makeEnemy({name: "ひんやりにゃんぷぷ",icon: ":meowblue:",hp: 50,
+                attack: [_func:makeAttack({name: "凍傷",damage: 1,is_keep: true,count: -1})]})
+        ]
+        boss: [
+            _func:makeEnemy({name: "Big駄々っ子",icon: ":ablobcat_dadakko:",hp: 200,
+                attack: [_func:makeAttack({name: "暴れる",damage: 15})],
+                magic: [_func:makeMagic({name: "やだやだ！",attack_effect: true,power: 1.2,success_rate: 0.6,count: -1}),_func:makeMagic({name: "完全回復",heal_effect: true,only_once: true,power: 999999999})]})
+        ]
+    }
+    let Rank2 = {
+        enemies: [
+            _func:makeEnemy({name: "気が狂うにゃんぷぷ",icon: ":blobcatgooglynotlikethis:",hp: 150,block: 10,
+                attack: [_func:makeAttack({name: "ビーム",damage: 30}),_func:makeAttack({name: "高圧ナス",damage: 30,delay: 2}),_func:makeAttack({name: "毒をばらまく",is_keep: true,count: 3,damage: 12})],
+                magic: [_func:makeMagic({name: "殺意",attack_effect: true,power: 1.5,count: 2}),_func:makeMagic({name: "not like this",escape_effect: true,power: 0.5,count: 2})]})
+            _func:makeEnemy({name: "ファイヤーにゃんぷぷ",icon: ":blobcatonfire:",hp: 200,
+                attack: [_func:makeAttack({name: "熱い攻撃",damage: 50,jibaku: 30})],
+                magic: [_func:makeMagic({name: "火だるま",attack_effect: true,power: 1.2,count: 3}),_func:makeMagic({name: "消火",heal_effect: true,power: 20})]})
+            _func:makeEnemy({name: "thinking",icon: ":thinking_garbled:",hp: 300,
+                attack: [_func:makeAttack({name: "普通の攻撃",damage: 15})],
+                magic: [_func:makeMagic({name: "考える",attack_effect: true,power: 1.5,count: 3,success_rate: 0.5})]})
+            _func:makeEnemy({name: "アンコリーノ犬",icon: ":ankorino_dog:",hp: 100,
+                attack: [_func:makeAttack({name: "噛みつく",damage: 60,no_escape: true})]})
+        ]
+        boss: [
+            _func:makeEnemy({name: "おいでよにゃんぷぷ",icon: ":ablobcatpnd_zyare:",hp: 500,block: 10,
+                attack: [_func:makeAttack({name: "来ないなら行く",damage: 50,no_escape: true}),_func:makeAttack({name: "まきびし",damage: 20,count: 3})],
+                magic: [_func:makeMagic({name: "カウントダウン",attack_effect: true,delay: 10,power: 4})]})
+        ]
+    }
+}
+:: Game {
+    let items=[
+        {icon: ":ablobcat_barrier:",name: "にゃんぷぷの守護",explane: @(dif){return "防御力が2倍になる"},cost: 200,effect_id: 1}
+        {icon: ":blob_kuchibachi_is_watching_you:",name: "くちばしは見ている",explane: @(dif){return `{5*(dif+1)}以下のダメージを受けない`},cost: 500,effect_id: 2}
+        {icon: ":pizza_charged_with_electricity:",name: "電気ピザ",explane: @(dif){return `戦闘開始時に{20*(dif+1)}ダメージ受けるが、毎ターン{7*(dif+1)}回復する`},cost: 300,effect_id: 3}
+        {icon: ":imomushineko_money:",name: "金の亡者",explane: @(dif){return `クリア時に金を2倍手にいれる`},cost: 0,effect_id: 4}
+    ]
+}
+let day_quest=3
+let tips=["回避率は1番高いものだけが適用される","カードは小数でパラメータを決め、適用時は整数","クリアしたクエストがないよ！","AにBを合成するのとBにAを合成するのでは訳が違う","持続ターン数は敵攻撃後に処理し、0になったら効果が切れる"]
+
+@makeData(){
+    var first_cards=[
+        Obj:copy(Card:Rank1["cards"][0])
+        Obj:copy(Card:Rank1["cards"][0])
+        Obj:copy(Card:Rank1["cards"][1])
+        Obj:copy(Card:Rank1["cards"][1])
+        Obj:copy(Card:Rank1["cards"][2])
+        Obj:copy(Card:Rank1["cards"][2])
+    ]
+    var i=0
+    each let e, first_cards {
+        e["id"]=i
+        i+=1
+    }
+    return {
+        profile: {name: null,icon: null,subname: ["",""]},
+        items: {money: 0,cards: first_cards,subnames: [false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],use_card: [],card_id_max: i}
+        status: {date: [0,1,1],login: false,login_count: 0,notice: [true],gacha_count: [0,0,0],card_count: 0,buy: [],game_count: 0,join_count: 0,quest_count: 0,quest: MyUtil:deepCopy(Quest:All),quest_data_day: _func:makeQuest({}),gacha_count_all: 0,damage_count: 0,heal_count: 0,max_damage: 0,kill: 0,clear: [0,0,0],endless_max: 0,play_count: 0}
+        strength: {level: 0,exp: 0,attack_rate: 0,block_rate: 0,heal_rate: 0,hp_add: 0,cost_add: 0,card_capacity: 10}
+        version: 0
+    }
+}
+@makeDebugData(data){
+    var dataCopy=MyUtil:deepCopy(data)
+    if (Core:type(dataCopy)=="obj") {
+        var keys=Obj:keys(dataCopy)
+        each let k, keys {
+            if (k=="profile" && Core:type(dataCopy[k])=="obj") {
+                dataCopy[k]["name"]="***"
+            }
+            if (k=="items"  && Core:type(dataCopy[k])=="obj") {
+                dataCopy[k]["cards"]=[]
+                dataCopy[k]["use_card"]=[]
+            }
+            if (k=="status"  && Core:type(dataCopy[k])=="obj") {
+                dataCopy[k]["buy"]=[]
+                dataCopy[k]["quest"]=[]
+            }
+        }
+    }
+    var dataStr=Core:to_str(dataCopy).trim()
+    if (dataStr.len>2500) {dataStr=[dataStr.slice(0,2497),"..."].join()}
+    return dataStr
+}
