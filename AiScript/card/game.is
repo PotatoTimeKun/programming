@@ -1,0 +1,1698 @@
+var index=0
+var sub_index=0
+var page_type=""
+var quest_index=0
+var data=null
+var inputText=""
+var now=Date:now()
+var today=[Date:year(now),Date:month(now),Date:day(now)]
+var debug_data=""
+var card=null
+var cards=[]
+var return_index=0
+var join_index=0
+var send_text=""
+var ui_index=0
+var before_index=0
+var next_index=0
+var gacha_10count=0
+var play_mode="normal"
+var difficulty=0
+var difficulty_add=0
+var game=null
+var stage=[{},{}]
+var stage_select=0
+var boss=false
+var mode=""
+var buyed=[false false]
+var focus=0
+var selectedCard=0
+@makeGameData(){
+    var myCards=[]
+    each let e, data["items"]["use_card"] {
+        each let card, data["items"]["cards"] {
+            if (card["id"]==e) {
+                myCards.push(MyUtil:deepCopy(card))
+                break
+            }
+        }
+    }
+    var tmp= {
+        player: {max_hp: 100+Math:floor(data["strength"]["hp_add"]),hp: 100+Math:floor(data["strength"]["hp_add"]),cost: 3+Math:floor(data["strength"]["cost_add"]),used_cost: 0,cards: myCards,hand: [],next: [],attack_rate: 1,attack: 0+data["strength"]["attack_rate"],block_rate: 1,block: 0+data["strength"]["block_rate"],used_block: 0,keep: [],escape_rate: 0}
+        enemies: []
+        status: {stage_count: null,enemy_attack_rate: 0,enemy_block_rate: 0,items: [],damage_count: 0,heal_count: 0,max_damage: 0,kill: 0,money: 0}
+    }
+    if (tmp["player"]["max_hp"]>999999999) {tmp["player"]["max_hp"]=999999999}
+    if (tmp["player"]["hp"]>999999999) {tmp["player"]["hp"]=999999999}
+    if (tmp["player"]["cost"]>999) {tmp["player"]["cost"]=999}
+    if (tmp["player"]["attack"]>999999) {tmp["player"]["attack"]=999999}
+    if (tmp["player"]["block"]>999999) {tmp["player"]["block"]=999999}
+    return tmp
+}
+@isGameEnd(){
+    if (game["player"]["hp"]<=0) return true
+    each let e, game["enemies"] {
+        if (e["hp"]>0) return false
+    }
+    return true
+}
+var randCommon=Math:gen_rng(`{Date:now()}{USER_ID}card`)
+@attack(entity,damage,toPlayer,noEscape,jibaku){
+    damage=Math:floor(damage)
+    if (damage<0) {
+        Mk:dialog("エラー" "ダメージ量がマイナスになってます" "error")
+        return false
+    }
+    if (toPlayer) {
+        each let e, game["player"]["keep"] {
+            if (e["effect_id"]==5) damage=damage*4
+        }
+    }
+    if (toPlayer && damage<=5*(difficulty+1)) {
+        each let e, game["status"]["items"] {
+            if (e["effect_id"]==2) return false
+        }
+    }
+    if (randCommon()<entity["escape_rate"] && (!noEscape)) {return false}
+    if (damage<=Math:floor(entity["block"]*entity["block_rate"])-entity["used_block"]) {
+        entity["used_block"]+=damage
+        damage=0
+    }
+    else if (Math:floor(entity["block"]*entity["block_rate"])-entity["used_block"]>0) {
+        damage-=Math:floor(entity["block"]*entity["block_rate"])-entity["used_block"]
+        entity["used_block"]=Math:floor(entity["block"]*entity["block_rate"])
+    }
+    entity["hp"]-=damage
+    if (entity["hp"]<0) entity["hp"]=0
+    if (!toPlayer && !jibaku) {
+        game["status"]["damage_count"]+=damage
+        if (game["status"]["max_damage"]<damage) game["status"]["max_damage"]=damage
+    }
+    return true
+}
+@heal(entity,value,toPlayer){
+    if (value<0) {
+        Mk:dialog("エラー" "回復量がマイナスになってます" "error")
+        return null
+    }
+    entity["hp"]+=value
+    if (entity["hp"]>entity["max_hp"]) entity["hp"]=entity["max_hp"]
+    if (!toPlayer) game["status"]["heal_count"]+=value
+}
+@drawCard(){
+    if (game["player"]["next"]==null) {game["player"]["next"]=MyUtil:deepCopy(game["player"]["cards"])}
+    if (game["player"]["next"].len==0) {game["player"]["next"]=MyUtil:deepCopy(game["player"]["cards"])}
+    var rand=Math:gen_rng(`{Date:now()}{USER_ID}draw{game["player"]["next"].len}`)
+    var index=rand(0,game["player"]["next"].len-1)
+    game["player"]["hand"].push(game["player"]["next"][index])
+    game["player"]["next"]=MyUtil:removeAt(game["player"]["next"],index)
+}
+@attackMessage(do,to,value){
+    Mk:dialog("" `{do}で{to}に{value}ダメージ！`)
+}
+@healMessage(do,to,value){
+    Mk:dialog("" `{do}で{to}が{value}回復した！`)
+}
+@useCard(){
+    card=game["player"]["hand"][selectedCard]
+    game["player"]["used_cost"]+=Math:floor(card["cost"])
+    if (randCommon()>=card["success_rate"]) {
+        Mk:dialog("" `{card["name"]}の発動に失敗した！`)
+        return null
+    }
+    if (Math:floor(card["jibaku"])>0) {
+        attack(game["player"],Math:floor(card["jibaku"]),true,card["no_escape"],true)
+        attackMessage(`{card["name"]}の自爆効果` data["profile"]["name"] Math:floor(card["jibaku"]))
+    }
+    if (card["is_keep"]) {
+        if (card["attack_rate"]>1) game["player"]["attack_rate"]=game["player"]["attack_rate"]+(card["attack_rate"]-1)
+        else game["player"]["attack_rate"]=game["player"]["attack_rate"]*card["attack_rate"]
+        if (card["block_rate"]>1) game["player"]["block_rate"]=game["player"]["block_rate"]+(card["block_rate"]-1)
+        else game["player"]["block_rate"]=game["player"]["block_rate"]*card["block_rate"]
+        game["player"]["block"]+=card["block_add"]
+        if (game["player"]["escape_rate"]<card["escape_rate"]) game["player"]["escape_rate"]=card["escape_rate"]
+        game["player"]["keep"].push(MyUtil:deepCopy(card))
+        game["player"]["keep"][game["player"]["keep"].len-1]["focus"]=focus
+    } else {
+        if (Math:floor(card["damage"])>0) {
+            if (card["all_attack"]) {
+                each let e, game["enemies"] {attack(e,Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]),false,false,card["no_escape"])}
+                attackMessage(card["name"],"敵全体",Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]))
+            } else {
+                var attacked = attack(game["enemies"][focus],Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]),false,false,card["no_escape"])
+                if (attacked) attackMessage(card["name"],game["enemies"][focus]["name"],Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]))
+            }
+        }
+        if (Math:floor(card["heal_value"])>0) {
+            heal(game["player"],Math:floor(card["heal_value"]),true)
+            healMessage(card["name"],data["profile"]["name"],Math:floor(card["heal_value"]))
+        }
+        if (card["skip"]) {
+            each let e, game["enemies"] {
+                e["cooldown"]+=1
+                Mk:dialog("" "敵のターンを1ターンスキップ！")
+            }
+        }
+    }
+    if (card["only_once"]) {
+        var id=card["id"]
+        var cardArr=[game["player"]["hand"],game["player"]["next"],game["player"]["cards"]]
+        each let array , cardArr {
+            for let i, array.len {
+                if (array[i]["id"]!=id) continue
+                array=MyUtil:removeAt(array,i)
+            }
+        }
+        return null
+    }
+    if (card["only_once"]) {
+        var id=card["id"]
+        var cardArr=[game["player"]["hand"],game["player"]["next"],game["player"]["cards"]]
+        for let arrayIndex , cardArr.len {
+            var removeIndex=[]
+            for let i, cardArr[arrayIndex].len {
+                if (cardArr[arrayIndex][i]["id"]!=id) continue
+                removeIndex.push(i)
+            }
+            for let i, removeIndex.len {
+                if (arrayIndex==0) {
+                    game["player"]["hand"]=MyUtil:removeAt(cardArr[arrayIndex],removeIndex[removeIndex.len-i-1])
+                    cardArr[0]=game["player"]["hand"]
+                }
+                if (arrayIndex==1) game["player"]["next"]=MyUtil:removeAt(cardArr[arrayIndex],removeIndex[removeIndex.len-i-1])
+                if (arrayIndex==2) game["player"]["cards"]=MyUtil:removeAt(cardArr[arrayIndex],removeIndex[removeIndex.len-i-1])
+            }
+        }
+        return null
+    }
+    if (card["effect_id"]==1) {
+        cardArr=[game["player"]["hand"],game["player"]["next"],game["player"]["cards"]]
+        each let array , cardArr {
+            each let c, array {
+                if (c["id"]!=card["id"]) continue
+                c["cost"]-=1
+                if (c["cost"]<0) c["cost"]=0
+            }
+        }
+    }
+    if (card["effect_id"]==2) {
+        cardArr=[game["player"]["hand"],game["player"]["next"],game["player"]["cards"]]
+        each let array , cardArr {
+            each let c, array {
+                if (c["id"]!=card["id"]) continue
+                c["success_rate"]+=0.1
+                if (c["success_rate"]>0.5) c["success_rate"]=0.5
+            }
+        }
+    }
+    if (card["effect_id"]==3 && randCommon()<0.5) {
+        card["damage"]=card["damage"]*2
+        game["player"]["cards"].push(MyUtil:deepCopy(card))
+        game["player"]["next"].push(MyUtil:deepCopy(card))
+    }
+    game["player"]["hand"]=MyUtil:removeAt(game["player"]["hand"],selectedCard)
+}
+@enemyAttack(enemy,attack1){
+    if (attack1["only_once"]) {
+        var index=0
+        for let i, enemy["attack"].len {
+            if (enemy["attack"][i]["name"]==attack1["name"]) {
+                index=i
+                break
+            }
+        }
+        enemy["attack"]=MyUtil:removeAt(enemy["attack"],index)
+    }
+    if (attack1["delay"]>0) {
+        enemy["used_attack"].push(MyUtil:deepCopy(attack1))
+        Mk:dialog("" `{enemy["name"]}は{attack1["delay"]-1}ターン後に{attack1["name"]}を発動しようとしている...`)
+        return null
+    }
+    if (Math:floor(attack1["jibaku"])>0) {
+        attack(enemy,Math:floor(attack1["jibaku"]),false,true,true)
+        Mk:dialog("" `{enemy["name"]}は{attack1["name"]}で{Math:floor(attack1["jibaku"])}の自爆ダメージを受けた！`)
+    }
+    if (attack1["is_keep"]) {
+        enemy["used_attack"].push(MyUtil:deepCopy(attack1))
+    } else {
+        var attacked = attack(game["player"],Math:floor((attack1["damage"])*enemy["attack_rate"]),true,attack1["no_escape"],false)
+        if (attacked) attackMessage(`{enemy["name"]}の{attack1["name"]}`,data["profile"]["name"],Math:floor((attack1["damage"])*enemy["attack_rate"]))
+    }
+}
+@enemyMagic(enemy,magic){
+    if (randCommon()>=magic["success_rate"]) {
+        Mk:dialog("" `{enemy["name"]}は{magic["name"]}に失敗した！`)
+        return null
+    }
+    if (magic["only_once"]) {
+        var index=0
+        for let i, enemy["magic"].len {
+            if (enemy["magic"][i]["name"]==magic["name"]) {
+                index=i
+                break
+            }
+        }
+        enemy["magic"]=MyUtil:removeAt(enemy["magic"],index)
+    }
+    if (magic["delay"]>0) {
+        enemy["used_magic"].push(MyUtil:deepCopy(magic))
+        Mk:dialog("" `{enemy["name"]}は{magic["delay"]-1}ターン後に{magic["name"]}を発動しようとしている...`)
+        return null
+    }
+    if (magic["attack_effect"]) {
+        enemy["attack_rate"]=enemy["attack_rate"]*magic["power"]
+        Mk:dialog("" `{enemy["name"]}は{magic["name"]}で攻撃力が{magic["power"]}倍になった！({magic["count"]-1}ターン)`)
+    }
+    if (magic["block_effect"]) {
+        enemy["block_rate"]=enemy["block_rate"]*magic["power"]
+        Mk:dialog("" `{enemy["name"]}は{magic["name"]}で防御力が{magic["power"]}倍になった！({magic["count"]-1}ターン)`)
+    }
+    if (magic["escape_effect"]) {
+        enemy["escape_rate"]=magic["power"]
+        Mk:dialog("" `{enemy["name"]}は{magic["name"]}で回避率が{Math:floor(enemy["escape_rate"]*100)}%になった！({magic["count"]-1}ターン)`)
+    }
+    if (magic["heal_effect"] && magic["count"]==0) {
+        heal(enemy,magic["power"],false)
+        Mk:dialog("" `{enemy["name"]}は{magic["name"]}で{magic["power"]}回復した！`)
+    }
+    if (magic["count"]!=0) {
+        enemy["used_magic"].push(MyUtil:deepCopy(magic))
+    }
+}
+@main(){
+    if (index==0) {
+        data=Mk:load("CardData")
+        if (data==null) {
+            index=1
+        } else {
+            index=2
+        }
+    }
+    if (index==1) {
+        data=makeData()
+        Ui:render([
+            Ui:C:textInput({label: "名前を入力してください",onInput: @(text){inputText=text}})
+            Ui:C:button({text: "決定",onClick: @(){
+                if (inputText==null || inputText=="") {
+                    Mk:dialog("Hey!" "名前を入力してください")
+                    return null
+                }
+                if (inputText.len>10) {
+                    Mk:dialog("お前!" "10文字以内にしてください")
+                    return null
+                }
+                data["profile"]["name"]=inputText
+                Mk:save("CardData",data)
+                index=2
+                main()
+            }})
+        ])
+        return null
+    }
+    if (index==2) {
+        if (!MyUtil:arrEqual(data["status"]["date"],today)) {
+            data["status"]["date"]=MyUtil:deepCopy(today)
+            data["status"]["login"]=false
+            data["status"]["gacha_count"][1]=0
+            var delete_index=[]
+            for let i, data["status"]["quest"].len {
+                if (data["status"]["quest"][i]["due"][0]==-1) {continue}
+                if (MyUtil:dateGt(today,data["status"]["quest"][i]["due"])) {
+                    delete_index.unshift(i)
+                }
+            }
+            each let i, delete_index {
+                data["status"]["quest"]=data["status"]["quest"].slice(0,i).concat(data["status"]["quest"].slice(i+1,data["status"]["quest"].len))
+            }
+        }
+        index=3
+    }
+    if (index==3) {
+        if (!data["status"]["login"]) {
+            data["status"]["login"]=true
+            data["status"]["login_count"]+=1
+            data["status"]["buy"]=[]
+            var quest_ind=[]
+            var rand=Math:gen_rng(`{today[0]}{today[1]}{today[2]}{USER_ID}`)
+            for let i, day_quest {
+                var j=rand(0,Quest:Day.len-1)
+                loop {
+                    if (!MyUtil:existIn(quest_ind,j)) {break}
+                    j=(j+1)%Quest:Day.len
+                }
+                quest_ind.push(j)
+            }
+            each let i, quest_ind {
+                var new_quest=MyUtil:deepCopy(Quest:Day[i])
+                new_quest["due"]=MyUtil:nextDay(today)
+                data["status"]["quest"].push(new_quest)
+            }
+            data["status"]["quest_data_day"]=_func:makeQuest({})
+            data["status"]["quest_data_day"]["need"]["login"]=true
+            var bonus=rand(1,6)*50
+            data["items"]["money"]+=bonus
+            Ui:render([
+                Ui:C:mfm({text: `ログインありがとう！:blob_hello:{Str:lf}{bonus}すしをゲットしたよ！`})
+                Ui:C:button({text: "OK",onClick: @(){
+                    index=4
+                    sub_index=0
+                    main()
+                }})
+            ])
+            Mk:save("CardData",data)
+            return null
+        }
+        index=4
+        sub_index=0
+    }
+    if (index==4) {
+        loop {
+            if (sub_index>=Notice:title.len) {break}
+            if (data["status"]["notice"][sub_index]) break
+            sub_index+=1
+        }
+        if (sub_index<Notice:title.len) {
+            Ui:render([
+                Ui:C:text({text: Notice:title[sub_index]})
+                Ui:C:mfm({text: Notice:explane[sub_index]})
+                Ui:C:button({text: "OK",onClick: @(){
+                    data["status"]["notice"][sub_index]=false
+                    main()
+                }})
+            ])
+            return null
+        }
+        Mk:save("CardData",data)
+        index=10
+    }
+    if (index==10) {
+        var rand=Math:gen_rng(`{Date:now()}{USER_ID}`)
+        var text=tips[rand(0,tips.len-1)]
+        each let q, data["status"]["quest"] {
+            if (Quest:isClear(q,data)) {
+                text="クリアしたクエストがあるよ！"
+                break
+            }
+        }
+        Ui:render([
+            Ui:C:button({
+                text: "ゲームをPlay",
+                onClick: @(){
+                    index=100
+                    main()
+                }
+            })
+            Ui:C:buttons({
+                buttons: [
+                    {text: "クエスト",onClick: @(){
+                        index=20
+                        page_type="all"
+                        sub_index=0
+                        main()
+                    }}
+                    {text: "ショップ",onClick: @(){
+                        index=30
+                        page_type="day"
+                        sub_index=0
+                        main()
+                    }}
+                ]
+            })
+            Ui:C:buttons({
+                buttons: [
+                    {text: "デッキ作成",onClick: @(){
+                        index=40
+                        sub_index=0
+                        main()
+                    }}
+                    {text: "カード合成",onClick: @(){
+                        index=50
+                        sub_index=0
+                        join_index=0
+                        main()
+                    }}
+                ]
+            })
+            Ui:C:buttons({
+                buttons: [
+                    {text: "ガチャ",onClick: @(){
+                        index=60
+                        sub_index=0
+                        main()
+                    }}
+                    {text: "プロフィール",onClick: @(){
+                        index=70
+                        main()
+                    }}
+                ]
+            })
+            Ui:C:buttons({
+                buttons: [
+                    {text: "バグ報告",onClick: @(){
+                        index=80
+                        main()
+                    }}
+                ]
+            })
+            Ui:C:text({text: text})
+        ])
+        return null
+    }
+    if (index==20) {
+        var explane="クエストがないよ"
+        var give=""
+        var type_name=""
+        var i=0
+        var j=0
+        if (page_type=="all") {type_name="常設"}
+        if (page_type=="day") {type_name="デイリー"}
+        loop {
+            if (i>=data["status"]["quest"].len) {break}
+            if (data["status"]["quest"][i]["type"]==page_type) {j+=1}
+            if (j==sub_index+1) {break}
+            i+=1
+        }
+        var disable=true
+        if (i<data["status"]["quest"].len) {
+            quest_index=i
+            disable=!Quest:isClear(data["status"]["quest"][i],data)
+            explane=data["status"]["quest"][i]["explane"]
+            give="報酬:"
+            if (data["status"]["quest"][i]["give"]["money"]!=0) {give=[give,`{data["status"]["quest"][i]["give"]["money"]}すし `].join()}
+            if (data["status"]["quest"][i]["give"]["card"]!=null) {give=[give,`カード「{data["status"]["quest"][i]["give"]["card"]["name"]}」 `].join()}
+            if (data["status"]["quest"][i]["give"]["subname_id"]!=null) {give=[give,`称号「{Profile:subname[data["status"]["quest"][i]["give"]["subname_id"]]}」 `].join()}
+        }
+        Ui:render([
+            Ui:C:text({text: `{type_name}イベント`})
+            Ui:C:text({text: explane})
+            Ui:C:text({text: give})
+            Ui:C:button({
+                text: "受け取る"
+                onClick: @(){
+                    if (data["status"]["quest"][quest_index]["give"]["money"]!=0) {
+                        data["items"]["money"]+=data["status"]["quest"][quest_index]["give"]["money"]
+                    }
+                    if (data["status"]["quest"][quest_index]["give"]["card"]!=null) {
+                        var card=MyUtil:deepCopy(data["status"]["quest"][quest_index]["give"]["card"])
+                        card["id"]=data["items"]["card_id_max"]+1
+                        data["items"]["card_id_max"]+=1
+                        data["items"]["cards"].push(card)
+                    }
+                    if (data["status"]["quest"][quest_index]["give"]["subname_id"]!=null) {
+                        data["items"]["subnames"][data["status"]["quest"][quest_index]["give"]["subname_id"]]=true
+                    }
+                    if (data["status"]["quest"][quest_index]["next_quest"]!=null) {
+                        data["status"]["quest"][quest_index]=MyUtil:deepCopy(data["status"]["quest"][quest_index]["next_quest"])
+                    }
+                    else {
+                        data["status"]["quest"]=data["status"]["quest"].slice(0,quest_index).concat(data["status"]["quest"].slice(quest_index+1,data["status"]["quest"].len))
+                    }
+                    data["status"]["quest_count"]+=1
+                    Mk:save("CardData",data)
+                    main()
+                }
+                disabled: disable
+            })
+            Ui:C:text({text: `{sub_index+1}ページ目`})
+            Ui:C:buttons({buttons: [
+                {text: "前のページ",onClick: @(){
+                    sub_index-=1
+                    if (sub_index<0) {sub_index=0}
+                    main()
+                }}
+                {text: "次のページ",onClick: @(){
+                    sub_index+=1
+                    main()
+                }}
+            ]})
+            Ui:C:buttons({buttons: [
+                {text: "常設",onClick: @(){
+                    sub_index=0
+                    page_type="all"
+                    main()
+                }}
+                {text: "デイリー",onClick: @(){
+                    sub_index=0
+                    page_type="day"
+                    main()
+                }}
+            ]})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==30) {
+        cards=[]
+        var rand=Math:gen_rng(`{today[0]}{today[1]}{today[2]}{USER_ID}shop`)
+        var text=""
+        var disable=true
+        var money=100
+        var detail=""
+        var explane=""
+        var price=""
+        for let i, sub_index+1 {
+            if (rand(1,30)==1) {
+                cards.push(MyUtil:deepCopy(Card:Rank2["cards"][rand(0,Card:Rank2["cards"].len-1)]))
+                money=1000
+            } else {
+                cards.push(MyUtil:deepCopy(Card:Rank1["cards"][rand(0,Card:Rank1["cards"].len-1)]))
+            }
+            if (rand(1,3)==1) {
+                Card:join(cards[i],cards[i])
+            }
+            if (rand(1,20)==1) {
+                Card:join(cards[i],cards[i])
+            }
+            disable=false
+            if (MyUtil:existIn(data["status"]["buy"],i)) {
+                text="売り切れ"
+                explane=""
+                price=""
+                disable=true
+                continue
+            }
+            cards[i]["id"]=i
+            var count_txt=""
+            if (cards[i]["joined"]!=0) {count_txt=`+{cards[i]["joined"]}`}
+            text=["「",cards[i]["name"],"」",count_txt,"  $[x2 $[scale.y=1.5,x=1.2 ⬜]]$[position.x=-2.4 ",cards[i]["icon"],"]"].join()
+                explane=`説明:{cards[i]["explane"]}`
+                price=`価格:{money}すし`
+        }
+        if (data["items"]["money"]>=money) {disable=false}
+        Ui:render([
+            Ui:C:text({text: `所持金 {data["items"]["money"]}すし`})
+            Ui:C:mfm({text: text})
+            Ui:C:text({text: explane})
+            Ui:C:text({text: price})
+            Ui:C:button({
+                text: "詳細"
+                onClick: @(){
+                    index=-10
+                    return_index=30
+                    card=cards[sub_index]
+                    main()
+                }
+            })
+            Ui:C:button({
+                text: "買う"
+                onClick: @(){
+                    data["items"]["money"]-=100
+                    if (cards[sub_index]["rank"]==2) {
+                        data["items"]["money"]-=900
+                    }
+                    var new_card=MyUtil:deepCopy(cards[sub_index])
+                    new_card["id"]=data["items"]["card_id_max"]+1
+                    data["items"]["card_id_max"]+=1
+                    data["items"]["cards"].push(new_card)
+                    data["status"]["card_count"]+=1
+                    data["status"]["quest_data_day"]["need"]["buy_card"]+=1
+                    data["status"]["buy"].push(sub_index)
+                    Mk:save("CardData",data)
+                    main()
+                }
+                disabled: disable
+            })
+            Ui:C:text({text: `{sub_index+1}ページ目`})
+            Ui:C:buttons({buttons: [
+                {text: "前のページ",onClick: @(){
+                    sub_index-=1
+                    if (sub_index<0) {sub_index=0}
+                    main()
+                }}
+                {text: "次のページ",onClick: @(){
+                    sub_index+=1
+                    if (sub_index>2) {sub_index=2}
+                    main()
+                }}
+            ]})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==40) {
+        var items=[]
+        var is_use=[]
+        for let i, data["items"]["cards"].len {
+            var in_text=""
+            if (MyUtil:existIn(data["items"]["use_card"],data["items"]["cards"][i]["id"])) {
+                in_text="(使用中)"
+                is_use.push(true)
+            } else {is_use.push(false)}
+            items.push({text: `「{data["items"]["cards"][i]["name"]}」+{data["items"]["cards"][i]["joined"]}{in_text}`,value: `{i}`})
+        }
+        var limit_text=""
+        var disable=false
+        if (data["items"]["use_card"].len>=data["strength"]["card_capacity"]) {
+            disable=true
+            limit_text=`デッキのカード枚数が上限({data["strength"]["card_capacity"]}枚)に達しました`
+        }
+        Ui:render([
+            Ui:C:text({text: limit_text})
+            Ui:C:select({items: items,default: `{sub_index}`,label: "カードを選択",onChange: @(value){
+                sub_index=value.to_num()
+                main()
+            }})
+            Ui:C:button({
+                text: "詳細"
+                onClick: @(){
+                    index=-10
+                    return_index=40
+                    card=data["items"]["cards"][sub_index]
+                    main()
+                }
+            })
+            Ui:C:button({
+                text: "デッキに追加"
+                onClick: @(){
+                    data["items"]["use_card"].push(data["items"]["cards"][sub_index]["id"])
+                    Mk:save("CardData",data)
+                    main()
+                }
+                disabled: is_use[sub_index] || disable
+            })
+            Ui:C:button({
+                text: "デッキから削除"
+                onClick: @(){
+                    var delete_index=null
+                    for let i, data["items"]["use_card"].len {
+                        if (data["items"]["use_card"][i]==data["items"]["cards"][sub_index]["id"]) {
+                            delete_index=i
+                        }
+                    }
+                    if (delete_index==null) {
+                        Mk:dialog("エラー","デッキの中にカードが見つかりませんでした","error")
+                    } else {
+                        data["items"]["use_card"]=data["items"]["use_card"].slice(0,delete_index).concat(data["items"]["use_card"].slice(delete_index+1,data["items"]["use_card"].len))
+                    }
+                    main()
+                }
+                disabled: (!is_use[sub_index])
+            })
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==50) {
+        var items=[]
+        var is_use=[]
+        for let i, data["items"]["cards"].len {
+            var in_text=""
+            if (MyUtil:existIn(data["items"]["use_card"],data["items"]["cards"][i]["id"])) {
+                in_text="(使用中)"
+                is_use.push(true)
+            } else {is_use.push(false)}
+            items.push({text: `「{data["items"]["cards"][i]["name"]}」+{data["items"]["cards"][i]["joined"]}{in_text}`,value: `{i}`})
+        }
+        var join_enable=[]
+        var first_index=-1
+        var flag=false
+        for let i, data["items"]["cards"].len {
+            if (is_use[i] || i==sub_index || data["items"]["cards"][i]["name"]!=data["items"]["cards"][sub_index]["name"]) {continue}
+            if (first_index==-1) {first_index=i}
+            if (i==join_index) {flag=true}
+            join_enable.push({text: `「{data["items"]["cards"][i]["name"]}」+{data["items"]["cards"][i]["joined"]}`,value: `{i}`})
+        }
+        if (!flag) {join_index=first_index}
+        var disable=false
+        if (first_index==-1) {
+            join_enable.push({text: "このカードと合成可能なカードがありません",value: `{sub_index}`})
+            disable=true
+            join_index=sub_index
+        }
+        Ui:render([
+            Ui:C:select({items: items,default: `{sub_index}`,label: "合成するカードを選択",onChange: @(value){
+                sub_index=value.to_num()
+                main()
+            }})
+            Ui:C:select({items: join_enable,default: `{join_index}`,label: "消費するカードを選択",caption: "注意:デッキに登録中のカードは選択できません",onChange: @(value){
+                join_index=value.to_num()
+                main()
+            }})
+            Ui:C:button({
+                text: "合成するカードの詳細"
+                onClick: @(){
+                    index=-10
+                    return_index=50
+                    card=data["items"]["cards"][sub_index]
+                    main()
+                }
+            })
+            Ui:C:button({
+                text: "合成"
+                onClick: @(){
+                    Card:join(data["items"]["cards"][sub_index],data["items"]["cards"][join_index])
+                    data["items"]["cards"]=data["items"]["cards"].slice(0,join_index).concat(data["items"]["cards"].slice(join_index+1,data["items"]["cards"].len))
+                    data["status"]["join_count"]+=1
+                    data["status"]["quest_data_day"]["need"]["join_card"]+=1
+                    data["status"]["quest_data_season"]["need"]["join_card"]+=1
+                    Mk:save("CardData",data)
+                    sub_index=0
+                    main()
+                }
+                disabled: disable
+            })
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==60) {
+        var flag=false
+        var first_index=-1
+        before_index=-1
+        next_index=-1
+        for let i, Gacha:title.len {
+            if (Gacha:count[i]!=-1 && data["status"]["gacha_count"][i]>=Gacha:count[i]) {continue}
+            if (first_index==-1) {first_index=i}
+            if (flag && next_index==-1) {next_index=i}
+            if (i==sub_index) {flag=true}
+            if (!flag) {before_index=i}
+        }
+        if (!flag) {
+            sub_index=first_index
+            before_index=-1
+            next_index=-1
+            for let i, Gacha:title.len {
+                if (Gacha:count[i]!=-1 && data["status"]["gacha_count"][i]>=Gacha:count[i]) {continue}
+                if (flag && next_index==-1) {next_index=i}
+                if (i==sub_index) {flag=true}
+            }
+        }
+        var count_text=""
+        if (Gacha:count[sub_index]!=-1) {count_text=`あと{Gacha:count[sub_index]-data["status"]["gacha_count"][sub_index]}回`}
+        Ui:render([
+            Ui:C:text({text: `所持金 {data["items"]["money"]}すし`})
+            Ui:C:text({text: Gacha:title[sub_index]})
+            Ui:C:mfm({text: Gacha:mfm[sub_index]})
+            Ui:C:text({text: `1回{Gacha:cost[sub_index]}すし`})
+            Ui:C:text({text: count_text})
+            Ui:C:buttons({buttons: [
+                {text: "回す",onClick: @(){
+                    index=61
+                    return_index=60
+                    main()
+                },disabled: !( ((Gacha:count[sub_index]==-1) || (Gacha:count[sub_index]-data["status"]["gacha_count"][sub_index]>=1)) && (data["items"]["money"]>=Gacha:cost[sub_index]) )}
+                {text: "10連",onClick: @(){
+                    index=61
+                    return_index=61
+                    gacha_10count=10
+                    main()
+                },disabled: !( ((Gacha:count[sub_index]==-1) || (Gacha:count[sub_index]-data["status"]["gacha_count"][sub_index]>=10)) && (data["items"]["money"]>=10*Gacha:cost[sub_index]) )}
+            ]})
+            Ui:C:buttons({buttons: [
+                {text: "前のページ",onClick: @(){
+                    sub_index=before_index
+                    main()
+                },disabled: (before_index==-1)}
+                {text: "次のページ",onClick: @(){
+                    sub_index=next_index
+                    main()
+                },disabled: (next_index==-1)}
+            ]})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==61) {
+        if (return_index==61) {
+            gacha_10count-=1
+            if (gacha_10count==0) {return_index=60}
+        }
+        var rand=Math:gen_rng(`{Date:now()}{USER_ID}gacha`)
+        var rate_rnd=rand(1,1000)
+        var rate_index=0
+        var rate_sum=0
+        for let i, Gacha:cards[sub_index].len {
+            rate_sum+=Gacha:cards[sub_index][i]["rate"]
+            if (rate_sum>=rate_rnd) {
+                rate_index=i
+                break
+            }
+        }
+        var card_index=rand(0,Gacha:cards[sub_index][rate_index]["cards"]["cards"].len-1)
+        data["items"]["cards"].push(MyUtil:deepCopy(Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]))
+        data["items"]["cards"][data["items"]["cards"].len-1]["id"]=data["items"]["card_id_max"]+1
+        data["items"]["card_id_max"]+=1
+        data["status"]["gacha_count"][sub_index]+=1
+        data["status"]["gacha_count_all"]+=1
+        data["status"]["card_count"]+=1
+        data["items"]["money"]-=Gacha:cost[sub_index]
+        Mk:save("CardData",data)
+        var rank_text=""
+        for let i, Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]["rank"] {
+            rank_text=[rank_text,"⭐"].join()
+        }
+        if (Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]["rank"]>=3) rank_text=["$[rainbow ",rank_text,"]"].join()
+        Ui:render([
+            Ui:C:mfm({text: rank_text})
+            Ui:C:mfm({text: `「{Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]["name"]}」 $[x2 $[scale.y=1.5,x=1.2 ⬜]]$[position.x=-2.4 {Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]["icon"]}]`})
+            Ui:C:postFormButton({text: "共有",form: {text: `#すしすき－カードゲーム{Str:lf}{Gacha:title[sub_index]}で「{Gacha:cards[sub_index][rate_index]["cards"]["cards"][card_index]["name"]}」{rank_text}をゲットした！{Str:lf}[すしすき－カードゲーム]({THIS_URL})`}})
+            Ui:C:button({text: "OK",onClick: @(){
+                index=return_index
+                main()
+            }})
+        ])
+        return null
+    }
+    if (index==70) {
+        var icon=""
+        if (data["profile"]["icon"]!=null) {icon=data["profile"]["icon"]}
+        Ui:render([
+            Ui:C:mfm({text: `{icon}`})
+            Ui:C:text({text: `{data["profile"]["subname"][0]} {data["profile"]["subname"][1]} {data["profile"]["name"]}`})
+            Ui:C:text({text: `レベル:{data["strength"]["level"]}`})
+            Ui:C:button({text: "所持品",onClick: @(){
+                index=71
+                main()
+            }})
+            Ui:C:button({text: "実績",onClick: @(){
+                index=72
+                main()
+            }})
+            Ui:C:button({text: "強化",onClick: @(){
+                index=73
+                main()
+            }})
+            Ui:C:button({text: "プロフィール設定",onClick: @(){
+                index=74
+                main()
+            }})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==71) {
+        var subname_count=0
+        each let e, data["items"]["subnames"] {
+            if (e) {subname_count+=1}
+        }
+        Ui:render([
+            Ui:C:mfm({text: `所持金:{data["items"]["money"]}すし{Str:lf}称号取得率:{subname_count}/{data["items"]["subnames"].len}{Str:lf}所持するカード数:{data["items"]["cards"].len}`})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==72) {
+        Ui:render([
+            Ui:C:mfm({text: `累計ログイン日数:{data["status"]["login_count"]}{Str:lf}取得したカード数:{data["status"]["card_count"]}{Str:lf}戦闘した数:{data["status"]["game_count"]}{Str:lf}合成した数:{data["status"]["join_count"]}{Str:lf}クエストをクリアした数:{data["status"]["quest_count"]}{Str:lf}ガチャを引いた数:{data["status"]["gacha_count_all"]}{Str:lf}与えたダメージ量:{data["status"]["damage_count"]}{Str:lf}ヒールした量:{data["status"]["heal_count"]}{Str:lf}最大ダメージ:{data["status"]["max_damage"]}{Str:lf}倒した数:{data["status"]["kill"]}{Str:lf}エンドレスモードの最大ステージ数:{data["status"]["endless_max"]}{Str:lf}ノーマルモードのプレイ数:{data["status"]["play_count"]}`})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==73) {
+        Ui:render([
+            Ui:C:mfm({text: `攻撃力+{data["strength"]["attack_rate"]}{Str:lf}防御力+{data["strength"]["block_rate"]}{Str:lf}回復力+{data["strength"]["heal_rate"]}{Str:lf}体力:{100+data["strength"]["hp_add"]}{Str:lf}使用可能コスト:{3+data["strength"]["cost_add"]}{Str:lf}デッキ枚数上限:{data["strength"]["card_capacity"]}`})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==74) {
+        var items=[]
+        for let i, data["items"]["subnames"].len {
+            if (data["items"]["subnames"][i]) items.push({text: Profile:subname[i],value: Profile:subname[i]})
+        }
+        Ui:render([
+            Ui:C:select({items: items,label: "称号(上)",onChange: @(value){
+                data["profile"]["subname"][0]=value
+                Mk:save("CardData",data)
+            }})
+            Ui:C:select({items: items,label: "称号(下)",onChange: @(value){
+                data["profile"]["subname"][1]=value
+                Mk:save("CardData",data)
+            }})
+            Ui:C:select({items: [{text: "3cにゃんぷぷ",value: ":blobcat3c:"},{text: "ドッスンにゃんぷぷ",value: ":ablobcat_dossun:"},{text: "ケツすぎ",value: ":blobcatass:"},{text: "ロングにゃんぷぷ",value: ":blobcat_longlong:"},{text: "ハイパーにゃんぷぷ",value: ":ablobcathyper:"},{text: "燃えるシロクマ",value: ":polarbear_fire:"},{text: "ローディングシロクマ",value: ":polarbear_loading:"}],label: "アイコン",onChange: @(value){
+                data["profile"]["icon"]=value
+                Mk:save("CardData",data)
+            }})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==80) {
+        ui_index+=1
+        debug_data=makeDebugData(data)
+        Ui:render([
+            Ui:C:textarea({label: "バグの症状やそのときの行動など",onInput: @(text){
+                Ui:get(`form{ui_index}`).update({form: {cw: "@potatokun@sushi.ski バグ報告",text: `内容:{text}{Str:lf}データ:{debug_data}`,visibility: "home"}})
+            }})
+            Ui:C:text({text: "※同時にゲーム内データも送信します(名前や長すぎるデータを除く)"})
+            Ui:C:text({text: "投稿範囲はホームでお願いします",color: "#f00"})
+            Ui:C:postFormButton({text: "送信"} `form{ui_index}`)
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+        return null
+    }
+    if (index==-10) {
+        var status=""
+        let effect = ["使用するとコストが1下がる(最小:1)","使用すると成功率が0.1上がる(最大:0.5)","0.5の確率で増殖し、カードの枚数に応じて攻撃力が上がる","毎ターンランダムな効果が付与される","攻撃を受けるとき4倍のダメージを受ける"]
+        if (card["type"]=="attack") {
+            status=[status,"タイプ:攻撃",Str:lf].join()
+        } else if (card["type"]=="magic") {
+            status=[status,"タイプ:魔法",Str:lf].join()
+        } else {
+            status=[status,"タイプ:エラー(意図しないパラメータ)",Str:lf].join()
+        }
+        if (card["damage"]!=0) {
+            status=[status,`{card["damage"]}ダメージを与える`,Str:lf].join()
+        }
+        if (card["jibaku"]!=0) {
+            status=[status,`{card["jibaku"]}ダメージの自爆を受ける`,Str:lf].join()
+        }
+        if (card["attack_rate"]!=1) {
+            status=[status,`攻撃が{card["attack_rate"]}倍になる`,Str:lf].join()
+        }
+        if (card["block_rate"]!=1) {
+            status=[status,`防御力が{card["block_rate"]}倍になる`,Str:lf].join()
+        }
+        if (card["block_add"]!=0) {
+            status=[status,`防御力が{card["block_add"]}足される`,Str:lf].join()
+        }
+        if (card["escape_rate"]!=0) {
+            status=[status,`少なくとも{(Math:floor(card["escape_rate"]*100))}%の回避率を受ける`,Str:lf].join()
+        }
+        if (card["heal_value"]!=0) {
+            status=[status,`体力が{card["heal_value"]}回復する`,Str:lf].join()
+        }
+        if (card["success_rate"]!=1) {
+            status=[status,`{Math:floor(card["success_rate"]*100)}%で成功する`,Str:lf].join()
+        }
+        if (card["skip"]) {
+            status=[status,"敵のターンをスキップする",Str:lf].join()
+        }
+        if (card["is_keep"]) {
+            if (card["count"]==-1) {status=[status,"戦闘が終わるまで効果が持続する",Str:lf].join()}
+            else {status=[status,`{card["count"]}ターン持続`,Str:lf].join()}
+        }
+        if (card["all_attack"]) {
+            status=[status,"全体攻撃",Str:lf].join()
+        }
+        if (card["no_escape"]) {
+            status=[status,"この攻撃は回避率を無視する",Str:lf].join()
+        }
+        if (card["effect_id"]!=0) {
+            status=[status,"特別効果:",effect[card["effect_id"]-1],Str:lf].join()
+        }
+        Ui:render([
+            Ui:C:mfm({text: `「{card["name"]}」+{card["joined"]} $[x2 $[scale.y=1.5,x=1.2 ⬜]]$[position.x=-2.4 {card["icon"]}]`})
+            Ui:C:text({text: `説明:{card["explane"]}`})
+            Ui:C:text({text: `ランク{card["rank"]}`})
+            Ui:C:text({text: `コスト:{card["cost"]}`})
+            Ui:C:mfm({text: status})
+            Ui:C:button({text: "戻る",onClick: @(){
+                index=return_index
+                main()
+            }})
+        ])
+        return null
+    }
+    if (index==100) {
+        Ui:render([
+            Ui:C:text({text: "ゲームモードの選択"})
+            Ui:C:buttons({buttons: [
+                {text: "ノーマルモード",onClick: @(){
+                    index=110
+                    mode="normal"
+                    if (data["items"]["use_card"].len<3) {
+                        index=10
+                        Mk:dialog("おい！" "デッキは3枚以上で構成してください")
+                    }
+                    main()
+                }}
+            ]})
+            Ui:C:button({text: "メニューに戻る",onClick: @(){
+                index=10
+                main()
+            }})
+        ])
+    }
+    if (index==110) {
+        difficulty_add=0
+        Ui:render([
+            Ui:C:text({text: "難易度の選択"})
+            Ui:C:buttons({buttons: [
+                {text: "簡単",onClick: @(){
+                    difficulty=0
+                    index=200
+                    sub_index=0
+                    main()
+                }}
+                {text: "普通",onClick: @(){
+                    difficulty=1
+                    index=200
+                    sub_index=0
+                    main()
+                }}
+            ]})
+            Ui:C:numberInput({label: "難易度の追加(0～999)",default: 0,caption: "選択する難易度に対して追加で難しくします",onInput: @(number){
+                if (number<0 || number>999) {return null}
+                difficulty_add=number
+            }})
+        ])
+    }
+    if (index==200) {
+        game=makeGameData()
+        game["status"]["stage_count"]=6+difficulty*3
+        game["status"]["enemy_attack_rate"]=difficulty*5+difficulty_add*2
+        game["status"]["enemy_block_rate"]=difficulty*5+difficulty_add*2
+        index=210
+    }
+    if (index==210) {
+        if (game["status"]["stage_count"]<=0 || game["player"]["hp"]<=0) {
+            index=290
+            main()
+            return null
+        }
+        var rand=Math:gen_rng(`{Date:now()}{USER_ID}play`)
+        game["status"]["stage_count"]-=1
+        boss=false
+        if (game["status"]["stage_count"]==0) {
+            boss=true
+            stage_select=0
+            stage[0]["type"]="battle"
+            stage[0]["name"]="ボス戦"
+            stage[0]["explane"]=""
+            stage[0]["enemies"]=[]
+            if (difficulty==0) {
+                stage[0]["enemies"].push(MyUtil:deepCopy(Enemy:Rank1["boss"][rand(0,Enemy:Rank1["boss"].len-1)]))
+                }
+            if (difficulty==1) {
+                stage[0]["enemies"].push(MyUtil:deepCopy(Enemy:Rank2["boss"][rand(0,Enemy:Rank2["boss"].len-1)]))
+            }
+            Ui:render([
+                Ui:C:text({text: "ボス戦"})
+                Ui:C:button({text: "ボス戦に進む",onClick: @(){
+                    index=240
+                    main()
+                }})
+            ])
+            return null
+        }
+        else {
+            for let i, 2 {
+                stage[i]["explane"]=""
+                var type_num=rand(0,10)
+                if (type_num<=6) {
+                    stage[i]["type"]="battle"
+                    stage[i]["name"]="戦闘"
+                    var enemy_num=rand(1,2+Math:floor(difficulty/2+difficulty_add/10))
+                    stage[i]["enemies"]=[]
+                    for let j, enemy_num {
+                        var rank=1
+                        if (rand(1,1000)<=1000/enemy_num) {rank=difficulty+1}
+                        else {rank=difficulty}
+                        if (difficulty==0) {rank=1}
+                        if (rank==1) {
+                            stage[i]["enemies"].push(MyUtil:deepCopy(Enemy:Rank1["enemies"][rand(0,Enemy:Rank1["enemies"].len-1)]))
+                        }
+                        if (rank==2) {
+                            stage[i]["enemies"].push(MyUtil:deepCopy(Enemy:Rank2["enemies"][rand(0,Enemy:Rank2["enemies"].len-1)]))
+                        }
+                    }
+                    stage[i]["explane"]=`{enemy_num}体の敵`
+                }
+                else if (type_num<=8) {
+                    stage[i]["type"]="shop"
+                    stage[i]["name"]="ショップ"
+                    stage[i]["item"]=Game:items[rand(0,Game:items.len-1)]
+                    stage[i]["hp"]=rand(1,(difficulty+1)*3)*10
+                    buyed[0]=false
+                    buyed[1]=false
+                }
+                else {
+                    stage[i]["type"]="event"
+                    stage[i]["name"]="イベント"
+                    stage[i]["event"]=rand(0,3)
+                    stage[i]["item"]=Game:items[rand(0,Game:items.len-1)]
+                    stage[i]["hp"]=rand(1,(difficulty+1)*3)*10
+                    stage[i]["money"]=rand(0,(difficulty+1)*3)*30
+                    var enemy_num=rand(1,2+Math:floor(difficulty/2+difficulty_add/10))
+                    stage[i]["enemies"]=[]
+                    for let j, enemy_num {
+                        var rank=1
+                        if (rand(1,1000)<=1000/enemy_num) {rank=difficulty+1}
+                        else {rank=difficulty}
+                        if (difficulty==0) {rank=1}
+                        if (rank==1) {
+                            stage[i]["enemies"].push(MyUtil:deepCopy(Enemy:Rank1["enemies"][rand(0,Enemy:Rank1["enemies"].len-1)]))
+                        }
+                        if (rank==2) {
+                            stage[i]["enemies"].push(MyUtil:deepCopy(Enemy:Rank2["enemies"][rand(0,Enemy:Rank2["enemies"].len-1)]))
+                        }
+                    }
+                }
+            }
+            Ui:render([
+                Ui:C:text({text: `ステージ {6+difficulty*3-game["status"]["stage_count"]} / {6+difficulty*3}`})
+                Ui:C:text({text: `{stage[0]["name"]} {stage[0]["explane"]}`})
+                Ui:C:button({text: "これにする",onClick: @(){
+                    stage_select=0
+                    if (stage[stage_select]["type"]=="event") {index=220}
+                    if (stage[stage_select]["type"]=="shop") {index=230}
+                    if (stage[stage_select]["type"]=="battle") {index=240}
+                    main()
+                }})
+                Ui:C:text({text: `{stage[1]["name"]} {stage[1]["explane"]}`})
+                Ui:C:button({text: "これにする",onClick: @(){
+                    stage_select=1
+                    if (stage[stage_select]["type"]=="event") {index=220}
+                    if (stage[stage_select]["type"]=="shop") {index=230}
+                    if (stage[stage_select]["type"]=="battle") {index=240}
+                    main()
+                }})
+            ])
+        }
+    }
+    if (index==220) {
+        if (stage[stage_select]["event"]==0) {
+            Ui:render([
+                Ui:C:text({text: "にゃんぷぷが何か持ってきてくれたよ！"})
+                Ui:C:mfm({text: "$[x2 :blobcatflower:]"})
+                Ui:C:button({text: "Ok",onClick: @(){
+                    index=221
+                    main()
+                }})
+            ])
+            return null
+        }
+        if (stage[stage_select]["event"]==1) {
+            game["player"]["hp"]+=stage[stage_select]["hp"]
+            if (game["player"]["hp"]>game["player"]["max_hp"]) game["player"]["hp"]=game["player"]["max_hp"]
+            Ui:render([
+                Ui:C:text({text: "にゃんぷぷのおかげでHPが回復した！"})
+                Ui:C:mfm({text: "$[x2 :meowhuggies:]"})
+                Ui:C:button({text: "Ok",onClick: @(){
+                    index=210
+                    main()
+                }})
+            ])
+            return null
+        }
+        if (stage[stage_select]["event"]==2) {
+            game["status"]["money"]+=stage[stage_select]["money"]
+            Ui:render([
+                Ui:C:text({text: "金をゲットした！"})
+                Ui:C:mfm({text: ":blobcat_medashibo: これやるよ"})
+                Ui:C:button({text: "Ok",onClick: @(){
+                    index=210
+                    main()
+                }})
+            ])
+            return null
+        }
+        if (stage[stage_select]["event"]==3) {
+            Ui:render([
+                Ui:C:text({text: "敵に遭遇した！"})
+                Ui:C:button({text: "Ok",onClick: @(){
+                    index=240
+                    main()
+                }})
+            ])
+            return null
+        }
+    }
+    if (index==221) {
+        if (stage[stage_select]["event"]==0) {
+            var gotItem=MyUtil:deepCopy(stage[stage_select]["item"])
+            game["status"]["items"].push(gotItem)
+            if (gotItem["effect_id"]==1) game["player"]["block_rate"] =game["player"]["block_rate"]*2
+            Ui:render([
+                Ui:C:text({text: "アイテムをゲット！"})
+                Ui:C:mfm({text: `{gotItem["icon"]}  {gotItem["name"]}`})
+                Ui:C:text({text: gotItem["explane"](difficulty)})
+                Ui:C:button({text: "Ok",onClick: @(){
+                    index=210
+                    main()
+                }})
+            ])
+            return null
+        }
+    }
+    if (index==230) {
+        Ui:render([
+            Ui:C:mfm({text: `{stage[stage_select]["item"]["icon"]} {stage[stage_select]["item"]["name"]}`})
+            Ui:C:text({text: stage[stage_select]["item"]["explane"](difficulty)})
+            Ui:C:button({text: `{stage[stage_select]["item"]["cost"]}すし`,onClick: @(){
+                data["items"]["money"]-=stage[stage_select]["item"]["cost"]
+                var gotItem=MyUtil:deepCopy(stage[stage_select]["item"])
+                game["status"]["items"].push(gotItem)
+                if (gotItem["effect_id"]==1) game["player"]["block_rate"]=game["player"]["block_rate"]*2
+                buyed[0]=true
+                main()
+            },disabled: data["items"]["money"]<stage[stage_select]["item"]["cost"] || buyed[0]})
+            Ui:C:text({text: `HP{stage[stage_select]["hp"]}回復`})
+            Ui:C:button({text: `50すし`,onClick: @(){
+                data["items"]["money"]-=50
+                game["player"]["hp"]+=stage[stage_select]["hp"]
+                if (game["player"]["hp"]>game["player"]["max_hp"]) game["player"]["hp"]=game["player"]["max_hp"]
+                buyed[1]=true
+                main()
+            },disabled: data["items"]["money"]<50 || buyed[1]})
+            Ui:C:button({text: "ショップを出る",onClick: @(){
+                index=210
+                main()
+            }})
+        ])
+    }
+    if (index==240) {
+        game["enemies"]=stage[stage_select]["enemies"]
+        each let e, game["enemies"] {
+            each let e_attack , e["attack"] {
+                e_attack["damage"]+=game["status"]["enemy_attack_rate"]
+            }
+            e["block"]+=game["status"]["enemy_block_rate"]
+        }
+        var myCards=[]
+        each let e, data["items"]["use_card"] {
+            each let card, data["items"]["cards"] {
+                if (card["id"]==e) {
+                    myCards.push(MyUtil:deepCopy(card))
+                    break
+                }
+            }
+        }
+        game["player"]["cards"]=myCards
+        game["player"]["next"]=MyUtil:deepCopy(game["player"]["cards"])
+        game["player"]["hand"]=[]
+        each let e, game["status"]["items"] {
+            if (e["effect_id"]==3) {
+                attack(game["player"],20*(difficulty+1),true,true,true)
+                attackMessage(`{e["name"]}の効果`,data["profile"]["name"],20*(difficulty+1))
+            }
+        }
+        if (isGameEnd()) index=280
+        focus=0
+        selectedCard=0
+        game["player"]["keep"]=[]
+        index=241
+    }
+    if (index==241) {
+        game["player"]["used_cost"]=0
+        for let i, 3+Math:floor((game["player"]["cost"]-3)/2) {drawCard()}
+        game["player"]["used_block"]=0
+        each let e, game["enemies"] {e["used_block"]=0}
+        index=242
+    }
+    if (index==242) {
+        if (isGameEnd()) {
+            index=280
+            main()
+            return null
+        }
+        if (game["player"]["hand"].len==0) {
+            index=243
+            main()
+            return null
+        }
+        var enemiesMfm=""
+        var i=0
+        each let e, game["enemies"] {
+            enemiesMfm=[enemiesMfm e["name"] MyUi:hpBar(e["max_hp"],e["hp"],Math:floor(e["block"]*e["block_rate"])-e["used_block"]) Str:lf].join()
+            if (boss) enemiesMfm=[enemiesMfm `$[x2 {e["icon"]}]`].join()
+            else if (e["hp"]<=0) enemiesMfm=[enemiesMfm e["icon"] "$[position.x=-1.6,y=0.2 $[scale.x=2,y=2 ❌]]"].join()
+            else enemiesMfm=[enemiesMfm e["icon"]].join()
+            if (i==focus) enemiesMfm=[enemiesMfm ":blank:$[tada $[scale.x=1.5,y=1.5 ◀️]]"].join()
+            enemiesMfm=[enemiesMfm Str:lf].join()
+            i+=1
+        }
+        var selectItems=[]
+        for let i, game["player"]["hand"].len {
+            selectItems.push({text: `{game["player"]["hand"][i]["name"]}+{game["player"]["hand"][i]["joined"]}`,value: `{i}`})
+        }
+        Ui:render([
+            Ui:C:mfm({text: enemiesMfm})
+            Ui:C:buttons({
+                buttons: [
+                    {text: "↑",onClick: @(){
+                        focus-=1
+                        main()
+                    },disabled: focus<=0}
+                    {text: "↓",onClick: @(){
+                        focus+=1
+                        main()
+                    },disabled: focus>=game["enemies"].len-1}
+                ]
+            })
+            Ui:C:mfm({text: `{data["profile"]["name"]}のHP{MyUi:hpBar(game["player"]["max_hp"],game["player"]["hp"],Math:floor(game["player"]["block"]*game["player"]["block_rate"])-game["player"]["used_block"])}{Str:lf}このターンの残りコスト{Math:floor(game["player"]["cost"]-game["player"]["used_cost"])}`})
+            Ui:C:select({
+                items: selectItems
+                onChange: @(value){
+                    selectedCard=value.to_num()
+                    main()
+                }
+                default: `{selectedCard}`
+                label: "カードの選択"
+            })
+            Ui:C:mfm({text: `$[x2 $[scale.y=1.5,x=1.2 ⬜]]$[position.x=-2.4 {game["player"]["hand"][selectedCard]["icon"]}]{game["player"]["hand"][selectedCard]["explane"]}`})
+            Ui:C:button({text: `カードを使う(コスト{Math:floor(game["player"]["hand"][selectedCard]["cost"])})`,onClick: @(){
+                useCard()
+                selectedCard=0
+                main()
+            },disabled: Math:floor(game["player"]["hand"][selectedCard]["cost"])>game["player"]["cost"]-game["player"]["used_cost"]})
+            Ui:C:button({
+                text: "カードの詳細"
+                onClick: @(){
+                    index=-10
+                    return_index=242
+                    card=game["player"]["hand"][selectedCard]
+                    main()
+                }
+            })
+            Ui:C:button({text: "ターン終了",onClick: @(){
+                index=243
+                main()
+            }})
+        ])
+    }
+    if (index==243) {
+        each let e, game["enemies"] {
+            if (e["hp"]<=0) continue
+            if (e["cooldown"]>0) {
+                e["cooldown"]-=1
+                continue
+            }
+            for let i, e["count"] {
+                var attackOrMagic = Math:floor(randCommon()+0.5)
+                if (e["attack"].len==0) attackOrMagic=1
+                if (e["magic"].len==0) attackOrMagic=0
+                if (attackOrMagic==0) {
+                    enemyAttack(e,e["attack"][randCommon(0,e["attack"].len-1)])
+                } else if (attackOrMagic==1) {
+                    enemyMagic(e,e["magic"][randCommon(0,e["magic"].len-1)])
+                }
+                if (isGameEnd()) break
+            }
+            if (isGameEnd()) break
+        }
+        index=244
+    }
+    if (index==244) {
+        if (isGameEnd()) {
+            index=280
+            main()
+            return null
+        }
+        each let e, game["enemies"] {
+            if (isGameEnd()) {break}
+            if (e["hp"]<=0) continue
+            var deleteIndex=[]
+            for let i, e["used_attack"].len {
+                if (isGameEnd()) {break}
+                if (e["used_attack"][i]["delay"]>0) {
+                    e["used_attack"][i]["delay"]-=1
+                    if (e["used_attack"][i]["delay"]<=0 && e["used_attack"][i]["count"]<1 && e["used_attack"][i]["count"]!=-1) {
+                        var attacked=attack(game["player"],Math:floor(e["used_attack"][i]["damage"]*e["attack_rate"]),true,e["used_attack"][i]["no_escape"],false)
+                        if (attacked) attackMessage(`{e["name"]}の{e["used_attack"][i]["name"]}`,data["profile"]["name"],Math:floor(e["used_attack"][i]["damage"]*e["attack_rate"]))
+                        if (e["used_attack"][i]["jibaku"]>0) {
+                            attack(e,e["used_attack"][i]["jibaku"],false,true,true)
+                            Mk:dialog("" `{e["name"]}は{e["used_attack"][i]["jibaku"]}の自爆ダメージを受けた！`)
+                        }
+                    } else if (e["used_attack"][i]["delay"]!=0) {
+                        continue
+                    }
+                }
+                if (e["used_attack"][i]["count"]<1 && e["used_attack"][i]["count"]!=-1) {
+                    deleteIndex.push(i)
+                    continue
+                }
+                var attacked=attack(game["player"],Math:floor(e["used_attack"][i]["damage"]*e["attack_rate"]),true,e["used_attack"][i]["no_escape"],false)
+                if (attacked) attackMessage(`{e["name"]}の{e["used_attack"][i]["name"]}(継続ダメージ)`,data["profile"]["name"],Math:floor(e["used_attack"][i]["damage"]*e["attack_rate"]))
+                if (e["used_attack"][i]["count"]!=-1) e["used_attack"][i]["count"]-=1
+            }
+            for let i, deleteIndex.len {
+                e["used_attack"]=MyUtil:removeAt(e["used_attack"],deleteIndex.len-i-1)
+            }
+            deleteIndex=[]
+            for let i, e["used_magic"].len {
+                if (isGameEnd()) {break}
+                if (e["used_magic"][i]["delay"]>0) {
+                    e["used_magic"][i]["delay"]-=1
+                    if (e["used_magic"][i]["delay"]==0) {
+                        if (e["used_magic"][i]["attack_effect"]) {
+                            e["attack_rate"]=e["attack_rate"]*e["used_magic"][i]["power"]
+                            Mk:dialog("" `{e["name"]}は{e["used_magic"][i]["name"]}で攻撃力が{e["used_magic"][i]["power"]}倍になった！({e["used_magic"][i][count]-1}ターン)`)
+                        }
+                        if (e["used_magic"][i]["block_effect"]) {
+                            e["block_rate"]=e["block_rate"]*e["used_magic"][i]["power"]
+                            Mk:dialog("" `{e["name"]}は{e["used_magic"][i]["name"]}で防御力が{e["used_magic"][i]["power"]}倍になった！({e["used_magic"][i][count]-1}ターン)`)
+                        }
+                        if (e["used_magic"][i]["escape_effect"]) {
+                            e["escape_rate"]=magic["power"]
+                            Mk:dialog("" `{e["name"]}は{e["used_magic"][i]["name"]}で回避率が{Math:floor(e["escape_rate"]*100)}%になった！({e["used_magic"][i][count]-1}ターン)`)
+                        }
+                        if (e["used_magic"][i]["heal_effect"] && e["used_magic"][i]["count"]<1 && e["used_magic"][i]["count"]!=-1) {
+                            heal(e,magic["power"],false)
+                            Mk:dialog("" `{e["name"]}は{e["used_magic"][i]["name"]}で{e["used_magic"][i]["power"]}回復した！`)
+                        }
+                    }
+                }
+                if (e["used_magic"][i]["count"]<1 && e["used_magic"][i]["count"]!=-1) {
+                    if (e["used_magic"][i]["attack_effect"]) {
+                        e["attack_rate"]=e["attack_rate"]/e["used_magic"][i]["power"]
+                    }
+                    if (e["used_magic"][i]["block_effect"]) {
+                        e["block_rate"]=e["block_rate"]/e["used_magic"][i]["power"]
+                    }
+                    if (e["used_magic"][i]["escape_effect"]) {
+                        e["escape_rate"]=0
+                        each let u, e["used_magic"] {
+                            if (u["escape_effect"] && u["count"]!=0) {
+                                e["escape_rate"]=u["power"]
+                                break
+                            }
+                        }
+                    }
+                    deleteIndex.push(i)
+                    continue
+                }
+                if (e["used_magic"][i]["heal_effect"]) {
+                    heal(e,magic["power"],false)
+                    Mk:dialog("" `{e["name"]}は{e["used_magic"][i]["name"]}(持続効果)で{e["used_magic"][i]["power"]}回復した！`)
+                }
+                if (e["used_magic"][i]["count"]!=-1) e["used_magic"][i]["count"]-=1
+            }
+            for let i, deleteIndex.len {
+                e["used_magic"]=MyUtil:removeAt(e["used_magic"],deleteIndex.len-i-1)
+            }
+        }
+        var deleteIndex=[]
+        for let i, game["player"]["keep"].len {
+            if (isGameEnd()) {break}
+            card=game["player"]["keep"][i]
+            if (card["count"]<1 && card["count"]!=-1) {
+                if (card["attack_rate"]>1) game["player"]["attack_rate"]=game["player"]["attack_rate"]-(card["attack_rate"]-1)
+                else game["player"]["attack_rate"]=game["player"]["attack_rate"]/card["attack_rate"]
+                if (card["block_rate"]>1) game["player"]["block_rate"]=game["player"]["block_rate"]-(card["block_rate"]-1)
+                else game["player"]["block_rate"]=game["player"]["block_rate"]/card["block_rate"]
+                game["player"]["block"]-=card["block_add"]
+                if (game["player"]["escape_rate"]==card["escape_rate"]) {
+                    game["player"]["escape_rate"]=0
+                    each let e, game["player"]["keep"] {
+                        if (game["player"]["escape_rate"]<e["escape_rate"]) {
+                            game["player"]["escape_rate"]=e["escape_rate"]
+                        }
+                    }
+                }
+                deleteIndex.push(i)
+                continue
+            }
+            if (Math:floor(card["damage"])>0) {
+                if (card["all_attack"]) {
+                    each let e, game["enemies"] {
+                        attack(e,Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]),false,card["no_escape"],false)
+                    }
+                    attackMessage(`{card["name"]}(持続ダメージ)`,"敵全体",Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]))
+                }
+                else if (game["enemies"][card["focus"]]["hp"]>0) {
+                    attack(game["enemies"][card["focus"]],Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]),false,card["no_escape"],false)
+                    attackMessage(`{card["name"]}(持続ダメージ)`,game["enemies"][card["focus"]]["name"],Math:floor((card["damage"]+game["player"]["attack"])*game["player"]["attack_rate"]))
+                }
+            }
+            if (Math:floor(card["heal_value"])>0) {
+                heal(game["player"],Math:floor(card["heal_value"]),true)
+                healMessage(`{card["name"]}(持続効果)`,data["profile"]["name"],Math:floor(card["heal_value"]))
+            }
+            if (card["count"]!=-1) card["count"]-=1
+        }
+        for let i, deleteIndex.len {
+            game["player"]["keep"]=MyUtil:removeAt(game["player"]["keep"],deleteIndex.len-i-1)
+        }
+        if (isGameEnd()) {
+            index=280
+            main()
+            return null
+        }
+        each let e, game["status"]["items"] {
+            if (e["effect_id"]==3) {
+                heal(game["player"],7*(difficulty+1),true)
+                healMessage(`{e["name"]}の効果`,data["profile"]["name"],7*(difficulty+1))
+            }
+        }
+        index=241
+        main()
+        return null
+    }
+    if (index==280) {
+        for let i, game["player"]["keep"].len {
+            card=game["player"]["keep"][i]
+            if (card["attack_rate"]>1) game["player"]["attack_rate"]=game["player"]["attack_rate"]-(card["attack_rate"]-1)
+            else game["player"]["attack_rate"]=game["player"]["attack_rate"]/card["attack_rate"]
+            if (card["block_rate"]>1) game["player"]["block_rate"]=game["player"]["block_rate"]-(card["block_rate"]-1)
+            else game["player"]["block_rate"]=game["player"]["block_rate"]/card["block_rate"]
+            game["player"]["block"]-=card["block_add"]
+        }
+        game["player"]["escape_rate"]=0
+        var text="戦闘に勝利した！"
+        if (game["player"]["hp"]<=0) text="敗北してしまった..."
+        else game["status"]["kill"]+=game["enemies"].len
+        Mk:dialog("" text)
+        index=210
+        main()
+        return null
+    }
+    if (index==290) {
+        var title="$[rainbow クリア！]"
+        var getMoney=100*(difficulty+1)+10*difficulty_add+game["status"]["money"]
+        if (game["player"]["hp"]<=0) {
+            title="負けてしまった..."
+            getMoney=0
+        }
+        else {
+            each let e, game["status"]["items"] {
+                if (e["effect_id"]==4) getMoney=getMoney*2
+            }
+        }
+        var items=""
+        each let e, game["status"]["items"] {
+            items=[items e["icon"]].join()
+        }
+        var battleName=""
+        if (mode=="normal") {
+            battleName="ノーマルモード"
+        }
+        if (difficulty==0) {
+            battleName=[battleName " -簡単-"].join()
+        }
+        else if (difficulty==1) {
+            battleName=[battleName " -普通-"].join()
+        }
+        else if (difficulty==2) {
+            battleName=[battleName " -難しい-"].join()
+        }
+        var shareText="#すしすき－カードゲーム"
+        shareText=[shareText Str:lf `{data["profile"]["name"]}は`].join()
+        shareText=[shareText "ノーマルモード"].join()
+        if (difficulty==0) {
+            shareText=[shareText "(簡単)"].join()
+        }
+        else if (difficulty==1) {
+            shareText=[shareText "(普通)"].join()
+        }
+        else if (difficulty==2) {
+            shareText=[shareText "(難しい)"].join()
+        }
+        shareText=[shareText `+{difficulty_add}`].join()
+        if (game["player"]["hp"]>0) {
+            shareText=[shareText "をクリアした！"].join()
+        } else {
+            shareText=[shareText "で敗北してしまった..."].join()
+        }
+        shareText=[shareText Str:lf `所持アイテム:{items}` Str:lf `{getMoney}すしをゲット！` Str:lf `{game["status"]["kill"]}体の敵を倒した` Str:lf `[すしすき－カードゲーム]({THIS_URL})`].join()
+        data["items"]["money"]+=getMoney
+        data["status"]["game_count"]+=1
+        data["status"]["damage_count"]+=game["status"]["damage_count"]
+        data["status"]["heal_count"]+=game["status"]["heal_count"]
+        if (data["status"]["max_damage"]<game["status"]["max_damage"]) data["status"]["max_damage"]=game["status"]["max_damage"]
+        data["status"]["kill"]+=game["status"]["kill"]
+        if (game["player"]["hp"]>0) {
+            data["status"]["clear"][difficulty]+=1
+        }
+        if (mode=="normal") {
+            data["status"]["play_count"]+=1
+        }
+        if (mode=="endless" && data["status"]["endless_max"]<game["status"]["stage_count"]) {
+            data["status"]["endless_max"]=game["status"]["stage_count"]
+        }
+        data["status"]["quest_data_day"]["need"]["kill"]+=game["status"]["kill"]
+        if (mode=="normal") {
+            data["status"]["quest_data_day"]["need"]["play_normal"]+=1
+            if (game["player"]["hp"]>0) data["status"]["quest_data_day"]["need"]["clear_normal"]+=1
+        }
+        data["status"]["quest_data_day"]["need"]["damage_count"]+=game["status"]["damage_count"]
+        data["status"]["quest_data_day"]["need"]["heal_count"]+=game["status"]["heal_count"]
+        Mk:save("CardData",data)
+        Ui:render([
+            Ui:C:text({text: battleName})
+            Ui:C:mfm({text: title})
+            Ui:C:mfm({text: `所持アイテム:{items}`})
+            Ui:C:text({text: `{getMoney}すしをゲット！`})
+            Ui:C:text({text: `{game["status"]["kill"]}体の敵を倒した`})
+            Ui:C:postFormButton({text: "共有",form: {text: shareText}})
+            Ui:C:button({text: "OK",onClick: @(){
+                index=291
+                main()
+            }})
+        ])
+    }
+    if (index==291) {
+        var rand=Math:gen_rng(`{Date:now()}{USER_ID}levelup`)
+        var getExp=50*(difficulty+1)+difficulty_add+2*game["status"]["kill"]
+        if (game["player"]["hp"]<=0) getExp=2*game["status"]["kill"]
+        var upLevel=0
+        loop {
+            if (data["strength"]["level"]>=999999999) break
+            if (getExp<=0) break
+            if (getExp+data["strength"]["exp"]>=data["strength"]["level"]*10+50) {
+                upLevel+=1
+                getExp-=data["strength"]["level"]*10+50-data["strength"]["exp"]
+                data["strength"]["level"]+=1
+                data["strength"]["exp"]=0
+                var up=rand(0,4)
+                var param=["attack_rate" "block_rate" "heal_rate" "hp_add" "cost_add"]
+                var addVal=[10 10 10 10 1]
+                var maxVal=[999999 999999 999999 999999 999]
+                data["strength"][param[up]]+=addVal[up]
+                if (data["strength"][param[up]]>maxVal[up]) data["strength"][param[up]]=maxVal[up]
+                data["strength"]["card_capacity"]+=1
+            } else {
+                data["strength"]["exp"]=getExp
+                getExp=0
+            }
+        }
+        Mk:save("CardData",data)
+        if (upLevel!=0) {
+            Ui:render([
+                Ui:C:text({text: `レベルが{data["strength"]["level"]-upLevel}から{data["strength"]["level"]}へアップした！`})
+                Ui:C:button({text: "OK",onClick: @(){
+                    index=10
+                    main()
+                }})
+            ])
+        } else {
+            index=10
+            main()
+        }
+    }
+}
+main()

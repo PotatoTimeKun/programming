@@ -1,0 +1,5 @@
+:: MyUi {
+    @hpBar(hpMax,hp,block){
+        return `$[position.x={0.5+0.3} $[scale.x=1.6,y=0.4 $[bg.color=fff :blank:]]]$[position.x={-1.5-1.5*(1-hp/hpMax)+0.3} $[scale.x={1.5*(hp/hpMax)},y=0.3 $[bg.color=0f0 :blank:]]]$[position.x={-3.5+1.5*(hp/hpMax)+0.3} $[scale.x={1.5*(1-(hp/hpMax))},y=0.3 $[bg.color=f00 :blank:]]]$[position.x=-2.3 {Math:floor(100*(hp/hpMax))}%+{block}]`
+    }
+}

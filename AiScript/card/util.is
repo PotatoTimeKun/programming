@@ -1,0 +1,69 @@
+:: MyUtil {
+    @existIn(array,value){
+        each let e, array {
+            if (e==value) return true
+        }
+        return false
+    }
+    @deepCopy(a){
+        if (Core:type(a)=="obj") {
+            var ans={}
+            each let k, Obj:keys(a) {
+                ans[k]=deepCopy(a[k])
+            }
+            return ans
+        }
+        else if (Core:type(a)=="arr") {
+            var ans=[]
+            each let e, a {
+                ans.push(deepCopy(e))
+            }
+            return ans
+        }
+        return a
+    }
+    @arrEqual(a,b){
+        if (a.len != b.len) {return false}
+        for let i , a.len {
+            if (a[i]!=b[i]) {return false}
+        }
+        return true
+    }
+    @isInDate(start,end,date){
+        if (date[0]<start[0] || date[0]>end[0]) {return false}
+        if (date[1]<start[1] || date[1]>end[1]) {return false}
+        return true
+    }
+    @nextDay(date){
+        var max_day=[31,28,31,30,31,30,31,31,30,31,30,31]
+        if (date[0]%4==0 && date[0]%100!=0 || date[0]%400==0) max_day[1]=29
+        if (date[1]==12 && date[2]==31) {return [date[0]+1,1,1]}
+        if (date[2]==max_day[date[1]-1]) {return [date[0],date[1]+1,1]}
+        return [date[0],date[1],date[2]+1]
+    }
+    @dateGt(a,b){
+        for let i, 3 {
+            if (a[i]>b[i]) {
+                return true
+            }
+        }
+        return false
+    }
+    @sum(array){
+        var value=0
+        each let e, array {
+            value+=e
+        }
+        return value
+    }
+    @countArrObj(array,param,value){
+        var count=0
+        each let e, array {
+            if (e[param]==value) {count+=1}
+        }
+        return count
+    }
+    @removeAt(array,index){
+        return array.slice(0,index).concat(array.slice(index+1,array.len))
+    }
+}
