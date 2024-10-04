@@ -1031,6 +1031,12 @@ printJPより
 ## if?
 条件推測ゲームです  
 
+## analyze_note
+MAMH(Misskey Analyzer for Mental Health)です  
+メンタルヘルスを目的としてMisskeyの投稿を分析します  
+使うためにはモデルが必要ですが、大きくてアップデートできなかった(ライセンスも違う)のでありません  
+リリースしたパッケージには入っています(https://drive.google.com/file/d/1NHxgU8l2WE_8HQI9eKFXzdMgqYMwcd9y/view?usp=drive_link)  
+
 # JavaScript
 
 ## kakezann1000.html
