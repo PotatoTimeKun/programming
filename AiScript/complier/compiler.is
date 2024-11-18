@@ -1,0 +1,700 @@
+let DEBUG=true
+let PRINTSTATE=false
+@az(chr){
+    if chr==null{return false}
+    var pt=chr.codepoint_at(0)
+    if 97<=pt&&pt<=122{return true}
+    if 65<=pt&&pt<=90{return true}
+    if pt==95{return true}
+    return false
+}
+@in09(chr){
+    if chr==null{return false}
+    var pt=chr.codepoint_at(0)
+    if 48<=pt&&pt<=57{return true}
+    return false
+}
+@Print(text){
+    print(text)
+}
+var vars={}
+@regiVar(name,data){
+    if DEBUG{
+        Print(`debug info - register {name} : {Core:to_str(data)}`)
+    }
+    if vars[name]==null{
+        vars[name]=[data]
+    }
+    else{
+        vars[name].unshift(data)
+    }
+}
+@runFunc(name,args){
+    if name=="print"{
+        if args.len==0{Print("error(func:print) : no argument")}
+        else if args[0].type=="undefined"{
+            Print("undefined")
+        }
+        else{
+            Print(Core:to_str(args[0].value))
+        }
+        return {type: "undefined"}
+    }
+    return {type: "undefined"}
+}
+@evalExp(text){
+    if DEBUG{
+        Print(`debug info - evaluate : {text}`)
+    }
+    var st="common0"
+    var ind=0
+    var reason=""
+    var nameBuffer=""
+    var dataBuffer=""
+    let oprs=["+","-","*","/","%","&","|","!"]
+    let doubleOprs=["+","-","&","|"]
+    let bracs=["(","{","["]
+    let endBracs=[")","}","]"]
+    var oprChar=""
+    var expressionList=[]
+    var startWith=[]
+    var dataList=[]
+    loop {
+        let chr=text.pick(ind)
+        if PRINTSTATE{
+            Print(`expression - state:{st},index:{ind},char:{chr}`)
+        }
+        if st=="common0"{
+            if chr==" "||chr==Str:lf{ind+=1}
+            else if az(chr){st="varFunc0"}
+            else if oprs.incl(chr){
+                st="opr0"
+                ind+=1
+                oprChar=chr
+            }
+            else if chr=="("{
+                st="brac0"
+                ind+=1
+            }
+            else if chr=='"'{
+                st="str0"
+                ind+=1
+            }
+            else if in09(chr){
+                st="num0"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr==null{
+                if expressionList.len==1{
+                    if expressionList[0].type=="value"{
+                        return expressionList[0].value
+                    }
+                    else if expressionList[0].type=="var"{
+                        let dataArr=vars[expressionList[0].value]
+                        if dataArr==null||dataArr.len==0{
+                            return {type: "error",reason: "宣言されていない変数"}
+                        }
+                        let data=dataArr[0]
+                        if data.type=="undefined"{
+                            return {type: "error",reason: "値が定義されていない変数"}
+                        }
+                        return {type: data.type,value: data.value}
+                    }
+                    else{
+                        return {type: "error",reason: "式の実行に失敗"}
+                    }
+                }
+                for let i , expressionList.len{
+                    if expressionList[i].type=="opr"&&expressionList[i].value=="*"{
+                        if i+1>=expressionList.len||i==0{
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        var data1=expressionList[i-1]
+                    }
+                }
+            }
+            else{
+                st="error"
+                reason="定義されない式"
+            }
+        }
+        else if st=="varFunc0"{
+            if az(chr)||in09(chr){
+                ind+=1
+                nameBuffer=[nameBuffer,chr].join()
+            }
+            else if chr=="("{
+                st="func0"
+                ind+=1
+            }
+            else{
+                st="common0"
+                expressionList.push({type: "var",value: nameBuffer})
+                nameBuffer=""
+            }
+        }
+        else if st=="func0"{
+            if chr=='"'{
+                st="funcStr0"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr==null{
+                st="error"
+                reason="閉じていない式"
+            }
+            else if bracs.incl(chr){
+                st="func1"
+                ind+=1
+                startWith.push(chr)
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr==","{
+                ind+=1
+                dataList.push(dataBuffer)
+                dataBuffer=""
+            }
+            else if chr==")"{
+                ind+=1
+                if dataBuffer.len!=0{
+                    dataList.push(dataBuffer)
+                }
+                dataBuffer=""
+                var args=[]
+                each let d , dataList{
+                    args.push(evalExp(d))
+                }
+                expressionList.push(runFunc(nameBuffer,args))
+                st="common0"
+            }
+            else{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="error"{
+            return {type: "error",reason: reason}
+        }
+        else if st=="funcStr0"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="funcStr1"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="func0"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="funcStr1"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="funcStr0"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="funcStr2"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="funcStr3"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="func1"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="funcStr3"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="funcStr2"
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="func1"{
+            if chr=='"'{
+                ind+=1
+                st="funcStr2"
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else if chr==null{
+                st="error"
+                reason=`閉じていない構文 : {startWith.pop()}`
+            }
+            else if endBracs.incl(chr){
+                ind+=1
+                var startChar=startWith.pop()
+                dataBuffer=[dataBuffer,chr].join()
+                if startChar!=chr{
+                    st="error"
+                    reason=`一致しない構文 : {startChar} -> {chr}`
+                }
+                if startWith.len{
+                    st="func0"
+                }
+            }
+            else if bracs.incl(chr){
+                startWith.push(chr)
+                dataBuffer=[dataBuffer,chr].join()
+                ind+=1
+            }
+            else{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="opr0"{
+            if doubleOprs.incl(chr){
+                st="opr1"
+            }
+            else{
+                expressionList.push({type: "opr",value: oprChar})
+            }
+        }
+        else if st=="opr1"{
+            if oprChar==chr{
+                expressionList.push({type: "opr",value: [oprChar,chr].join()})
+                ind+=1
+            }
+            else{
+                st="common0"
+            }
+        }
+        else if st=="brac0"{
+            if chr=='"'{
+                st="bracStr0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==null{
+                st="error"
+                reason="閉じていない括弧"
+            }
+            else if bracs.incl(chr){
+                st="brac1"
+                ind+=1
+                startWith.push(chr)
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==")"{
+                ind+=1
+                expressionList.push(evalExp(expressionBuffer))
+                expressionBuffer=""
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="bracStr0"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="bracStr1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="brac0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="bracStr1"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="bracStr0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="bracStr2"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="bracStr3"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="brac1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="bracStr3"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="bracStr2"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="brac1"{
+            if chr=='"'{
+                ind+=1
+                st="bracStr2"
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==null{
+                st="error"
+                reason=`閉じていない構文 : {startWith.pop()}`
+            }
+            else if endBracs.incl(chr){
+                ind+=1
+                var startChar=startWith.pop()
+                expressionBuffer=[expressionBuffer,chr].join()
+                if startChar!=chr{
+                    st="error"
+                    reason=`一致しない構文 : {startChar} -> {chr}`
+                }
+                if startWith.len{
+                    st="brac0"
+                }
+            }
+            else if bracs.incl(chr){
+                startWith.push(chr)
+                expressionBuffer=[expressionBuffer,chr].join()
+                ind+=1
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="str0"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="閉じていない文字列"
+            }
+            else if chr=='"'{
+                ind+=1
+                st="common0"
+                expressionList.push({type: "value",value: {type: "str",value: dataBuffer.replace("\\\\","\\").replace("\\s",Str:lf).replace('\\"','"')}})
+                dataBuffer=""
+            }
+            else if chr=="\\"{
+                ind+=1
+                st="str1"
+                dataBuffer=[dataBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="str1"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="閉じていない文字列"
+            }
+            else{
+                ind+=1
+                st="str0"
+                dataBuffer=[dataBuffer,chr].join()
+            }
+        }
+        else if st=="num0"{
+            if chr=="."{
+                ind+=1
+                dataBuffer=[dataBuffer,chr].join()
+                st="float0"
+            }
+            else if in09(chr){
+                dataBuffer=[dataBuffer,chr].join()
+                ind+=1
+            }
+            else{
+                expressionList.push({type: "value",value: {type: "num",value: dataBuffer.to_num()}})
+                dataBuffer=""
+                st="common0"
+            }
+        }
+        else if st=="float0"{
+            if in09(chr){
+                dataBuffer=[dataBuffer,chr].join()
+                ind+=1
+            }
+            else{
+                expressionList.push({type: "value",value: {type: "num",value: dataBuffer.to_num()}})
+                dataBuffer=""
+                st="common0"
+            }
+        }
+    }
+}
+@run(text){
+    var st="common0"
+    var ind=0
+    var branchBuffer=""
+    var expressionBuffer=""
+    var nameBuffer=""
+    var reason=""
+    loop {
+        let chr=text.pick(ind)
+        if PRINTSTATE{
+            Print(`state:{st},index:{ind},char:{chr}`)
+        }
+        if st=="common0"{
+            if chr==" "||chr==Str:lf{ind+=1}
+            else if chr=="/"{
+                st="comment0"
+                ind+=1
+            }
+            else if chr==null{
+                st="success"
+                break
+            }
+            else if az(chr){
+                st="common1"
+                branchBuffer=""
+            }
+            else{
+                st="error"
+                reason="定義されない実行文"
+            }
+        }
+        else if st=="common1"{
+            if az(chr)||in09(chr){
+                ind+=1
+                branchBuffer=[branchBuffer,chr].join()
+            }
+            else if chr==" "{
+                ind+=1
+                if branchBuffer=="var"{st="var0"}
+                else{st="expr0"}
+            }
+            else{
+                st="expr0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="comment0"{
+            if chr=="/"{
+                st="comment1"
+                ind+=1
+            }
+            else{
+                st="error"
+                reason="もしかして-コメント文"
+            }
+        }
+        else if st=="comment1"{
+            if chr==Str:lf{st="common0"}
+            else if chr==null{st="success"}
+            else{ind+=1}
+        }
+        else if st=="error"{
+            Print(`error{Str:lf}reason:{reason}`)
+            break
+        }
+        else if st=="success"{
+            break
+        }
+        else if st=="var0"{
+            if chr==" "||chr==Str:lf{ind+=1}
+            else if az(chr){st="var1"}
+            else{
+                st="error"
+                reason="不正な変数名"
+            }
+        }
+        else if st=="var1"{
+            if chr==" "{
+                st="var2"
+                ind+=1
+            }
+            else if az(chr)||in09(chr){
+                nameBuffer=[nameBuffer,chr].join()
+                ind+=1
+            }
+            else if chr==";"{
+                ind+=1
+                regiVar(nameBuffer,{type: "undefined"})
+                nameBuffer=""
+                st="common0"
+            }
+            else{
+                st="error"
+                reason="不正な変数名"
+            }
+        }
+        else if st=="var2"{
+            if chr==" "||chr==Str:lf{ind+=1}
+            else if chr==";"{
+                ind+=1
+                regiVar(nameBuffer,{type: "undefined"})
+                nameBuffer=""
+                st="common0"
+            }
+            else if chr=="="{
+                ind+=1
+                st="var3"
+            }
+            else{
+                st="error"
+                reason="不正な変数定義"
+            }
+        }
+        else if st=="var3"{
+            if chr==" "||chr==Str:lf{ind+=1}
+            else if chr==null{
+                st="error"
+                reason="不正な変数定義"
+            }
+            else{st="var4"}
+        }
+        else if st=="var4"{
+            if chr==";"{
+                regiVar(nameBuffer,evalExp(expressionBuffer))
+                expressionBuffer=""
+                ind+=1
+                st="common0"
+            }
+            else if chr=='"'{
+                st="var5"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==null{
+                st="error"
+                reason="不正な変数定義"
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="var5"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="var6"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="var4"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="var6"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="var5"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="expr0"{
+            if chr==";"{
+                ind+=1
+                evalExp([branchBuffer,expressionBuffer].join())
+                expressionBuffer=""
+                st="common0"
+            }
+            else if chr=='"'{
+                st="expr1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="expr1"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr=="\\"{
+                st="expr2"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"'{
+                st="expr0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else{
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="expr2"{
+            if chr==Str:lf||chr==null{
+                st="error"
+                reason="不正な文字列"
+            }
+            else{
+                st="expr1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+    }
+}
+var code=`var test;//変数定義{Str:lf}var test2 = "\\";";{Str:lf}print(test2);`
+each let line , code.split(Str:lf){
+    print(line)
+}
+print("->")
+run(code)
