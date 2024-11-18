@@ -30,6 +30,9 @@ var vars={}
     }
 }
 @runFunc(name,args){
+    if DEBUG{
+        Print(`debug info - run {name} <- {Core:to_str(args)}`)
+    }
     if name=="print"{
         if args.len==0{Print("error(func:print) : no argument")}
         else if args[0].type=="undefined"{
@@ -42,6 +45,17 @@ var vars={}
     }
     return {type: "undefined"}
 }
+@getVar(name){
+    let dataArr=vars[name]
+    if dataArr==null||dataArr.len==0{
+        return {type: "error",reason: "宣言されていない変数"}
+    }
+    let data=dataArr[0]
+    if data.type=="undefined"{
+        return {type: "error",reason: "値が定義されていない変数"}
+    }
+    return {type: data.type,value: data.value}
+}
 @evalExp(text){
     if DEBUG{
         Print(`debug info - evaluate : {text}`)
@@ -51,6 +65,7 @@ var vars={}
     var reason=""
     var nameBuffer=""
     var dataBuffer=""
+    var expressionBuffer=""
     let oprs=["+","-","*","/","%","&","|","!"]
     let doubleOprs=["+","-","&","|"]
     let bracs=["(","{","["]
@@ -91,27 +106,134 @@ var vars={}
                         return expressionList[0].value
                     }
                     else if expressionList[0].type=="var"{
-                        let dataArr=vars[expressionList[0].value]
-                        if dataArr==null||dataArr.len==0{
-                            return {type: "error",reason: "宣言されていない変数"}
-                        }
-                        let data=dataArr[0]
-                        if data.type=="undefined"{
-                            return {type: "error",reason: "値が定義されていない変数"}
-                        }
-                        return {type: data.type,value: data.value}
+                        return getVar(expressionList[0].value)
                     }
                     else{
                         return {type: "error",reason: "式の実行に失敗"}
                     }
                 }
-                for let i , expressionList.len{
-                    if expressionList[i].type=="opr"&&expressionList[i].value=="*"{
+                var i=0
+                loop {
+                    if i>=expressionList.len{
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&(expressionList[i].value=="*"||expressionList[i].value=="/"||expressionList[i].value=="%"){
+                        let opr=expressionList[i].value
                         if i+1>=expressionList.len||i==0{
                             return {type: "error",reason: "演算できる値がない"}
                         }
                         var data1=expressionList[i-1]
+                        var data2=expressionList[i+1]
+                        if data1.type=="var"{
+                            data1=getVar(data1.value)
+                        }
+                        else if data1.type=="value"{
+                            data1=data1.value
+                        }
+                        if data2.type=="var"{
+                            data2=getVar(data1.value)
+                        }
+                        else if data2.type=="value"{
+                            data2=data2.value
+                        }
+                        if data1.type=="num"&&data2.type=="num"{
+                            expressionList.remove(i-1)
+                            expressionList.remove(i-1)
+                            expressionList.remove(i-1)
+                            if opr=="*"{
+                                expressionList.insert(i-1,{type: "value",value: {type: "num",value: data1.value*data2.value}})
+                            }
+                            else if opr=="/"{
+                                expressionList.insert(i-1,{type: "value",value: {type: "num",value: data1.value/data2.value}})
+                            }
+                            else{
+                                expressionList.insert(i-1,{type: "value",value: {type: "num",value: data1.value%data2.value}})
+                            }
+                            i=i-1
+                        }
+                        else{
+                            return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+                        }
                     }
+                    i+=1
+                }
+                i=0
+                loop {
+                    if i>=expressionList.len{
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&(expressionList[i].value=="+"||expressionList[i].value=="-"){
+                        let opr=expressionList[i].value
+                        if i+1>=expressionList.len{
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        if i==0{
+                            var data=expressionList[i+1]
+                            if data.type=="var"{
+                                data=getVar(data.value)
+                            }
+                            else if data.type=="value"{
+                                data=data.value
+                            }
+                            if data.type=="num"{
+                                expressionList.remove(i)
+                                expressionList.remove(i)
+                                if opr=="-"{
+                                    expressionList.insert(i,{type:"value",value:{type:"num",value:0-data.value}})
+                                }
+                                i+=1
+                                continue
+                            }
+                            else{
+                                return {type: "error",reason: `定義されない式 : {opr}{Core:to_str(data.value)}({data.type})`}
+                            }
+                        }
+                        var data1=expressionList[i-1]
+                        var data2=expressionList[i+1]
+                        if data1.type=="var"{
+                            data1=getVar(data1.value)
+                        }
+                        else if data1.type=="value"{
+                            data1=data1.value
+                        }
+                        if data2.type=="var"{
+                            data2=getVar(data1.value)
+                        }
+                        else if data2.type=="value"{
+                            data2=data2.value
+                        }
+                        if data1.type=="num"&&data2.type=="num"{
+                            expressionList.remove(i-1)
+                            expressionList.remove(i-1)
+                            expressionList.remove(i-1)
+                            if opr=="+"{
+                                expressionList.insert(i-1,{type: "value",value: {type: "num",value: data1.value+data2.value}})
+                            }
+                            else{
+                                expressionList.insert(i-1,{type: "value",value: {type: "num",value: data1.value-data2.value}})
+                            }
+                            i=i-1
+                        }
+                        else{
+                            return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                print(Core:to_str(expressionList))
+                if expressionList.len==1{
+                    if expressionList[0].type=="value"{
+                        return expressionList[0].value
+                    }
+                    else if expressionList[0].type=="var"{
+                        return getVar(expressionList[0].value)
+                    }
+                    else{
+                        return {type: "error",reason: "式の実行に失敗"}
+                    }
+                }
+                else{
+                    return {type: "error",reason: "式の実行に失敗"}
                 }
             }
             else{
@@ -276,6 +398,7 @@ var vars={}
             }
             else{
                 expressionList.push({type: "opr",value: oprChar})
+                st="common0"
             }
         }
         else if st=="opr1"{
@@ -307,6 +430,7 @@ var vars={}
                 ind+=1
                 expressionList.push(evalExp(expressionBuffer))
                 expressionBuffer=""
+                st="common0"
             }
             else{
                 ind+=1
@@ -560,6 +684,10 @@ var vars={}
                 nameBuffer=""
                 st="common0"
             }
+            else if chr=="="{
+                ind+=1
+                st="var3"
+            }
             else{
                 st="error"
                 reason="不正な変数名"
@@ -593,6 +721,7 @@ var vars={}
         else if st=="var4"{
             if chr==";"{
                 regiVar(nameBuffer,evalExp(expressionBuffer))
+                nameBuffer=""
                 expressionBuffer=""
                 ind+=1
                 st="common0"
@@ -692,7 +821,7 @@ var vars={}
         }
     }
 }
-var code=`var test;//変数定義{Str:lf}var test2 = "\\";";{Str:lf}print(test2);`
+var code=`var test;//変数定義{Str:lf}var test2 = "\\";";{Str:lf}print(test2);{Str:lf}var nm = -3+5*2-(-1);{Str:lf}print(nm);`
 each let line , code.split(Str:lf){
     print(line)
 }
