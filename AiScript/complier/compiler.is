@@ -44,6 +44,18 @@ var vars={}
         }
         return {type: "undefined"}
     }
+    if name=="toStr" {
+        if args.len==0 {
+            Print("error(func:toStr) : no argument")
+            return {type: "undefined"}
+        }
+        else if args[0].type=="undefined" {
+            return {type: "str",value: "undefined"}
+        }
+        else {
+            return {type: "str",value: Core:to_str(args[0].value)}
+        }
+    }
     return {type: "undefined"}
 }
 @getVar(name){
@@ -55,7 +67,7 @@ var vars={}
     if data.type=="undefined" {
         return {type: "error",reason: "値が定義されていない変数"}
     }
-    return {type: data.type,value: data.value}
+    return data
 }
 @evalExp(text){
     if DEBUG {
@@ -67,10 +79,14 @@ var vars={}
     var nameBuffer=""
     var dataBuffer=""
     var expressionBuffer=""
-    let oprs=["+","-","*","/","%","&","|","!"]
-    let doubleOprs=["+","-","&","|"]
+    let oprs=["+","-","*","/","%","&","|","!","<",">","="]
+    let doubleOprs=["+","-","&","|","="]
     let bracs=["(","{","["]
     let endBracs=[")","}","]"]
+    var starter={}
+    starter["}"]="{"
+    starter[")"]="("
+    starter["]"]="["
     var oprChar=""
     var expressionList=[]
     var startWith=[]
@@ -114,6 +130,86 @@ var vars={}
                     }
                 }
                 var i=0
+                loop {
+                    if i>=expressionList.len {
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&(expressionList[i].value=="++"||expressionList[i].value=="--") {
+                        let opr=expressionList[i].value
+                        var data=null
+                        var before=true
+                        if i-1>=0&&expressionList[i-1].type=="var" {
+                            data=expressionList[i-1]
+                            before=false
+                        }
+                        else if i+1<expressionList.len&&expressionList[i+1].type=="var" {
+                            data=expressionList[i+1]
+                        }
+                        else {
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        data=getVar(data.value)
+                        if data.type=="error" {
+                            return data
+                        }
+                        if data.type=="num" {
+                            expressionList.remove(i)
+                            if before {expressionList.remove(i)}
+                            else {expressionList.remove(i-1)}
+                            if opr=="++" {
+                                if before {data.value=data.value+1}
+                                expressionList.insert(i,{type: "value",value: {type: "num",value: data.value}})
+                                if !before {
+                                    data.value=data.value+1
+                                    i=i-1
+                                }
+                            }
+                            else {
+                                if before {data.value=data.value-1}
+                                expressionList.insert(i,{type: "value",value: {type: "num",value: data.value}})
+                                if !before {
+                                    data.value=data.value-1
+                                    i=i-1
+                                }
+                            }
+                        }
+                        else {
+                            return {type: "error",reason: `定義されない式 : {opr} to {Core:to_str(data.value)}({data.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                i=0
+                loop {
+                    if i>=expressionList.len {
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&expressionList[i].value=="!" {
+                        if i+1>=expressionList.len {
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        var data=expressionList[i+1]
+                        if data.type=="var" {
+                            data=getVar(data.value)
+                            if data.type=="error" {
+                                return data
+                            }
+                        }
+                        else if data.type=="value" {
+                            data=data.value
+                        }
+                        if data.type=="bool" {
+                            expressionList.remove(i)
+                            expressionList.remove(i)
+                            expressionList.insert(i,{type: "value",value: {type: "bool",value: !data.value}})
+                        }
+                        else {
+                            return {type: "error",reason: `定義されない式 : ! {Core:to_str(data.value)}({data.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                i=0
                 loop {
                     if i>=expressionList.len {
                         break
@@ -232,6 +328,162 @@ var vars={}
                         }
                         else if data1.type=="str"&&data2.type=="str"&&opr=="+" {
                             expressionList.insert(i-1,{type: "value",value: {type: "str",value: [data1.value,data2.value].join()}})
+                            i=i-1
+                        }
+                        else {
+                            return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                i=0
+                loop {
+                    if i>=expressionList.len {
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&(["<",">","<=",">=","=="].incl(expressionList[i].value)) {
+                        let opr=expressionList[i].value
+                        if i+1>=expressionList.len||i==0 {
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        var data1=expressionList[i-1]
+                        var data2=expressionList[i+1]
+                        if data1.type=="var" {
+                            data1=getVar(data1.value)
+                            if data1.type=="error" {
+                                return data1
+                            }
+                        }
+                        else if data1.type=="value" {
+                            data1=data1.value
+                        }
+                        else {
+                            return {type: "error",reason: "式の実行に失敗"}
+                        }
+                        if data2.type=="var" {
+                            data2=getVar(data2.value)
+                            if data2.type=="error" {
+                                return data2
+                            }
+                        }
+                        else if data2.type=="value" {
+                            data2=data2.value
+                        }
+                        else {
+                            return {type: "error",reason: "式の実行に失敗"}
+                        }
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        if opr=="==" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value==data2.value}})
+                            i=i-1
+                        }
+                        else if opr=="<"&&data1.type=="num"&&data2.type=="num" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value<data2.value}})
+                            i=i-1
+                        }
+                        else if opr==">="&&data1.type=="num"&&data2.type=="num" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>=data2.value}})
+                            i=i-1
+                        }
+                        else if opr==">"&&data1.type=="num"&&data2.type=="num" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>data2.value}})
+                            i=i-1
+                        }
+                        else if opr=="<"&&data1.type=="num"&&data2.type=="num" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>data2.value}})
+                            i=i-1
+                        }
+                        else if opr=="<="&&data1.type=="num"&&data2.type=="num" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value<=data2.value}})
+                            i=i-1
+                        }
+                        else {
+                            return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                i=0
+                loop {
+                    if i>=expressionList.len {
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&expressionList[i].value=="&&" {
+                        let opr=expressionList[i].value
+                        if i+1>=expressionList.len||i==0 {
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        var data1=expressionList[i-1]
+                        var data2=expressionList[i+1]
+                        if data1.type=="var" {
+                            data1=getVar(data1.value)
+                            if data1.type=="error" {
+                                return data1
+                            }
+                        }
+                        else if data1.type=="value" {
+                            data1=data1.value
+                        }
+                        if data2.type=="var" {
+                            data2=getVar(data2.value)
+                            if data2.type=="error" {
+                                return data2
+                            }
+                        }
+                        else if data2.type=="value" {
+                            data2=data2.value
+                        }
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        if data1.type=="bool"&&data2.type=="bool" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value&&data2.value}})
+                            i=i-1
+                        }
+                        else {
+                            return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+                        }
+                    }
+                    i+=1
+                }
+                i=0
+                loop {
+                    if i>=expressionList.len {
+                        break
+                    }
+                    if expressionList[i].type=="opr"&&expressionList[i].value=="||" {
+                        let opr=expressionList[i].value
+                        if i+1>=expressionList.len||i==0 {
+                            return {type: "error",reason: "演算できる値がない"}
+                        }
+                        var data1=expressionList[i-1]
+                        var data2=expressionList[i+1]
+                        if data1.type=="var" {
+                            data1=getVar(data1.value)
+                            if data1.type=="error" {
+                                return data1
+                            }
+                        }
+                        else if data1.type=="value" {
+                            data1=data1.value
+                        }
+                        if data2.type=="var" {
+                            data2=getVar(data2.value)
+                            if data2.type=="error" {
+                                return data2
+                            }
+                        }
+                        else if data2.type=="value" {
+                            data2=data2.value
+                        }
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        expressionList.remove(i-1)
+                        if data1.type=="bool"&&data2.type=="bool" {
+                            expressionList.insert(i-1,{type: "value",value: {type: "bool",value: data1.value||data2.value}})
+                            i=i-1
                         }
                         else {
                             return {type: "error",reason: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
@@ -270,7 +522,15 @@ var vars={}
             }
             else {
                 st="common0"
-                expressionList.push({type: "var",value: nameBuffer})
+                if nameBuffer=="true" {
+                    expressionList.push({type: "value",value: {type: "bool",value: true}})
+                }
+                else if nameBuffer=="false" {
+                    expressionList.push({type: "value",value: {type: "bool",value: false}})
+                }
+                else {
+                    expressionList.push({type: "var",value: nameBuffer})
+                }
                 nameBuffer=""
             }
         }
@@ -310,6 +570,8 @@ var vars={}
                     args.push(value)
                 }
                 expressionList.push({type: "value",value: runFunc(nameBuffer,args)})
+                nameBuffer=""
+                dataList=[]
                 st="common0"
             }
             else {
@@ -396,11 +658,11 @@ var vars={}
                 ind+=1
                 var startChar=startWith.pop()
                 dataBuffer=[dataBuffer,chr].join()
-                if startChar!=chr {
+                if startChar!=starter[chr] {
                     st="error"
                     reason=`一致しない構文 : {startChar} -> {chr}`
                 }
-                if startWith.len {
+                if startWith.len<=0 {
                     st="func0"
                 }
             }
@@ -424,13 +686,9 @@ var vars={}
             }
         }
         else if st=="opr1" {
-            if oprChar==chr {
-                expressionList.push({type: "opr",value: [oprChar,chr].join()})
-                ind+=1
-            }
-            else {
-                st="common0"
-            }
+            expressionList.push({type: "opr",value: [oprChar,chr].join()})
+            ind+=1
+            st="common0"
         }
         else if st=="brac0" {
             if chr=='"' {
@@ -539,11 +797,11 @@ var vars={}
                 ind+=1
                 var startChar=startWith.pop()
                 expressionBuffer=[expressionBuffer,chr].join()
-                if startChar!=chr {
+                if startChar!=starter[chr] {
                     st="error"
                     reason=`一致しない構文 : {startChar} -> {chr}`
                 }
-                if startWith.len {
+                if startWith.len<=0 {
                     st="brac0"
                 }
             }
@@ -625,6 +883,10 @@ var vars={}
     var expressionBuffer=""
     var nameBuffer=""
     var reason=""
+    var bracCount=0
+    var ifRun=false
+    var doRun=false
+    var registered=[]
     loop {
         let chr=text.pick(ind)
         if PRINTSTATE {
@@ -657,7 +919,49 @@ var vars={}
             else if chr==" " {
                 ind+=1
                 if branchBuffer=="var" {st="var0"}
+                else if ["if","elif"].incl(branchBuffer) {st="if0"}
+                else if branchBuffer=="else" {
+                    st="ifRun0"
+                    doRun=!ifRun
+                }
+                else if text.pick(ind)=="=" {
+                    ind+=1
+                    st="upd0"
+                }
+                else if text.pick(ind)==";"&&branchBuffer=="continue" {
+                    st="continue"
+                    break
+                }
+                else if text.pick(ind)==";"&&branchBuffer=="break" {
+                    st="break"
+                    break
+                }
+                else if branchBuffer=="while" {
+                    st="loop0"
+                }
                 else{st="expr0"}
+            }
+            else if chr=="{"&&branchBuffer=="else" {
+                st="ifRun0"
+                doRun=!ifRun
+            }
+            else if chr=="("&&["if","elif"].incl(branchBuffer) {
+                st="if0"
+            }
+            else if chr=="{"&&branchBuffer=="while" {
+                st="loop0"
+            }
+            else if chr=="=" {
+                st="upd0"
+                ind+=1
+            }
+            else if chr==";"&&branchBuffer=="continue" {
+                st="continue"
+                break
+            }
+            else if chr==";"&&branchBuffer=="break" {
+                st="break"
+                break
             }
             else {
                 st="expr0"
@@ -707,6 +1011,7 @@ var vars={}
             else if chr==";" {
                 ind+=1
                 regiVar(nameBuffer,{type: "undefined"})
+                registered.push(nameBuffer)
                 nameBuffer=""
                 st="common0"
             }
@@ -724,6 +1029,7 @@ var vars={}
             else if chr==";" {
                 ind+=1
                 regiVar(nameBuffer,{type: "undefined"})
+                registered.push(nameBuffer)
                 nameBuffer=""
                 st="common0"
             }
@@ -753,6 +1059,7 @@ var vars={}
                     continue
                 }
                 regiVar(nameBuffer,value)
+                registered.push(nameBuffer)
                 nameBuffer=""
                 expressionBuffer=""
                 ind+=1
@@ -860,11 +1167,348 @@ var vars={}
                 expressionBuffer=[expressionBuffer,chr].join()
             }
         }
+        else if st=="if0" {
+            if chr==" "||chr==Str:lf {ind+=1}
+            else if chr=="(" {
+                st="if1"
+                ind+=1
+                bracCount=1
+            }
+            else {
+                st="error"
+                reason="if文の構造が合わない"
+            }
+        }
+        else if st=="if1" {
+            if chr=="(" {
+                bracCount+=1
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==")" {
+                bracCount=bracCount-1
+                ind+=1
+                if (bracCount>0) {expressionBuffer=[expressionBuffer,chr].join()}
+            }
+            else if bracCount<=0 {
+                doRun=evalExp(expressionBuffer)
+                expressionBuffer=""
+                if doRun.type=="error" {
+                    st="error"
+                    reason=doRun.reason
+                    continue
+                }
+                if doRun.type!="bool" {
+                    st="error"
+                    reason=`条件に使えない型 : {doRun.type}`
+                }
+                if branchBuffer=="elif"&&ifRun {
+                    doRun=false
+                    ifRun=true
+                }
+                else {
+                    ifRun=doRun.value
+                    doRun=doRun.value
+                }
+                st="ifRun0"
+            }
+            else if chr==null {
+                st="error"
+                reason="閉じていない条件文"
+            }
+            else if chr=='"' {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+                st="ifStr1"
+            }
+            else {
+                expressionBuffer=[expressionBuffer,chr].join()
+                ind+=1
+            }
+        }
+        else if st=="ifStr1" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr==BS {
+                st="ifStr2"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"' {
+                st="if1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="ifStr2" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else {
+                st="ifStr1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="ifRun0" {
+            if chr==" "||chr==Str:lf {ind+=1}
+            else if chr=="{" {
+                st="ifRun1"
+                ind+=1
+                bracCount=1
+            }
+            else {
+                st="error"
+                reason="if文の構造が合わない"
+            }
+        }
+        else if st=="ifRun1" {
+            if chr=="{" {
+                bracCount+=1
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=="}" {
+                bracCount=bracCount-1
+                ind+=1
+                if (bracCount>0) {expressionBuffer=[expressionBuffer,chr].join()}
+            }
+            else if bracCount<=0 {
+                if (doRun) {
+                    let result=run(expressionBuffer)
+                    if result=="error" {
+                        st="error"
+                        break
+                    }
+                    else if result=="continue" {
+                        st="continue"
+                        break
+                    }
+                    else if result=="break" {
+                        st="break"
+                        break
+                    }
+                    st="common0"
+                }
+                expressionBuffer=""
+                st="common0"
+            }
+            else if chr==null {
+                st="error"
+                reason="閉じていないif文"
+            }
+            else if chr=='"' {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+                st="ifStr3"
+            }
+            else {
+                expressionBuffer=[expressionBuffer,chr].join()
+                ind+=1
+            }
+        }
+        else if st=="ifStr3" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr==BS {
+                st="ifStr4"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"' {
+                st="ifRun1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="ifStr4" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else {
+                st="ifStr3"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="upd0" {
+            if chr==";" {
+                let dataArr=vars[branchBuffer]
+                if dataArr==null||dataArr.len==0 {
+                    st="error"
+                    reason="宣言されていない変数"
+                }
+                let data=dataArr[0]
+                let value=evalExp(expressionBuffer)
+                if value.type=="error" {
+                    st="error"
+                    reason=value.reason
+                }
+                data.type=value.type
+                data.value=value.value
+                st="common0"
+                ind+=1
+                branchBuffer=""
+                expressionBuffer=""
+            }
+            else if chr=='"' {
+                st="upd1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr==null {
+                st="error"
+                reason="終了していない代入文"
+            }
+            else {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="upd1" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr==BS {
+                st="upd2"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"' {
+                st="upd0"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="upd2" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else {
+                st="upd1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="loop0" {
+            if chr==" "||chr==Str:lf {ind+=1}
+            else if chr=="{" {
+                st="loop1"
+                ind+=1
+                bracCount=1
+            }
+            else {
+                st="error"
+                reason="while文の構造が合わない"
+            }
+        }
+        else if st=="loop1" {
+            if chr=="{" {
+                bracCount+=1
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=="}" {
+                bracCount=bracCount-1
+                ind+=1
+                if (bracCount>0) {expressionBuffer=[expressionBuffer,chr].join()}
+            }
+            else if bracCount<=0 {
+                loop {
+                    let result=run(expressionBuffer)
+                    if result=="error" {
+                        st="error"
+                        break
+                    }
+                    else if result=="continue" {
+                        st="continue"
+                        continue
+                    }
+                    else if result=="break" {
+                        st="break"
+                        break
+                    }
+                }
+                if st=="error" {
+                    break
+                }
+                st="common0"
+                expressionBuffer=""
+            }
+            else if chr==null {
+                st="error"
+                reason="閉じていないwhile文"
+            }
+            else if chr=='"' {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+                st="loop2"
+            }
+            else {
+                expressionBuffer=[expressionBuffer,chr].join()
+                ind+=1
+            }
+        }
+        else if st=="loop2" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else if chr==BS {
+                st="loop3"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else if chr=='"' {
+                st="loop1"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+            else {
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
+        else if st=="loop3" {
+            if chr==Str:lf||chr==null {
+                st="error"
+                reason="不正な文字列"
+            }
+            else {
+                st="loop2"
+                ind+=1
+                expressionBuffer=[expressionBuffer,chr].join()
+            }
+        }
     }
+    each let name , registered {
+        vars[name].shift()
+    }
+    return st
 }
-var code=`var test;//変数定義{Str:lf}var test2 = "hello!"+"{BS}";";{Str:lf}print(test2);{Str:lf}var nm = -3+5*2-(-1);{Str:lf}print(nm);{Str:lf}print(2+test);`
-each let line , code.split(Str:lf) {
-    print(line)
-}
+var code=`var i=0;{Str:lf}while \{{Str:lf}    i++;{Str:lf}print(toStr(i));{Str:lf}    if(i>=3)\{break;\}{Str:lf}\}`
+//var code=`var x = 3;{Str:lf}var y = 4;{Str:lf}var r = 5;{Str:lf}if(x*x+y*y<r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にある");{Str:lf}\}{Str:lf}elif(x*x+y*y==r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の円周上にある");{Str:lf}\}{Str:lf}else\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にない");{Str:lf}\}`
+//var code=`var test;//変数定義{Str:lf}var test2 = "hello!"+"{BS}";";{Str:lf}print(test2);{Str:lf}var nm = -3+5*2-(-1);{Str:lf}print(nm++);{Str:lf}print(nm);{Str:lf}print(!true&&true||true);{Str:lf}print(1<2);{Str:lf}print(1==2);{Str:lf}print(2==2);{Str:lf}print(3<=2);{Str:lf}if (1<2)\{print("test");\}`
+print(code)
 print("->")
 run(code)
