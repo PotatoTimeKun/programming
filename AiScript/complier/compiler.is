@@ -69,6 +69,17 @@ var vars={}
     }
     return data
 }
+@getValue(name){
+    let dataArr=vars[name]
+    if dataArr==null||dataArr.len==0 {
+        return {type: "error",reason: "宣言されていない変数"}
+    }
+    let data=dataArr[0]
+    if data.type=="undefined" {
+        return {type: "error",reason: "値が定義されていない変数"}
+    }
+    return {type: data.type,value: data.value}
+}
 @evalExp(text){
     if DEBUG {
         Print(`debug info - evaluate : {text}`)
@@ -123,7 +134,7 @@ var vars={}
                         return expressionList[0].value
                     }
                     else if expressionList[0].type=="var" {
-                        return getVar(expressionList[0].value)
+                        return getValue(expressionList[0].value)
                     }
                     else {
                         return {type: "error",reason: "式の実行に失敗"}
@@ -190,7 +201,7 @@ var vars={}
                         }
                         var data=expressionList[i+1]
                         if data.type=="var" {
-                            data=getVar(data.value)
+                            data=getValue(data.value)
                             if data.type=="error" {
                                 return data
                             }
@@ -222,7 +233,7 @@ var vars={}
                         var data1=expressionList[i-1]
                         var data2=expressionList[i+1]
                         if data1.type=="var" {
-                            data1=getVar(data1.value)
+                            data1=getValue(data1.value)
                             if data1.type=="error" {
                                 return data1
                             }
@@ -231,7 +242,7 @@ var vars={}
                             data1=data1.value
                         }
                         if data2.type=="var" {
-                            data2=getVar(data2.value)
+                            data2=getValue(data2.value)
                             if data2.type=="error" {
                                 return data2
                             }
@@ -273,7 +284,7 @@ var vars={}
                         if i==0 {
                             var data=expressionList[i+1]
                             if data.type=="var" {
-                                data=getVar(data.value)
+                                data=getValue(data.value)
                                 if data.type=="error" {
                                     return data
                                 }
@@ -297,7 +308,7 @@ var vars={}
                         var data1=expressionList[i-1]
                         var data2=expressionList[i+1]
                         if data1.type=="var" {
-                            data1=getVar(data1.value)
+                            data1=getValue(data1.value)
                             if data1.type=="error" {
                                 return data1
                             }
@@ -306,7 +317,7 @@ var vars={}
                             data1=data1.value
                         }
                         if data2.type=="var" {
-                            data2=getVar(data2.value)
+                            data2=getValue(data2.value)
                             if data2.type=="error" {
                                 return data2
                             }
@@ -349,7 +360,7 @@ var vars={}
                         var data1=expressionList[i-1]
                         var data2=expressionList[i+1]
                         if data1.type=="var" {
-                            data1=getVar(data1.value)
+                            data1=getValue(data1.value)
                             if data1.type=="error" {
                                 return data1
                             }
@@ -361,7 +372,7 @@ var vars={}
                             return {type: "error",reason: "式の実行に失敗"}
                         }
                         if data2.type=="var" {
-                            data2=getVar(data2.value)
+                            data2=getValue(data2.value)
                             if data2.type=="error" {
                                 return data2
                             }
@@ -418,7 +429,7 @@ var vars={}
                         var data1=expressionList[i-1]
                         var data2=expressionList[i+1]
                         if data1.type=="var" {
-                            data1=getVar(data1.value)
+                            data1=getValue(data1.value)
                             if data1.type=="error" {
                                 return data1
                             }
@@ -427,7 +438,7 @@ var vars={}
                             data1=data1.value
                         }
                         if data2.type=="var" {
-                            data2=getVar(data2.value)
+                            data2=getValue(data2.value)
                             if data2.type=="error" {
                                 return data2
                             }
@@ -461,7 +472,7 @@ var vars={}
                         var data1=expressionList[i-1]
                         var data2=expressionList[i+1]
                         if data1.type=="var" {
-                            data1=getVar(data1.value)
+                            data1=getValue(data1.value)
                             if data1.type=="error" {
                                 return data1
                             }
@@ -470,7 +481,7 @@ var vars={}
                             data1=data1.value
                         }
                         if data2.type=="var" {
-                            data2=getVar(data2.value)
+                            data2=getValue(data2.value)
                             if data2.type=="error" {
                                 return data2
                             }
@@ -496,7 +507,7 @@ var vars={}
                         return expressionList[0].value
                     }
                     else if expressionList[0].type=="var" {
-                        return getVar(expressionList[0].value)
+                        return getValue(expressionList[0].value)
                     }
                     else {
                         return {type: "error",reason: "式の実行に失敗"}
@@ -882,6 +893,7 @@ var vars={}
     var branchBuffer=""
     var expressionBuffer=""
     var nameBuffer=""
+    var conditionBuffer=""
     var reason=""
     var bracCount=0
     var ifRun=false
@@ -905,6 +917,7 @@ var vars={}
             else if az(chr) {
                 st="common1"
                 branchBuffer=""
+                conditionBuffer=""
             }
             else {
                 st="error"
@@ -919,7 +932,7 @@ var vars={}
             else if chr==" " {
                 ind+=1
                 if branchBuffer=="var" {st="var0"}
-                else if ["if","elif"].incl(branchBuffer) {st="if0"}
+                else if ["if","elif","while"].incl(branchBuffer) {st="if0"}
                 else if branchBuffer=="else" {
                     st="ifRun0"
                     doRun=!ifRun
@@ -945,7 +958,7 @@ var vars={}
                 st="ifRun0"
                 doRun=!ifRun
             }
-            else if chr=="("&&["if","elif"].incl(branchBuffer) {
+            else if chr=="("&&["if","elif","while"].incl(branchBuffer) {
                 st="if0"
             }
             else if chr=="{"&&branchBuffer=="while" {
@@ -1192,6 +1205,7 @@ var vars={}
             }
             else if bracCount<=0 {
                 doRun=evalExp(expressionBuffer)
+                conditionBuffer=expressionBuffer
                 expressionBuffer=""
                 if doRun.type=="error" {
                     st="error"
@@ -1283,22 +1297,38 @@ var vars={}
             else if bracCount<=0 {
                 if (doRun) {
                     let result=run(expressionBuffer)
+                    if branchBuffer!="while" {
+                        st="common0"
+                        expressionBuffer=""
+                    }
+                    else {
+                        doRun=evalExp(conditionBuffer)
+                        if doRun.type=="error" {
+                            st="error"
+                            reason=doRun.reason
+                            continue
+                        }
+                        doRun=doRun.value
+                    }
                     if result=="error" {
                         st="error"
                         break
                     }
-                    else if result=="continue" {
+                    else if result=="continue"&&branchBuffer!="while" {
                         st="continue"
                         break
                     }
-                    else if result=="break" {
+                    else if result=="break"&&branchBuffer!="while" {
                         st="break"
                         break
                     }
+                    else if result=="break"&&branchBuffer=="while" {
+                        doRun=false
+                    }
+                } else {
                     st="common0"
+                    expressionBuffer=""
                 }
-                expressionBuffer=""
-                st="common0"
             }
             else if chr==null {
                 st="error"
@@ -1362,7 +1392,6 @@ var vars={}
                 data.value=value.value
                 st="common0"
                 ind+=1
-                branchBuffer=""
                 expressionBuffer=""
             }
             else if chr=='"' {
@@ -1410,103 +1439,13 @@ var vars={}
                 expressionBuffer=[expressionBuffer,chr].join()
             }
         }
-        else if st=="loop0" {
-            if chr==" "||chr==Str:lf {ind+=1}
-            else if chr=="{" {
-                st="loop1"
-                ind+=1
-                bracCount=1
-            }
-            else {
-                st="error"
-                reason="while文の構造が合わない"
-            }
-        }
-        else if st=="loop1" {
-            if chr=="{" {
-                bracCount+=1
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-            }
-            else if chr=="}" {
-                bracCount=bracCount-1
-                ind+=1
-                if (bracCount>0) {expressionBuffer=[expressionBuffer,chr].join()}
-            }
-            else if bracCount<=0 {
-                loop {
-                    let result=run(expressionBuffer)
-                    if result=="error" {
-                        st="error"
-                        break
-                    }
-                    else if result=="continue" {
-                        st="continue"
-                        continue
-                    }
-                    else if result=="break" {
-                        st="break"
-                        break
-                    }
-                }
-                if st=="error" {
-                    break
-                }
-                st="common0"
-                expressionBuffer=""
-            }
-            else if chr==null {
-                st="error"
-                reason="閉じていないwhile文"
-            }
-            else if chr=='"' {
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-                st="loop2"
-            }
-            else {
-                expressionBuffer=[expressionBuffer,chr].join()
-                ind+=1
-            }
-        }
-        else if st=="loop2" {
-            if chr==Str:lf||chr==null {
-                st="error"
-                reason="不正な文字列"
-            }
-            else if chr==BS {
-                st="loop3"
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-            }
-            else if chr=='"' {
-                st="loop1"
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-            }
-            else {
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-            }
-        }
-        else if st=="loop3" {
-            if chr==Str:lf||chr==null {
-                st="error"
-                reason="不正な文字列"
-            }
-            else {
-                st="loop2"
-                ind+=1
-                expressionBuffer=[expressionBuffer,chr].join()
-            }
-        }
     }
     each let name , registered {
         vars[name].shift()
     }
     return st
 }
-var code=`var i=0;{Str:lf}while \{{Str:lf}    i++;{Str:lf}print(toStr(i));{Str:lf}    if(i>=3)\{break;\}{Str:lf}\}`
+var code=`var a=1024;{Str:lf}var b=32*3*5;{Str:lf}print("GCD("+toStr(a)+","+toStr(b)+")");{Str:lf}while (b>=1)\{{Str:lf}    var tmp=b;{Str:lf}    b=a%b;{Str:lf}    a=tmp;{Str:lf}    if(b==0)\{{Str:lf}        print(toStr(a));{Str:lf}        break;{Str:lf}\}{Str:lf}\}{Str:lf}if(b==1)\{print(toStr(1))\}`
 //var code=`var x = 3;{Str:lf}var y = 4;{Str:lf}var r = 5;{Str:lf}if(x*x+y*y<r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にある");{Str:lf}\}{Str:lf}elif(x*x+y*y==r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の円周上にある");{Str:lf}\}{Str:lf}else\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にない");{Str:lf}\}`
 //var code=`var test;//変数定義{Str:lf}var test2 = "hello!"+"{BS}";";{Str:lf}print(test2);{Str:lf}var nm = -3+5*2-(-1);{Str:lf}print(nm++);{Str:lf}print(nm);{Str:lf}print(!true&&true||true);{Str:lf}print(1<2);{Str:lf}print(1==2);{Str:lf}print(2==2);{Str:lf}print(3<=2);{Str:lf}if (1<2)\{print("test");\}`
 print(code)
