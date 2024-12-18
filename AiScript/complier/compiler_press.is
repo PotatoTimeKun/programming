@@ -1,0 +1,1621 @@
+var runEnd=false
+@az(c){
+if c==null {return false}
+var pt=c.codepoint_at(0)
+if 97<=pt&&pt<=122 {return true}
+if 65<=pt&&pt<=90 {return true}
+if pt==95 {return true}
+return false
+}
+@in09(c){
+if c==null {return false}
+var pt=c.codepoint_at(0)
+if 48<=pt&&pt<=57 {return true}
+return false
+}
+@Print(t){
+print(t)
+}
+let BS=Str:from_codepoint(92)
+var vars={}
+var funcs={}
+@regiVar(name,data){
+if vars[name]==null {
+vars[name]=[data]
+}
+else {
+vars[name].unshift(data)
+}
+}
+@runFunc(name,args){
+if name=="print" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+Print(runFunc("toStr",args).value)
+return {type: "undefined"}
+}
+else if name=="toStr" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+else if args[0].type=="undefined" {
+return {type: "str",value: "undefined"}
+}
+else if args[0].type=="list" {
+var value=""
+value=[value,"[ "].join()
+var first=true
+each let e , args[0].value {
+if !first {
+value=[value,", "].join()
+}
+else {
+first=false
+}
+if e.type=="str" {
+value=[value,'"',runFunc(name,[e]).value,'"'].join()
+}
+else {
+value=[value,runFunc(name,[e]).value].join()
+}
+}
+value=[value," ]"].join()
+return {type: "str",value: value}
+}
+else {
+return {type: "str",value: Core:to_str(args[0].value)}
+}
+}
+else if name=="toNum" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+else if args[0].type=="str" {
+let value=args[0].value.to_num()
+if value==null {
+return {type: "error",rs: `関数{name} 数値にできない値`}
+}
+return {type: "num",value: value}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="type" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+return {type: "str",value: args[0].type}
+}
+else if name=="sleep" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+else if args[0].type=="num" {
+Core:sleep(args[0].value)
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="len" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+else if ["str","list"].incl(args[0].type) {
+return {type: "num",value: args[0].value.len}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="floor" {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数がない`}
+}
+else if args[0].type=="num" {
+return {type: "num",value: Math:floor(args[0].value)}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="at" {
+if args.len<2 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list"&&args[1].type=="num" {
+if args[0].value.len<=args[1].value||args[1].value<0 {
+return {type: "error",rs: `関数{name} インデックスエラー`}
+}
+return Obj:copy(args[0].value[args[1].value])
+}
+else if args[0].type=="str"&&args[1].type=="num" {
+if args[0].value.len<=args[1].value||args[1].value<0 {
+return {type: "error",rs: `関数{name} インデックスエラー`}
+}
+return {type: "str",value: args[0].value.pick(args[1].value)}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if ["push","unshift"].incl(name) {
+if args.len<2 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list"&&args[1].type!="undefined" {
+if name=="push" {
+args[0].value.push(Obj:copy(args[1]))
+}
+else {
+args[0].value.unshift(Obj:copy(args[1]))
+}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if ["pop","shift"].incl(name) {
+if args.len==0 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list" {
+if name=="pop" {
+return args[0].value.pop()
+}
+else {
+return args[0].value.shift()
+}
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="remove" {
+if args.len<2 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list"&&args[1].type=="num" {
+if args[0].value.len<=args[1].value||args[1].value<0 {
+return {type: "error",rs: `関数{name} インデックスエラー`}
+}
+return args[0].value.remove(args[1].value)
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="insert" {
+if args.len<3 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list"&&args[1].type=="num"&&args[2].type!="undefined" {
+if args[0].value.len<args[1].value||args[1].value<0 {
+return {type: "error",rs: `関数{name} インデックスエラー`}
+}
+args[0].value.insert(args[1].value,Obj:copy(args[2]))
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if name=="set" {
+if args.len<3 {
+return {type: "error",rs: `関数{name}の引数が足りない`}
+}
+else if args[0].type=="list"&&args[1].type=="num"&&args[2].type!="undefined" {
+if args[0].value.len<=args[1].value||args[1].value<0 {
+return {type: "error",rs: `関数{name} インデックスエラー`}
+}
+args[0].value[args[1].value]=Obj:copy(args[2])
+}
+else {
+return {type: "error",rs: `関数{name} 定義されない値`}
+}
+}
+else if funcs[name]==null {
+return {type: "error",rs: "定義されていない関数"}
+}
+else {
+if args.len!=funcs[name]["args"].len {
+return {type: "error",rs: `関数{name}の引数の数が合わない`}
+}
+for let i, args.len {
+regiVar(funcs[name]["args"][i],args[i])
+}
+let result=run(funcs[name]["code"])
+each let name , funcs[name]["args"] {
+vars[name].shift()
+}
+if result["state"]=="return" {
+return result["value"]
+}
+}
+return {type: "undefined"}
+}
+@getVar(name){
+let dataArr=vars[name]
+if dataArr==null||dataArr.len==0 {
+return {type: "error",rs: "宣言されていない変数"}
+}
+let data=dataArr[0]
+if data.type=="undefined" {
+return {type: "error",rs: "値が定義されていない変数"}
+}
+return data
+}
+@getValue(name){
+return Obj:copy(getVar(name))
+}
+@strEval(t,ind){
+var st="str0"
+var buffer=""
+var c=""
+loop {
+let c=t.pick(ind)
+if st=="error" {
+return {st: st,rs: "不正な文字列"}
+}
+else if st=="str0" {
+if c==Str:lf||c==null {
+st="error"
+}
+else if c==BS {
+st="str1"
+ind+=1
+buffer=[buffer,c].join()
+}
+else if c=='"' {
+ind+=1
+return {st: "success",ind: ind,str: buffer}
+}
+else {
+ind+=1
+buffer=[buffer,c].join()
+}
+}
+else if st=="str1" {
+if c==Str:lf||c==null {
+st="error"
+}
+else {
+st="str0"
+ind+=1
+buffer=[buffer,c].join()
+}
+}
+}
+}
+@bracEval(t,ind,startChar){
+let bracs=["(","{","["]
+let endBracs=[")","}","]"]
+var starter={}
+starter["}"]="{"
+starter[")"]="("
+starter["]"]="["
+var startWith=[]
+var buffer=""
+var c=""
+var st="brac0"
+startWith.push(startChar)
+loop {
+let c=t.pick(ind)
+if st=="error" {
+return {st: st,rs: "不正な括弧"}
+}
+else if st=="brac0" {
+if bracs.incl(c) {
+startWith.push(startChar)
+ind+=1
+buffer=[buffer,c].join()
+}
+else if endBracs.incl(c) {
+ind+=1
+let startChar=startWith.pop()
+if startChar!=starter[c] {
+st="error"
+continue
+}
+if startWith.len==0 {
+return {st: "success",ind: ind,str: buffer}
+}
+buffer=[buffer,c].join()
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+continue
+}
+buffer=[buffer,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+}
+else {
+ind+=1
+buffer=[buffer,c].join()
+}
+}
+}
+}
+@evalExp(t){
+var st="common0"
+var ind=0
+var rs=""
+var nB=""
+var dB=""
+var eB=""
+let oprs=["+","-","*","/","%","&","|","!","<",">","="]
+let doubleOprs=["+","-","&","|","="]
+let bracs=["(","{","["]
+var oprChar=""
+var eL=[]
+var dL=[]
+loop {
+if runEnd {
+return {type: "error",rs: "強制終了"}
+}
+let c=t.pick(ind)
+if st=="common0" {
+if c==" "||c==Str:lf {ind+=1}
+else if az(c) {st="varFunc0"}
+else if oprs.incl(c) {
+st="opr0"
+ind+=1
+oprChar=c
+}
+else if c=="(" {
+st="brac0"
+ind+=1
+}
+else if c=="[" {
+st="list0"
+ind+=1
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eL.push({type: "value",value: {type: "str",value: result.str}})
+ind=result.ind
+}
+else if in09(c) {
+st="num0"
+ind+=1
+dB=[dB,c].join()
+}
+else if c==null {
+// 値が1つならそれを返す
+if eL.len==1 {
+if eL[0].type=="value" {
+return eL[0].value
+}
+else if eL[0].type=="var" {
+return getValue(eL[0].value)
+}
+else {
+return {type: "error",rs: "式の実行に失敗"}
+}
+}
+var i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&(eL[i].value=="++"||eL[i].value=="--") {
+let opr=eL[i].value
+var data=null
+var before=true
+if i-1>=0&&eL[i-1].type=="var" {
+data=eL[i-1]
+before=false
+}
+else if i+1<eL.len&&eL[i+1].type=="var" {
+data=eL[i+1]
+}
+else {
+return {type: "error",rs: "演算できる値がない"}
+}
+data=getVar(data.value)
+if data.type=="error" {
+return data
+}
+if data.type=="num" {
+eL.remove(i)
+if before {eL.remove(i)}
+else {eL.remove(i-1)}
+if opr=="++" {
+if before {data.value=data.value+1}
+eL.insert(i,{type: "value",value: {type: "num",value: data.value}})
+if !before {
+data.value=data.value+1
+i=i-1
+}
+}
+else {
+if before {data.value=data.value-1}
+eL.insert(i,{type: "value",value: {type: "num",value: data.value}})
+if !before {
+data.value=data.value-1
+i=i-1
+}
+}
+}
+else {
+return {type: "error",rs: `定義されない式 : {opr} to {Core:to_str(data.value)}({data.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&eL[i].value=="!" {
+if i+1>=eL.len {
+return {type: "error",rs: "演算できる値がない"}
+}
+var data=eL[i+1]
+if data.type=="var" {
+data=getValue(data.value)
+if data.type=="error" {
+return data
+}
+}
+else if data.type=="value" {
+data=data.value
+}
+if data.type=="bool" {
+eL.remove(i)
+eL.remove(i)
+eL.insert(i,{type: "value",value: {type: "bool",value: !data.value}})
+}
+else {
+return {type: "error",rs: `定義されない式 : ! {Core:to_str(data.value)}({data.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&(eL[i].value=="*"||eL[i].value=="/"||eL[i].value=="%") {
+let opr=eL[i].value
+if i+1>=eL.len||i==0 {
+return {type: "error",rs: "演算できる値がない"}
+}
+var data1=eL[i-1]
+var data2=eL[i+1]
+if data1.type=="var" {
+data1=getValue(data1.value)
+if data1.type=="error" {
+return data1
+}
+}
+else if data1.type=="value" {
+data1=data1.value
+}
+if data2.type=="var" {
+data2=getValue(data2.value)
+if data2.type=="error" {
+return data2
+}
+}
+else if data2.type=="value" {
+data2=data2.value
+}
+if data1.type=="num"&&data2.type=="num" {
+eL.remove(i-1)
+eL.remove(i-1)
+eL.remove(i-1)
+if opr=="*" {
+eL.insert(i-1,{type: "value",value: {type: "num",value: data1.value*data2.value}})
+}
+else if opr=="/" {
+eL.insert(i-1,{type: "value",value: {type: "num",value: data1.value/data2.value}})
+}
+else {
+eL.insert(i-1,{type: "value",value: {type: "num",value: data1.value%data2.value}})
+}
+i=i-1
+}
+else {
+return {type: "error",rs: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&(eL[i].value=="+"||eL[i].value=="-") {
+let opr=eL[i].value
+if i+1>=eL.len {
+return {type: "error",rs: "演算できる値がない"}
+}
+if i==0 {
+var data=eL[i+1]
+if data.type=="var" {
+data=getValue(data.value)
+if data.type=="error" {
+return data
+}
+}
+else if data.type=="value" {
+data=data.value
+}
+if data.type=="num" {
+eL.remove(i)
+eL.remove(i)
+if opr=="-" {
+eL.insert(i,{type: "value",value: {type: "num",value: 0-data.value}})
+}
+i+=1
+continue
+}
+else{
+return {type: "error",rs: `定義されない式 : {opr}{Core:to_str(data.value)}({data.type})`}
+}
+}
+var data1=eL[i-1]
+var data2=eL[i+1]
+if data1.type=="var" {
+data1=getValue(data1.value)
+if data1.type=="error" {
+return data1
+}
+}
+else if data1.type=="value" {
+data1=data1.value
+}
+if data2.type=="var" {
+data2=getValue(data2.value)
+if data2.type=="error" {
+return data2
+}
+}
+else if data2.type=="value" {
+data2=data2.value
+}
+eL.remove(i-1)
+eL.remove(i-1)
+eL.remove(i-1)
+if data1.type=="num"&&data2.type=="num" {
+if opr=="+" {
+eL.insert(i-1,{type: "value",value: {type: "num",value: data1.value+data2.value}})
+}
+else {
+eL.insert(i-1,{type: "value",value: {type: "num",value: data1.value-data2.value}})
+}
+i=i-1
+}
+else if data1.type=="str"&&data2.type=="str"&&opr=="+" {
+eL.insert(i-1,{type: "value",value: {type: "str",value: [data1.value,data2.value].join()}})
+i=i-1
+}
+else if data1.type=="list"&&data2.type=="list"&&opr=="+" {
+eL.insert(i-1,{type: "value",value: {type: "list",value: data1.value.concat(data2.value)}})
+i=i-1
+}
+else {
+return {type: "error",rs: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&(["<",">","<=",">=","=="].incl(eL[i].value)) {
+let opr=eL[i].value
+if i+1>=eL.len||i==0 {
+return {type: "error",rs: "演算できる値がない"}
+}
+var data1=eL[i-1]
+var data2=eL[i+1]
+if data1.type=="var" {
+data1=getValue(data1.value)
+if data1.type=="error" {
+return data1
+}
+}
+else if data1.type=="value" {
+data1=data1.value
+}
+else {
+return {type: "error",rs: "式の実行に失敗"}
+}
+if data2.type=="var" {
+data2=getValue(data2.value)
+if data2.type=="error" {
+return data2
+}
+}
+else if data2.type=="value" {
+data2=data2.value
+}
+else {
+return {type: "error",rs: "式の実行に失敗"}
+}
+eL.remove(i-1)
+eL.remove(i-1)
+eL.remove(i-1)
+if opr=="==" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value==data2.value}})
+i=i-1
+}
+else if opr=="<"&&data1.type=="num"&&data2.type=="num" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value<data2.value}})
+i=i-1
+}
+else if opr==">="&&data1.type=="num"&&data2.type=="num" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>=data2.value}})
+i=i-1
+}
+else if opr==">"&&data1.type=="num"&&data2.type=="num" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>data2.value}})
+i=i-1
+}
+else if opr=="<"&&data1.type=="num"&&data2.type=="num" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value>data2.value}})
+i=i-1
+}
+else if opr=="<="&&data1.type=="num"&&data2.type=="num" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value<=data2.value}})
+i=i-1
+}
+else {
+return {type: "error",rs: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&eL[i].value=="&&" {
+let opr=eL[i].value
+if i+1>=eL.len||i==0 {
+return {type: "error",rs: "演算できる値がない"}
+}
+var data1=eL[i-1]
+var data2=eL[i+1]
+if data1.type=="var" {
+data1=getValue(data1.value)
+if data1.type=="error" {
+return data1
+}
+}
+else if data1.type=="value" {
+data1=data1.value
+}
+if data2.type=="var" {
+data2=getValue(data2.value)
+if data2.type=="error" {
+return data2
+}
+}
+else if data2.type=="value" {
+data2=data2.value
+}
+eL.remove(i-1)
+eL.remove(i-1)
+eL.remove(i-1)
+if data1.type=="bool"&&data2.type=="bool" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value&&data2.value}})
+i=i-1
+}
+else {
+return {type: "error",rs: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+}
+}
+i+=1
+}
+i=0
+loop {
+if i>=eL.len {
+break
+}
+if eL[i].type=="opr"&&eL[i].value=="||" {
+let opr=eL[i].value
+if i+1>=eL.len||i==0 {
+return {type: "error",rs: "演算できる値がない"}
+}
+var data1=eL[i-1]
+var data2=eL[i+1]
+if data1.type=="var" {
+data1=getValue(data1.value)
+if data1.type=="error" {
+return data1
+}
+}
+else if data1.type=="value" {
+data1=data1.value
+}
+if data2.type=="var" {
+data2=getValue(data2.value)
+if data2.type=="error" {
+return data2
+}
+}
+else if data2.type=="value" {
+data2=data2.value
+}
+eL.remove(i-1)
+eL.remove(i-1)
+eL.remove(i-1)
+if data1.type=="bool"&&data2.type=="bool" {
+eL.insert(i-1,{type: "value",value: {type: "bool",value: data1.value||data2.value}})
+i=i-1
+}
+else {
+return {type: "error",rs: `定義されない式 : {Core:to_str(data1.value)}({data1.type}){opr}{Core:to_str(data2.value)}({data2.type})`}
+}
+}
+i+=1
+}
+if eL.len==1 {
+if eL[0].type=="value" {
+return eL[0].value
+}
+else if eL[0].type=="var" {
+return getValue(eL[0].value)
+}
+else {
+return {type: "error",rs: "式の実行に失敗"}
+}
+}
+else {
+return {type: "error",rs: "式の実行に失敗"}
+}
+}
+else {
+st="error"
+rs="定義されない式"
+}
+}
+else if st=="varFunc0" {
+if az(c)||in09(c) {
+ind+=1
+nB=[nB,c].join()
+}
+else if c=="(" {
+st="func0"
+ind+=1
+}
+else {
+st="common0"
+if nB=="true" {
+eL.push({type: "value",value: {type: "bool",value: true}})
+}
+else if nB=="false" {
+eL.push({type: "value",value: {type: "bool",value: false}})
+}
+else {
+eL.push({type: "var",value: nB})
+}
+nB=""
+}
+}
+else if st=="func0" {
+if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+dB=[dB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="閉じていない式"
+}
+else if bracs.incl(c) {
+ind+=1
+let result=bracEval(t,ind,c)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+ind=result.ind
+dB=[dB,c,result.str,t.pick(ind-1)].join()
+}
+else if c=="," {
+ind+=1
+dL.push(dB)
+dB=""
+}
+else if c==")" {
+ind+=1
+if dB.len!=0 {
+dL.push(dB)
+}
+dB=""
+var args=[]
+each let d , dL {
+let value=evalExp(d)
+if value.type=="error" {
+return value
+}
+args.push(value)
+}
+eL.push({type: "value",value: runFunc(nB,args)})
+nB=""
+dL=[]
+st="common0"
+}
+else {
+ind+=1
+dB=[dB,c].join()
+}
+}
+else if st=="error" {
+return {type: "error",rs: rs}
+}
+else if st=="opr0" {
+if doubleOprs.incl(c) {
+st="opr1"
+}
+else {
+eL.push({type: "opr",value: oprChar})
+st="common0"
+}
+}
+else if st=="opr1" {
+eL.push({type: "opr",value: [oprChar,c].join()})
+ind+=1
+st="common0"
+}
+else if st=="brac0" {
+if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="閉じていない括弧"
+}
+else if bracs.incl(c) {
+ind+=1
+let result=bracEval(t,ind,c)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+ind=result.ind
+eB=[eB,c,result.str,t.pick(ind-1)].join()
+}
+else if c==")" {
+ind+=1
+let value=evalExp(eB)
+if value.type=="error" {
+return value
+}
+eL.push(value)
+eB=""
+st="common0"
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="num0" {
+if c=="." {
+ind+=1
+dB=[dB,c].join()
+st="float0"
+}
+else if in09(c) {
+dB=[dB,c].join()
+ind+=1
+}
+else {
+eL.push({type: "value",value: {type: "num",value: dB.to_num()}})
+dB=""
+st="common0"
+}
+}
+else if st=="float0" {
+if in09(c) {
+dB=[dB,c].join()
+ind+=1
+}
+else {
+eL.push({type: "value",value: {type: "num",value: dB.to_num()}})
+dB=""
+st="common0"
+}
+}
+else if st=="list0" {
+if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+dB=[dB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="閉じていない式"
+}
+else if bracs.incl(c) {
+ind+=1
+let result=bracEval(t,ind,c)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+ind=result.ind
+dB=[dB,c,result.str,t.pick(ind-1)].join()
+}
+else if c=="," {
+ind+=1
+dL.push(dB)
+dB=""
+}
+else if c=="]" {
+ind+=1
+if dB.len!=0 {
+dL.push(dB)
+}
+dB=""
+var evalList=[]
+each let d , dL {
+let value=evalExp(d)
+if value.type=="error" {
+return value
+}
+evalList.push(value)
+}
+eL.push({type: "value",value: {type: "list",value: evalList}})
+nB=""
+dL=[]
+st="common0"
+}
+else {
+ind+=1
+dB=[dB,c].join()
+}
+}
+}
+}
+@run(t){
+var st="common0"
+var ind=0
+var bB=""
+var eB=""
+var nB=""
+var conditionBuffer=""
+var rs=""
+var bracCount=0
+var ifRun=false
+var doRun=false
+var registered=[]
+var argBuffer=""
+var argList=[]
+var returnValue=null
+loop {
+if runEnd {
+st="error"
+rs="強制終了"
+}
+let c=t.pick(ind)
+if st=="common0" {
+if c==" "||c==Str:lf {ind+=1}
+else if c=="/" {
+st="comment0"
+ind+=1
+}
+else if c==null {
+st="success"
+break
+}
+else if az(c) {
+st="common1"
+bB=""
+conditionBuffer=""
+}
+else {
+st="error"
+rs="定義されない実行文"
+}
+}
+else if st=="common1" {
+if az(c)||in09(c) {
+ind+=1
+bB=[bB,c].join()
+}
+else if c==" " {
+ind+=1
+if bB=="var" {st="var0"}
+else if ["if","elif","while"].incl(bB) {st="if0"}
+else if bB=="else" {
+st="ifRun0"
+doRun=!ifRun
+}
+else if t.pick(ind)=="=" {
+ind+=1
+st="upd0"
+}
+else if t.pick(ind)==";"&&bB=="continue" {
+st="continue"
+break
+}
+else if t.pick(ind)==";"&&bB=="break" {
+st="break"
+break
+}
+else if bB=="while" {
+st="loop0"
+}
+else if bB=="def" {
+st="def0"
+}
+else if bB=="return" {
+st="ret0"
+}
+else{st="expr0"}
+}
+else if c=="{"&&bB=="else" {
+st="ifRun0"
+doRun=!ifRun
+}
+else if c=="("&&["if","elif","while"].incl(bB) {
+st="if0"
+}
+else if c=="{"&&bB=="while" {
+st="loop0"
+}
+else if c=="=" {
+st="upd0"
+ind+=1
+}
+else if c==";"&&bB=="continue" {
+st="continue"
+break
+}
+else if c==";"&&bB=="break" {
+st="break"
+break
+}
+else if c==";"&&bB=="return" {
+st="success"
+}
+else {
+st="expr0"
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="comment0" {
+if c=="/" {
+st="comment1"
+ind+=1
+}
+else {
+st="error"
+rs="もしかして-コメント文"
+}
+}
+else if st=="comment1" {
+if c==Str:lf {st="common0"}
+else if c==null {st="success"}
+else {ind+=1}
+}
+else if st=="error" {
+Print(`error : {rs}`)
+break
+}
+else if st=="success" {
+break
+}
+else if st=="var0" {
+if c==" "||c==Str:lf {ind+=1}
+else if az(c) {st="var1"}
+else {
+st="error"
+rs="不正な変数名"
+}
+}
+else if st=="var1" {
+if c==" " {
+st="var2"
+ind+=1
+}
+else if az(c)||in09(c) {
+nB=[nB,c].join()
+ind+=1
+}
+else if c==";" {
+ind+=1
+regiVar(nB,{type: "undefined"})
+registered.push(nB)
+nB=""
+st="common0"
+}
+else if c=="=" {
+ind+=1
+st="var3"
+}
+else {
+st="error"
+rs="不正な変数名"
+}
+}
+else if st=="var2" {
+if c==" "||c==Str:lf {ind+=1}
+else if c==";" {
+ind+=1
+regiVar(nB,{type: "undefined"})
+registered.push(nB)
+nB=""
+st="common0"
+}
+else if c=="=" {
+ind+=1
+st="var3"
+}
+else {
+st="error"
+rs="不正な変数定義"
+}
+}
+else if st=="var3" {
+if c==" "||c==Str:lf {ind+=1}
+else if c==null {
+st="error"
+rs="不正な変数定義"
+}
+else {st="var4"}
+}
+else if st=="var4" {
+if c==";" {
+let value=evalExp(eB)
+if value.type=="error" {
+st="error"
+rs=value.rs
+continue
+}
+regiVar(nB,value)
+registered.push(nB)
+nB=""
+eB=""
+ind+=1
+st="common0"
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="不正な変数定義"
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="expr0" {
+if c==";" {
+ind+=1
+let value=evalExp([bB,eB].join())
+if value.type=="error" {
+st="error"
+rs=value.rs
+continue
+}
+eB=""
+st="common0"
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="もしかして - ;がない"
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="if0" {
+if c==" "||c==Str:lf {ind+=1}
+else if c=="(" {
+st="if1"
+ind+=1
+bracCount=1
+}
+else {
+st="error"
+rs="if文の構造が合わない"
+}
+}
+else if st=="if1" {
+if c=="(" {
+bracCount+=1
+ind+=1
+eB=[eB,c].join()
+}
+else if c==")" {
+bracCount=bracCount-1
+ind+=1
+if (bracCount>0) {eB=[eB,c].join()}
+}
+else if bracCount<=0 {
+doRun=evalExp(eB)
+conditionBuffer=eB
+eB=""
+if doRun.type=="error" {
+st="error"
+rs=doRun.rs
+continue
+}
+if doRun.type!="bool" {
+st="error"
+rs=`条件に使えない型 : {doRun.type}`
+}
+if bB=="elif"&&ifRun {
+doRun=false
+ifRun=true
+}
+else {
+ifRun=doRun.value
+doRun=doRun.value
+}
+st="ifRun0"
+}
+else if c==null {
+st="error"
+rs="閉じていない条件文"
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else {
+eB=[eB,c].join()
+ind+=1
+}
+}
+else if st=="ifRun0" {
+if c==" "||c==Str:lf {ind+=1}
+else if c=="{" {
+st="ifRun1"
+ind+=1
+bracCount=1
+}
+else {
+st="error"
+rs="if文の構造が合わない"
+}
+}
+else if st=="ifRun1" {
+if c=="{" {
+bracCount+=1
+ind+=1
+eB=[eB,c].join()
+}
+else if c=="}" {
+bracCount=bracCount-1
+ind+=1
+if (bracCount>0) {eB=[eB,c].join()}
+}
+else if bracCount<=0 {
+if (doRun) {
+let result=run(eB)["state"]
+if bB!="while" {
+st="common0"
+eB=""
+}
+else {
+doRun=evalExp(conditionBuffer)
+if doRun.type=="error" {
+st="error"
+rs=doRun.rs
+continue
+}
+doRun=doRun.value
+}
+if result=="error" {
+st="error"
+break
+}
+else if result=="continue"&&bB!="while" {
+st="continue"
+break
+}
+else if result=="break"&&bB!="while" {
+st="break"
+break
+}
+else if result=="break"&&bB=="while" {
+doRun=false
+}
+} else {
+st="common0"
+eB=""
+}
+}
+else if c==null {
+st="error"
+rs="閉じていないif文"
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else {
+eB=[eB,c].join()
+ind+=1
+}
+}
+else if st=="upd0" {
+if c==";" {
+let dataArr=vars[bB]
+if dataArr==null||dataArr.len==0 {
+st="error"
+rs="宣言されていない変数"
+}
+let data=dataArr[0]
+let value=evalExp(eB)
+if value.type=="error" {
+st="error"
+rs=value.rs
+}
+data.type=value.type
+data.value=value.value
+st="common0"
+ind+=1
+eB=""
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="終了していない代入文"
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="def0" {
+if c==" "||c==Str:lf {
+ind+=1
+}
+else if az(c) {
+ind+=1
+nB=[nB,c].join()
+st="def1"
+}
+else {
+st="error"
+rs="不正な関数定義"
+}
+}
+else if st=="def1" {
+if az(c)||in09(c) {
+ind+=1
+nB=[nB,c].join()
+}
+else if c=="(" {
+ind+=1
+st="def2"
+}
+else {
+st="error"
+rs="不正な関数定義"
+}
+}
+else if st=="def2" {
+if c==" "||c==Str:lf {
+ind+=1
+}
+else if az(c) {
+ind+=1
+argBuffer=[argBuffer,c].join()
+st="def3"
+}
+else {
+st="error"
+rs="不正な関数定義"
+}
+}
+else if st=="def3" {
+if c==" "||c==Str:lf {
+ind+=1
+}
+else if az(c)||in09(c) {
+ind+=1
+argBuffer=[argBuffer,c].join()
+}
+else if c==")" {
+ind+=1
+argList.push(argBuffer)
+argBuffer=""
+st="def4"
+}
+else if c=="," {
+ind+=1
+argList.push(argBuffer)
+argBuffer=""
+st="def2"
+}
+else {
+st="error"
+rs="不正な関数定義"
+}
+}
+else if st=="def4" {
+if c==" "||c==Str:lf {
+ind+=1
+}
+else if c=="{" {
+ind+=1
+bracCount=1
+st="def5"
+}
+else {
+st="error"
+rs="不正な関数定義"
+}
+}
+else if st=="def5" {
+if bracCount<=0 {
+funcs[nB]={args: argList,code: eB}
+nB=""
+argList=[]
+eB=""
+st="common0"
+}
+else if c=="{" {
+ind+=1
+eB=[eB,c].join()
+bracCount+=1
+}
+else if c=="}" {
+ind+=1
+bracCount=bracCount-1
+if bracCount>0 {eB=[eB,c].join()}
+}
+else if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==null {
+st="error"
+rs="不正な関数定義"
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+else if st=="ret0" {
+if c==" "||c==Str:lf {
+ind+=1
+}
+else {
+st="ret1"
+}
+}
+else if st=="ret1" {
+if c=='"' {
+ind+=1
+let result=strEval(t,ind)
+if result.type=="error" {
+st="error"
+rs=result.rs
+continue
+}
+eB=[eB,'"',result.str,'"'].join()
+ind=result.ind
+}
+else if c==";" {
+if eB.len<=0 {
+st="success"
+}
+else {
+st="return"
+returnValue=evalExp(eB)
+break
+}
+}
+else {
+ind+=1
+eB=[eB,c].join()
+}
+}
+}
+each let name , registered {
+vars[name].shift()
+}
+return {state: st,value: returnValue}
+}
+// var code=`var x = 3;{Str:lf}var y = 4;{Str:lf}var r = 5;{Str:lf}if(x*x+y*y<r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にある");{Str:lf}\}{Str:lf}elif(x*x+y*y==r*r)\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の円周上にある");{Str:lf}\}{Str:lf}else\{{Str:lf}    print("("+toStr(x)+","+toStr(y)+")は半径"+toStr(r)+"の円の中にない");{Str:lf}\}`
+// print(code)
+// print("->")
+// run(code)
