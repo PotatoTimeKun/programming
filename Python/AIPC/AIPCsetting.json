@@ -1,0 +1,51 @@
+{
+    "misskeyServer": "sushi.ski",
+    "comment-misskeyServer": "Misskeyサーバのドメイン",
+    "clipBorder": 10,
+    "comment-clipBorder": "クリップ生成でクリップし始めるリアクション数",
+    "uranaiBase": ".\\generated\\base.png",
+    "comment-uranaiBase": "占い生成のベース画像",
+    "uranaiSave": ".\\generated\\",
+    "comment-uranaiSave": "生成した占いの保存場所",
+    "uranaiFont": "YuGothM.ttc",
+    "comment-uranaiFont": "占い生成で使うフォント",
+    "geminiAPIToken": "",
+    "comment-geminiAPIToken": "対義語生成で使うGeminiのAPIキー",
+    "reversiStart": 20,
+    "comment-reversiStart": "この時間からリバーシを有効化可能",
+    "reversiEnd": 21,
+    "comment-reversiEnd": "この時間以降にリバーシを開いているなら閉じる",
+    "reactionUser": [],
+    "comment-reactionUser": "このリストのIDのユーザにリアクションを送る",
+    "sensitiveReactionUser": [],
+    "comment-sensitiveReactionUser": "センシティブの付いたリアクションを送れるユーザー、reactionUserとの重複あり",
+    "reactionPerUser": 2,
+    "comment-reactionPerUser": "1アカウントに送るリアクションの量",
+    "reaction_notePerUser": 5,
+    "comment-reaction_notePerUser": "1アカウントから読み込むノート数",
+    "reaction_ignoreCategory": [],
+    "comment-reaction_ignoreCategory": "リアクションとして使用しないカテゴリーのリスト",
+    "ignoreReaction": [],
+    "comment-ignoreReaction": "リアクションとして使用しない絵文字のリスト",
+    "sensitiveReaction": [],
+    "comment-sensitiveReaction": "サーバー側でセンシティブ絵文字かどうかに関わらずセンシティブ絵文字として扱う絵文字のリスト、既にセンシティブ絵文字であるものを追加する必要はない",
+    "mentionReadCount": 20,
+    "comment-mentionReadCount": "メンションを読み込む数、Botへのメンションが行われる数と機能の頻度を考慮する、100より多くしたい場合は複数回に分けて取得するよう改造する必要あり",
+    "wordcloudMask": "potato.png",
+    "comment-wordcloudMask": "ワードクラウドのマスク画像、白黒の画像を指定する、黒い部分に文字が入る、画像サイズは750x600",
+    "wordcloudSave": ".\\generated\\",
+    "comment-wordcloudSave": "生成したワードクラウドの保存場所",
+    "wordcloudFont": "meiryo.ttc",
+    "comment-wordcloudFont": "ワードクラウドで使うフォント",
+    "AIPC": {
+        "tokenFile": "./token",
+        "schedule": [
+            {
+                "function": "note-generation",
+                "type": "interval",
+                "timer": 30,
+                "startAt": [0,0]
+            }
+        ]
+    }
+}

@@ -1037,6 +1037,10 @@ MAMH(Misskey Analyzer for Mental Health)です
 使うためにはモデルが必要ですが、大きくてアップデートできなかった(ライセンスも違う)のでありません  
 リリースしたパッケージには入っています(https://drive.google.com/file/d/1NHxgU8l2WE_8HQI9eKFXzdMgqYMwcd9y/view?usp=drive_link)  
 
+## AIPC
+MisskeyのBot「AIポテト君」に使っている、Botのコントローラーです  
+詳細はAIPCのREADMEに  
+
 # JavaScript
 
 ## kakezann1000.html
