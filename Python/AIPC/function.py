@@ -318,7 +318,7 @@ def sendReaction(misskey : MisskeyAPI.MisskeyAPI):
                         if any([(alias in word or word in alias)for word in words]):
                             reactionChoice.append(emoji)
                             break
-                for reaction in reactionChoice: #排除する必要のあるリアクションを消す
+                for reaction in reactionChoice.copy(): #排除する必要のあるリアクションを消す
                     if reaction["category"] in setting["reaction_ignoreCategory"]:
                         reactionChoice.remove(reaction)
                         continue
