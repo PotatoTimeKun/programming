@@ -1,0 +1,142 @@
+{
+    "misskeyServer": "sushi.ski",
+    "comment-misskeyServer": "Misskeyサーバのドメイン",
+    "misskeyToken": "",
+    "comment-misskeyToken": "APIトークン"
+    "clipBorder": 10,
+    "comment-clipBorder": "クリップ生成でクリップし始めるリアクション数",
+    "uranaiBase": "gen/base.png",
+    "comment-uranaiBase": "占い生成のベース画像",
+    "uranaiSave": "gen/",
+    "comment-uranaiSave": "生成した占いの保存場所",
+    "uranaiFont": "NotoSansCJK-Regular.ttc",
+    "comment-uranaiFont": "占い生成で使うフォント",
+    "geminiAPIToken": "",
+    "comment-geminiAPIToken": "対義語生成で使うGeminiのAPIキー",
+    "reversiStart": 20,
+    "comment-reversiStart": "この時間からリバーシを有効化可能",
+    "reversiEnd": 21,
+    "comment-reversiEnd": "この時間以降にリバーシを開いているなら閉じる",
+    "reactionUser": [
+        "9o77rqzgs9",
+        "9zj5mgui2j",
+        "9braqg53y7",
+        "9bunaw6egp",
+        "9bk4k70r2a",
+        "9grm2d7rm4",
+        "9gra9er610",
+        "9brtjnrt8j",
+        "9hi8n5yj2t",
+        "9as0mi1p5d",
+        "9d2zru73iy",
+        "9rd9k58a2a",
+        "9iluu41vdo",
+        "9xpd9f5qv6",
+        "9x04a7rwo9",
+        "9cb01prl2o",
+        "9bv9plx6xo",
+        "9bxmjke7a0",
+        "9hsp34jm6c",
+        "9gptkcfswf",
+        "9hq57yzsmx",
+        "a2fibk3wer",
+        "9cttmqb275",
+        "9gxa0i2dtr",
+        "a0o39so18g",
+        "9e27954nh1",
+        "9d9wwr6rp9"
+    ],
+    "comment-reactionUser": "このリストのIDのユーザにリアクションを送る",
+    "sensitiveReactionUser": [
+        "9hi8n5yj2t",
+        "9bv9plx6xo",
+        "9gptkcfswf",
+        "9hsp34jm6c",
+        "9cttmqb275",
+        "a0o39so18g",
+        "9e27954nh1",
+        "9zj5mgui2j",
+        "9d9wwr6rp9"
+    ],
+    "comment-sensitiveReactionUser": "センシティブの付いたリアクションを送れるユーザー、reactionUserとの重複あり",
+    "reactionPerUser": 2,
+    "comment-reactionPerUser": "1アカウントに送るリアクションの量",
+    "reaction_notePerUser": 5,
+    "comment-reaction_notePerUser": "1アカウントから読み込むノート数",
+    "reaction_ignoreCategory": [
+        "赤文字一文字",
+        "ひらがな"
+    ],
+    "comment-reaction_ignoreCategory": "リアクションとして使用しないカテゴリーのリスト",
+    "ignoreReaction": [
+        "izt"
+    ],
+    "comment-ignoreReaction": "リアクションとして使用しない絵文字のリスト",
+    "sensitiveReaction": [],
+    "comment-sensitiveReaction": "サーバー側でセンシティブ絵文字かどうかに関わらずセンシティブ絵文字として扱う絵文字のリスト、既にセンシティブ絵文字であるものを追加する必要はない",
+    "mentionReadCount": 20,
+    "comment-mentionReadCount": "メンションを読み込む数、Botへのメンションが行われる数と機能の頻度を考慮する、100より多くしたい場合は複数回に分けて取得するよう改造する必要あり",
+    "wordcloudMask": "",
+    "comment-wordcloudMask": "ワードクラウドのマスク画像、白黒の画像を指定する、黒い部分に文字が入る、画像サイズは750x600",
+    "wordcloudSave": "",
+    "comment-wordcloudSave": "生成したワードクラウドの保存場所",
+    "wordcloudFont": "",
+    "comment-wordcloudFont": "ワードクラウドで使うフォント",
+    "AIPC": {
+        "tokenFile": "",
+        "schedule": [
+            {
+                "function": "note-generation",
+                "type": "interval",
+                "timer": 90,
+                "startAt": [
+                    0,
+                    0
+                ]
+            },
+            {
+                "function": "note-generation",
+                "type": "interval",
+                "timer": 90,
+                "startAt": [
+                    0,
+                    30
+                ]
+            },
+            {
+                "function": "575-generation",
+                "type": "interval",
+                "timer": 90,
+                "startAt": [
+                    1,
+                    0
+                ]
+            },
+            {
+                "function": "uranai-generation",
+                "type": "once",
+                "startAt": [
+                    12,
+                    20
+                ]
+            },
+            {
+                "function": "weathercast-generate",
+                "type": "once",
+                "startAt": [
+                    10,
+                    10
+                ]
+            },
+            {
+                "function": "reaction-send",
+                "type": "interval",
+                "timer": 30,
+                "startAt": [
+                    0,
+                    15
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,11 @@
+version: "3.9"  # Docker Composeのバージョンを指定
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/aipc  # ローカルディレクトリとコンテナ内ディレクトリをマウント
+    environment:
+      - ENV=production  # 環境変数の指定

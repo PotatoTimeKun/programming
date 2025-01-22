@@ -1,0 +1,2 @@
+Docker用です
+AIPCsetting.jsonのmisskeyTokenにBotアカウントのトークンだけ設定すれば動きます
