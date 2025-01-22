@@ -1,0 +1,6 @@
+markovify==0.9.4
+pykakasi==2.3.0
+requests==2.32.3
+pillow==10.4.0
+mecab==0.996.5
+Janome==0.5.0
