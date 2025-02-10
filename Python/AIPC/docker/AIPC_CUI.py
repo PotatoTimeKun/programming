@@ -1,5 +1,7 @@
 import function
+import reversiFunc
 import MisskeyAPI
+import os
 import json
 import threading
 import datetime
@@ -22,7 +24,17 @@ function.readSetting()
 
 misskey = None
 # トークンを設定
-misskey = MisskeyAPI.MisskeyAPI(server=setting["misskeyServer"],token=setting["misskeyToken"])
+if os.path.exists(setting["AIPC"]["tokenFile"]):
+    print("password:")
+    misskey = MisskeyAPI.MisskeyAPI(server=setting["misskeyServer"])
+    misskey.readToken(setting["AIPC"]["tokenFile"],input())
+else:
+    print("API token:")
+    token = input()
+    print("new password:")
+    password = input()
+    MisskeyAPI.Crypt.exportFile(token,setting["AIPC"]["tokenFile"],password)
+    misskey = MisskeyAPI.MisskeyAPI(token,server=setting["misskeyServer"])
 
 timerStop = False
 def timer(): # 1分ごとにmainを実行
@@ -64,6 +76,10 @@ def eventRun(eventName : str): # イベント名と機能を対応付ける
         thread = threading.Thread(target=function.make575,args=(misskey,))
         thread.start()
         threads.append(thread)
+    elif eventName=="clip-add":
+        thread = threading.Thread(target=function.clipMake,args=(misskey,))
+        thread.start()
+        threads.append(thread)
     elif eventName=="uranai-generation":
         thread = threading.Thread(target=function.makeUranai,args=(misskey,))
         thread.start()
@@ -72,8 +88,20 @@ def eventRun(eventName : str): # イベント名と機能を対応付ける
         thread = threading.Thread(target=function.weathercast,args=(misskey,))
         thread.start()
         threads.append(thread)
+    elif eventName=="taigigo-generate":
+        thread = threading.Thread(target=function.makeTaigigo,args=(misskey,))
+        thread.start()
+        threads.append(thread)
     elif eventName=="reaction-send":
         thread = threading.Thread(target=function.sendReaction,args=(misskey,))
+        thread.start()
+        threads.append(thread)
+    elif eventName=="wordcloud-generation":
+        thread = threading.Thread(target=function.makeWordcloud,args=(misskey,))
+        thread.start()
+        threads.append(thread)
+    elif eventName=="reversi-game":
+        thread = threading.Thread(target=reversiFunc.startReversi,args=(misskey,))
         thread.start()
         threads.append(thread)
     else:

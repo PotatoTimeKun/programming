@@ -89,6 +89,55 @@ def make575(misskey: MisskeyAPI.MisskeyAPI):
     except Exception as e:
         print(e)
 
+CLIPNAME = "人気ノート集"
+
+def __clipSearch(misskey : MisskeyAPI.MisskeyAPI):
+    clips=misskey.clipList()
+    max_num = 0
+    remain = 0
+    clip_id = ""
+    for clip in clips:
+        if(not clip["name"].startswith(CLIPNAME)):
+            continue
+        clip_num = int(clip["name"][len(CLIPNAME):])
+        if(clip_num<=max_num):
+            continue
+        max_num = clip_num
+        clip_id = clip["id"]
+        remain = 200-clip["notesCount"]
+    if(remain>0):
+        return (remain,clip_id)
+    clip = misskey.makeClip(CLIPNAME+f"{max_num+1}",isPublic=True)
+    clip_id = clip["id"]
+    remain = 200
+    return (remain,clip_id)
+
+def clipMake(misskey : MisskeyAPI.MisskeyAPI):
+    """
+    人気のあるノートをクリップする
+    対象:自身の直近100ノート
+    CLIPNAME(グローバル定数):クリップ名、クリップ上限に応じてクリップ名+数値として作成
+    clipBorder(AIPCsetting.json):クリップし始めるリアクション数
+    調整:先頭に【手動投稿】が付いたノートは無視する
+    """
+    try:
+        remain,clipId = __clipSearch(misskey)
+        userId = misskey.info()["id"]
+        notes = misskey.readUserNote(userId,100)
+        for note in notes:
+            if(note["reactionCount"]<setting["clipBorder"]):
+                continue
+            clipList = misskey.clipOfNote(note["id"])
+            if any([(CLIPNAME in clip["name"] and clip["user"]["id"]==userId) for clip in clipList]):
+                continue
+            if(note["text"].startswith("【手動投稿】")):
+                continue
+            misskey.clipNote(note["id"],clipId)
+            remain-=1
+            if remain<=0:
+                remain,clipId = __clipSearch(misskey)
+    except Exception as e:
+        print(e)
 
 from PIL import Image
 from PIL import ImageFont
@@ -131,7 +180,7 @@ def makeUranai(misskey: MisskeyAPI.MisskeyAPI):
         fontSmall=ImageFont.truetype(setting["uranaiFont"],30)
         draw=ImageDraw.Draw(img)
         for i in range(12):
-            draw.text((300+1000*(i//6),1000/6*(i%6)),month[i],"#000000",font=fontBig)
+            draw.text((300+1000*(i//6),10+1000/6*(i%6)),month[i],"#000000",font=fontBig)
             draw.text((510+1000*(i//6),10+1000/6*(i%6)),item[i],"#000000",font=fontSmall)
             draw.text((100+1000*(i//6),110+1000/6*(i%6)),advise[i],"#000000",font=fontSmall)
         nowTime=datetime.datetime.now()
@@ -177,6 +226,35 @@ def weathercast(misskey: MisskeyAPI.MisskeyAPI):
             print(text)
         else:
             misskey.post(text)
+    except Exception as e:
+        print(e)
+
+import google.generativeai as genai
+
+def makeTaigigo(misskey: MisskeyAPI.MisskeyAPI):
+    """
+    対義語を生成する
+    使うにはAIPCsetting.jsonにGeminiのAPIキーを設定する必要
+    """
+    try:
+        notes = misskey.readLTL(80)
+        texts = list(map(lambda x:textAnalizer.editText(x["text"],emojiDelete=True),notes))
+        nouns = [i for i in sum(list(map(lambda x:textAnalizer.pickChainNoun(x),texts)),[]) if len(i)<=5]
+        if(len(nouns)==0):
+            return
+        origin=random.choice(nouns)
+        inverse=""
+        genai.configure(api_key=setting["geminiAPIToken"])
+        gemini = genai.GenerativeModel("gemini-pro")
+        for word in origin:
+            prompt = f"{word}の対義語は何ですか"
+            response = gemini.generate_content(prompt)
+            inverse+=response.text
+            time.sleep(10)
+        if DEBUG:
+            print(f"{''.join(origin)}\n↕\n{inverse}")
+        else:
+            misskey.post(f"{''.join(origin)}\n↕\n{inverse}")
     except Exception as e:
         print(e)
 
@@ -260,3 +338,108 @@ def sendReaction(misskey : MisskeyAPI.MisskeyAPI):
                     pass
     except Exception as e:
         print(e)
+
+from PIL import Image
+import numpy as np
+from wordcloud import WordCloud
+
+_wordcloud_stopWords = [ #ワードクラウドのストップワード、追加した単語はワードクラウド上には現れない(完全一致のみ、それを含む複合語などは現れる)
+    "あそこ", "あたり", "あちら", "あっち", "あと", "あな", "あれ", 
+    "いくつ", "いつ", "いま", "いや", "いろいろ", "うち", "おおまか",
+     "がい", "かく", "かたち", "かやの", "から", "がら", "きた", "くせ", 
+    "ここ", "こっち", "こと", "ごと", "これ", "これら", "ごろ", "さまざま", 
+    "さらい", "さん", "しかた", "しよう", "すべて", "その", "それ", "それぞれ", 
+    "それなり", "たくさん", "たち", "ため", "だめ", "ちゃ", "ちゃん", "てん", 
+    "とおり", "とき", "どこ", "どちら", "どっか", "どっち", "どれ", "なか", 
+    "なかば", "なに", "など", "なん", "はじめ", "はず", "はるか", "ひと", 
+    "ひとつ", "ふく", "ぶり", "べつ", "へん", "ぺん", "ほう", "ほか", "まさ", 
+    "まし", "まとも", "まま", "みたい", "みつ", "みなさん", "もと", "もの", 
+    "もん", "やつ", "よう", "よそ", "わけ", "ハイ", "上", "中", "下", 
+    "字", "年", "月", "日", "時", "分", "秒", "週", "火", "水", "木", "金", "土", 
+    "国", "都", "道", "府", "県", "市", "区", "町", "村", "各", "第", "方", "何", 
+    "的", "度", "文", "者", "性", "体", "人", "他", "今", "部", "課", "係", "外", 
+    "類", "達", "気", "室", "口", "誰", "用", "界", "会", "首", "男", "女", "別", 
+    "話", "私", "屋", "店", "家", "場", "方", "見", "際", "観", "段", "略", "例", 
+    "系", "論", "形", "間", "地", "員", "線", "点", "書", "品", "力", "感", "作", 
+    "元", "手", "数", "彼", "彼女", "子", "内", "楽", "喜", "怒", "哀", "輪", "頃", 
+    "化", "境", "俺", "奴", "高", "校", "婦", "伸", "紀", "誌", "レ", "行", "列", 
+    "事", "士", "台", "集", "様", "所", "歴", "器", "名", "情", "連", "毎", "式", 
+    "簿", "回", "匹", "個", "席", "束", "歳", "目", "通", "面", "円", "玉", "枚", 
+    "前", "後", "左", "右", "次", "先", "春", "夏", "秋", "冬", "一", "二", "三", 
+    "四", "五", "六", "七", "八", "九", "十", "百", "千", "万", "億", "兆", "下記", 
+    "上記", "時間", "今回", "前回", "場合", "一つ", "年生", "自分", "ヶ所", "ヵ所", 
+    "カ所", "箇所", "ヶ月", "ヵ月", "カ月", "箇月", "名前", "本当", "確か", "時点", 
+    "全部", "関係", "近く", "方法", "我々", "違い", "多く", "扱い", "新た", "その後", 
+    "半ば", "結局", "様々", "以前", "以後", "以降", "未満", "以上", "以下", "まあ",
+    "てる", "てた", "じゃあ", "だった", "そこ", "あなた", "お前", "僕", "ぼく", "私",
+    "わたし", "おまえ", "俺", "おれ", "ノート", "LTL", "HTL", "ローカル", "ホーム",
+    "そう", "今日", "ところ", "みんな"
+] + [chr(ord("あ")+i) for i in range(82)]
+
+def makeWordcloud(misskey : MisskeyAPI.MisskeyAPI):
+    """
+    メンションのワードクラウド依頼に対してワードクラウドをリプライで返す
+    """
+    try:
+        notes = misskey.readMention(limit=setting["mentionReadCount"])
+        myId = misskey.info()["id"]
+        for mention in notes:
+            if mention["text"]==None:
+                continue
+            if "ワードクラウド" not in mention["text"]:
+                continue
+            isReplied = False
+            for reply in misskey.showReplies(mention["id"]):
+                if reply["user"]["id"]==myId:
+                    isReplied = True
+                    break
+            if isReplied:
+                continue
+            postData=[]
+            untilDate=None
+            beforeCount=1
+            while len(postData)<1000 and beforeCount>0:
+                notes = misskey.readUserNote(mention["user"]["id"],limit=100,untilDate=untilDate)
+                beforeCount = len(notes)
+                for note in notes:
+                    untilDate=datetime.datetime.fromisoformat(note["createdAt"].replace("Z","+00:00"))
+                    untilDate=int(untilDate.timestamp())*1000
+                    if note["visibility"]!="public":
+                        continue
+                    text=""
+                    if note["cw"]!=None:
+                        text=note["cw"]+" "
+                    if note["text"]!=None:
+                        text=note["text"]
+                    if text!="":
+                        postData.append(text)
+                time.sleep(1)
+            postData = list(map(lambda x:textAnalizer.editText(x,emojiDelete=True),postData))
+            text = "\n".join([" ".join(textAnalizer.pickNoun(note,chain=True)) for note in postData])
+
+            mask = np.array(Image.open(setting["wordcloudMask"]))
+            # ワードクラウドの生成
+            wordcloud = WordCloud(
+                font_path=setting["wordcloudFont"],  # 日本語フォントを指定
+                stopwords=_wordcloud_stopWords,
+                background_color='white',
+                width=int(600*5/4),
+                height=600,
+                mask=mask,
+                contour_width=3,
+                contour_color="red"
+            ).generate(text)
+
+            # 画像を保存
+            wordcloud.to_file(setting["wordcloudSave"]+"wordcloud_"+mention["id"]+".png")
+            fileIds = misskey.uploadMedia([setting["wordcloudSave"]+"wordcloud_"+mention["id"]+".png"])
+            misskey.post("\u3164",cw=mention["user"]["name"]+"のワードクラウドを生成したよ",fileIds=fileIds,replyId=mention["id"]) #\u3164->一般的な半角空白や全角空白ではない空白文字
+    except Exception as e:
+        print(e)
+
+
+#if DEBUG and __name__=="__main__":
+#    readSetting()
+#    test=MisskeyAPI.MisskeyAPI()
+#    test.readToken("./token",input())
+#    makeNote(test)
