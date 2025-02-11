@@ -33,7 +33,7 @@
     "comment-mentionReadCount": "メンションを読み込む数、Botへのメンションが行われる数と機能の頻度を考慮する、100より多くしたい場合は複数回に分けて取得するよう改造する必要あり",
     "wordcloudMask": "potato.png",
     "comment-wordcloudMask": "ワードクラウドのマスク画像、白黒の画像を指定する、黒い部分に文字が入る、画像サイズは750x600",
-    "wordcloudSave": ".\\generated\\",
+    "wordcloudSave": "generated/",
     "comment-wordcloudSave": "生成したワードクラウドの保存場所",
     "wordcloudFont": "NotoSansCJK-Regular.ttc",
     "comment-wordcloudFont": "ワードクラウドで使うフォント",
