@@ -180,7 +180,7 @@ def makeUranai(misskey: MisskeyAPI.MisskeyAPI):
         fontSmall=ImageFont.truetype(setting["uranaiFont"],30)
         draw=ImageDraw.Draw(img)
         for i in range(12):
-            draw.text((300+1000*(i//6),1000/6*(i%6)),month[i],"#000000",font=fontBig)
+            draw.text((300+1000*(i//6),10+1000/6*(i%6)),month[i],"#000000",font=fontBig)
             draw.text((510+1000*(i//6),10+1000/6*(i%6)),item[i],"#000000",font=fontSmall)
             draw.text((100+1000*(i//6),110+1000/6*(i%6)),advise[i],"#000000",font=fontSmall)
         nowTime=datetime.datetime.now()
@@ -292,6 +292,8 @@ def sendReaction(misskey : MisskeyAPI.MisskeyAPI):
         for user in setting["reactionUser"]:
             notes = misskey.readUserNote(user,limit=setting["reaction_notePerUser"],withRenotes=False)
             time.sleep(0.1)
+            if len(notes)==0:
+                continue
             choosenNotes = [notes.pop(random.randint(0,len(notes)-1)) for i in range(setting["reactionPerUser"])]
             for note in choosenNotes:
                 if note["visibility"]!="public" and note["visibility"]!="home": #鍵投稿は無視

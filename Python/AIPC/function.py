@@ -292,6 +292,8 @@ def sendReaction(misskey : MisskeyAPI.MisskeyAPI):
         for user in setting["reactionUser"]:
             notes = misskey.readUserNote(user,limit=setting["reaction_notePerUser"],withRenotes=False)
             time.sleep(0.1)
+            if len(notes)==0:
+                continue
             choosenNotes = [notes.pop(random.randint(0,len(notes)-1)) for i in range(setting["reactionPerUser"])]
             for note in choosenNotes:
                 if note["visibility"]!="public" and note["visibility"]!="home": #鍵投稿は無視
