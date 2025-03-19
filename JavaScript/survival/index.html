@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+    
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <!-- Phaser3のインポート -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    <!-- フォントのインポート -->
+
+    <title>サバイバルゲーム</title>
+    <meta name="description" content="ポテト君のサバイバルゲーム">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+</head>
+<body>
+    <script type="module">
+        import LoadingScene from './src/scenes/LoadingScene.js';
+        import TitleScene from './src/scenes/TitleScene.js';
+
+        const config = {
+            type: Phaser.AUTO, // WebGLが使えればWebGL、なければCanvasを使用
+            width: 600,
+            height: 600,
+            physics: {
+                default: "arcade",  // 物理エンジンを有効化
+                arcade: {
+                    gravity: { y: 0 },  // 重力なし (RPG向け)
+                    debug: false         // 衝突判定を可視化（開発用）
+                }
+            },
+            scene: [LoadingScene,TitleScene]
+        };
+
+        const game = new Phaser.Game(config);
+
+    </script>
+</body>
+</html>

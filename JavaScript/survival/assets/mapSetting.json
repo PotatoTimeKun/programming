@@ -1,0 +1,34 @@
+{
+  "show_always": ["ground","ground_deco","wall","action"],
+  "wall": ["wall"],
+  "object": {
+    "bed": {
+      "tile": ["bed_tile","upgraded_bed","second_upgraded_bed"],
+      "deco": "bed"
+    },
+    "cooking": {
+      "tile": ["cooking_tile","upgraded_cooking"],
+      "deco": "cooking"
+    },
+    "craft": {
+      "tile": ["craft_tile","upgraded_craft"],
+      "deco": "craft"
+    },
+    "fishing": {
+      "tile": ["action"],
+      "deco": "fishing"
+    },
+    "adventure": {
+      "tile": ["action"],
+      "deco": "adventure"
+    },
+    "water_river": {
+      "tile": ["action"],
+      "deco": "water_river"
+    },
+    "water_sea": {
+      "tile": ["action"],
+      "deco": "water_sea"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "images": [
+    { "key": "logo",  "path": "logo.png" },
+    { "key": "battle-back","path": "back/battle_back.png" },
+    { "key": "fishing-back","path": "back/fishing_back.png" },
+    { "key": "title-back","path": "back/title_back.png" },
+    { "key": "failure-back","path": "back/failure_back.png" },
+    { "key": "success-back","path": "back/success_back.png" },
+    { "key": "bear","path": "chara/bear.png" },
+    { "key": "deer","path": "chara/deer.png" },
+    { "key": "sheep","path": "chara/sheep.png" },
+    { "key": "tile", "path": "tile.png" }
+  ],
+  "audio": [
+    { "key": "normal-bgm",   "path": "bgm/normal_BGM.mp3"  },
+    { "key": "sad-bgm",   "path": "bgm/sad_BGM.mp3"  },
+    { "key": "happy-bgm",   "path": "bgm/happy_BGM.mp3"  },
+    { "key": "battle-bgm",   "path": "bgm/battle_BGM.mp3"  },
+    { "key": "attack-se",   "path": "se/attack_SE.mp3"  },
+    { "key": "no-se",   "path": "se/no_SE.mp3"  },
+    { "key": "ok-se",   "path": "se/ok_SE.mp3"  },
+    { "key": "notice-se",   "path": "se/notice_SE.mp3"  },
+    { "key": "use-se",   "path": "se/use_SE.mp3"  },
+    { "key": "walk-se",   "path": "se/walk_SE.mp3"  }
+  ],
+  "spritesheets": [
+    {
+      "key": "chars",
+      "path": "chara/player.png",
+      "frameConfig": {
+        "frameWidth": 60,
+        "frameHeight": 60
+      }
+    }
+  ],
+  "ui": [
+    { "key": "button","path": "ui/button.png" },
+    { "key": "button-long","path": "ui/button_long.png" },
+    { "key": "button-warning","path": "ui/button_warning.png" },
+    { "key": "link-developer","path": "ui/link_developer.png" },
+    { "key": "link-twitter","path": "ui/link_twitter.png" },
+    { "key": "link-misskey","path": "ui/link_misskey.png" }
+  ]
+}
