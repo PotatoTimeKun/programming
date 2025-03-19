@@ -1,0 +1,164 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.8 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.8">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1576" dy="737" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFEDF7" math="0" shadow="1">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-1" target="7LNNtRMyl8S9rtla5CE8-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-1" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#050505;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="300" y="130" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-3" value="ロード画面" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="175.63" y="210" width="278.75" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-19" value="entry / 表示開始&lt;div&gt;do / リソースのロード , セーブデータの読み込み&lt;/div&gt;&lt;div&gt;exit / フェードアウト&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-3">
+          <mxGeometry y="30" width="278.75" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-22" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-3">
+          <mxGeometry y="90" width="278.75" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-4" value="" style="fillColor=none;strokeColor=none;container=1;collapsible=0;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-3">
+          <mxGeometry y="98" width="278.75" height="102" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="7LNNtRMyl8S9rtla5CE8-4" source="7LNNtRMyl8S9rtla5CE8-5" target="7LNNtRMyl8S9rtla5CE8-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-5" value="ロード中" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-4">
+          <mxGeometry x="8.75" y="20.4" width="80" height="61.199999999999996" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-35" value="ロード終了" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=38;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-4">
+          <mxGeometry x="116.25" y="6" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-41" value="do / 「キーを押すかクリックでスタート」と表示" style="fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-35">
+          <mxGeometry y="38" width="140" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-73" value="クレジットボタン押下" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-23" target="7LNNtRMyl8S9rtla5CE8-63">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="74" y="587" />
+              <mxPoint x="74" y="587" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-86" value="始めからボタン押下&lt;br&gt;[ダイアログで許可]&lt;div&gt;セーブデータ作成&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-23" target="7LNNtRMyl8S9rtla5CE8-76">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="247" y="785" />
+              <mxPoint x="247" y="785" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-23" value="タイトル画面" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="168.14" y="520" width="293.74" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-24" value="entry / フェードイン" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry y="30" width="293.74" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-25" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry y="60" width="293.74" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-26" value="" style="fillColor=none;strokeColor=none;container=1;collapsible=0;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry y="68" width="293.74" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-27" value="「始めから」ボタン" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-26">
+          <mxGeometry x="15" y="14.142857142857142" width="80" height="44.785714285714285" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-45" value="「続きから」ボタン" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-26">
+          <mxGeometry x="106.87" y="14.614285714285712" width="80" height="44.31428571428572" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-46" value="「設定」&lt;div&gt;ボタン&lt;/div&gt;" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-26">
+          <mxGeometry x="201.86" y="14.144285714285711" width="80" height="44.31428571428572" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-50" value="リンク(SNSとか)" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-26">
+          <mxGeometry x="11.860000000000014" y="67.08196721311477" width="120" height="57.049180327868854" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-56" value="do / ページ遷移" style="fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-50">
+          <mxGeometry y="30" width="120" height="27.049180327868854" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-58" value="「クレジット」&lt;div&gt;ボタン&lt;/div&gt;" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-26">
+          <mxGeometry x="151.86" y="73.45" width="88.14" height="44.31" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-29" value="キーを押すかクリック [ロード中でない]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=default;textShadow=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-4" target="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-60" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.918;entryY=-0.002;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;endArrow=none;endFill=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-59" target="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-59" value="「続きから」はセーブデータを読み込めたときのみ表示&lt;div&gt;セーブデータがあるときは&lt;/div&gt;&lt;div&gt;「始めから」で確認ダイアログを出す&lt;/div&gt;" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="502" y="370" width="160" height="111" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-61" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=none;endFill=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-62" target="7LNNtRMyl8S9rtla5CE8-24">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="471.4400000000001" y="610.385621028508" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-62" value="設定はダイアログとして&lt;div&gt;再使用できる形で用意&lt;/div&gt;&lt;div&gt;タイトル画面のときだけ&lt;/div&gt;&lt;div&gt;セーブデータのエクスポート・インポートができるようにする&lt;/div&gt;" style="shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="538" y="509.5" width="160" height="124.5" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-74" value="戻るボタン押下" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-63" target="7LNNtRMyl8S9rtla5CE8-23">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="72" y="639" />
+              <mxPoint x="72" y="639" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-63" value="クレジット" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-175" y="567" width="155" height="106" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-66" value="" style="fillColor=none;strokeColor=none;container=1;collapsible=0;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-63">
+          <mxGeometry y="30" width="155" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-67" value="「戻る」&lt;div&gt;ボタン&lt;/div&gt;" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-66">
+          <mxGeometry x="32.96" y="14.57" width="89.08" height="38.86" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-76" value="タイトル画面" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="171" y="848" width="293.74" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-77" value="entry / マップ・プレイヤー位置初期化" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-76">
+          <mxGeometry y="30" width="293.74" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-78" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-76">
+          <mxGeometry y="60" width="293.74" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-79" value="" style="fillColor=none;strokeColor=none;container=1;collapsible=0;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-76">
+          <mxGeometry y="68" width="293.74" height="232" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-82" value="「設定」&lt;div&gt;ボタン&lt;/div&gt;" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-79">
+          <mxGeometry x="194" y="8.997419354838712" width="80" height="54.482580645161285" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-89" value="「持ち物」ボタン" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-79">
+          <mxGeometry x="19.86" width="138" height="76.4" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-90" value="do/ ダイアログで表示" style="fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-89">
+          <mxGeometry y="30" width="138" height="46.4" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-91" value="マップ上のものに触れる" style="swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;whiteSpace=wrap;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-79">
+          <mxGeometry x="19.86" y="92" width="254.14" height="128.99742268041237" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-92" value="do/ 説明を表示" style="fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-91">
+          <mxGeometry y="30" width="254.14" height="34.68041237113402" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-93" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-91">
+          <mxGeometry y="64.68041237113403" width="254.14" height="9.56701030927835" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-96" value="&amp;nbsp;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="7LNNtRMyl8S9rtla5CE8-91">
+          <mxGeometry y="74.24742268041237" width="254.14" height="54.75" as="geometry" />
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-88" value="続きからボタン押下" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="7LNNtRMyl8S9rtla5CE8-26" target="7LNNtRMyl8S9rtla5CE8-76">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="389" y="775" />
+              <mxPoint x="389" y="775" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="7LNNtRMyl8S9rtla5CE8-95" value="「アクション」&lt;div&gt;ボタン&lt;/div&gt;" style="html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;whiteSpace=wrap;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="270.93" y="1083" width="88.14" height="44.31" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
