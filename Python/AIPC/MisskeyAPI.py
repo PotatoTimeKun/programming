@@ -60,7 +60,7 @@ class MisskeyAPI:
             print(e)
             raise e
         return fileIds
-    def readLTL(this,limit,withRenotes = False,withReplies = False,withFiles = None,sinceDate = None) -> list:
+    def readLTL(this,limit,withRenotes = False,withReplies = False,withFiles = None,sinceDate = None,includeCW = True) -> list:
         """
         LTLを読み込む
         """
@@ -77,6 +77,11 @@ class MisskeyAPI:
             print(e)
             return []
         notes = response.json()
+        if includeCW:
+            return notes
+        for i in range(len(notes)):
+            if notes[i]["cw"]!=None:
+                notes.pop(i)
         return notes
     def makeReaction(this,noteId: str,reaction: str) -> None:
         """
