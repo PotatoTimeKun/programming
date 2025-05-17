@@ -79,7 +79,7 @@ class MisskeyAPI:
         notes = response.json()
         if includeCW:
             return notes
-        for i in range(len(notes)):
+        for i in range(len(notes)-1,-1,-1):
             if notes[i]["cw"]!=None:
                 notes.pop(i)
         return notes
