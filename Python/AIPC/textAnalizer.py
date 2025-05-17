@@ -3,6 +3,7 @@ import MeCab
 from janome.tokenizer import Tokenizer
 
 deletePattern = [
+    re.compile(r'.*https?://.*play.*'), #プレイのノート
     re.compile(r'\[.*?\]\(.*?\)'), #名前付きのリンク
     re.compile(r'https?://[^\s]*'), #リンク
     re.compile(r'```.*?```',re.DOTALL), #複数行コード
