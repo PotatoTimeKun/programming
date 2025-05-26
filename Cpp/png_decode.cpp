@@ -11,6 +11,7 @@ unsigned int UCharToUInt(unsigned char* ucharData){ // ビッグエンディア�
     return answer;
 }
 
+
 bool strEqual(char* a,char* b){ // a == b
     if (a[0]!=b[0]) {
         return false;
@@ -85,6 +86,7 @@ class Chunk{
         *head += 4; // CRC分加算
     }
     ~Chunk(){}
+
     char* type(){ // チャンクタイプを返す、newを使ってるからdeleteが必要
         char* name = new char[5];
         for(int i=0;i<5;i++){
