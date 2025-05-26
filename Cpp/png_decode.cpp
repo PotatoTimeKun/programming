@@ -3,6 +3,26 @@
 #include <stdexcept>
 using namespace std;
 
+unsigned int UCharToUInt(unsigned char* ucharData){
+    unsigned int answer = 0;
+    for(int i=0;i<4;i++){
+        answer = (answer << 8) + static_cast<unsigned int>(ucharData[i]);
+    }
+    return answer;
+}
+
+bool strEqual(char* a,char* b){
+    if (a[0]!=b[0]) {
+        return false;
+    }
+    for(int i=0;a[i]!='\0' and b[i]!='\0';i++){
+        if (a[i+1]!=b[i+1]){
+            return false;
+        }
+    }
+    return true;
+}
+
 template <class SomeClass> class List{
     public:
     List() : data(nullptr), next(nullptr) {}
@@ -52,12 +72,34 @@ template <class SomeClass> class List{
 
 class Chunk{
     public:
-    Chunk(char* binary){}
+    Chunk(unsigned char** head){
+        length = UCharToUInt(*head);
+        *head += 4; // Length分加算
+        for(int i=0;i<4;i++){
+            chunkType[i]=(*head)[i];
+        }
+        chunkType[4] = '\0';
+        *head += 4; // ChunkType分加算
+        data = *head;
+        *head += length; // ChunkData分加算
+        *head += 4; // CRC分加算
+    }
     ~Chunk(){}
+    char* type(){
+        char* name = new char[5];
+        for(int i=0;i<5;i++){
+            name[i] = chunkType[i];
+        }
+        return name;
+    }
+    unsigned char* readData{
+        return data;
+    }
     private:
     unsigned int length;
     char chunkType[5];
     unsigned char* data;
+    unsigned char* nextChunk;
 };
 
 class PngData {
@@ -69,14 +111,31 @@ class PngData {
             }
         }
         chunkList = new List<Chunk>();
+        char endChunkName[5] = "IEND";
+        binary += 8; // シグネチャ分加算
+        while(true){
+            Chunk* newChunk = new Chunk(&binary);
+            chunkList->add(newChunk);
+            char* name = newChunk->type();
+            cout << name << endl;
+            delete name;
+            if (strEqual(name,endChunkName)) break;
+        }
+        char headerChunkName[5] = "IHDR";
+        for(int i=0;i<chunkList->len();i++){
+            if (!strEqual(name,headerChunkName)) continue;
+        }
     }
     ~PngData() {
         delete[] binaryData;
+        delete chunkList;
     }
     private:
     unsigned char* binaryData; // ファイルデータ
     List<Chunk>* chunkList;
     static const unsigned char SIGNATURE[8]; // PNGシグネチャ
+    unsigned int width;
+    unsigned int height;
 };
 const unsigned char PngData::SIGNATURE[8] = {0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A}; 
 
