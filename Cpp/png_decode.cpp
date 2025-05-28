@@ -97,6 +97,9 @@ class Chunk{
     unsigned char* readData(){
         return data;
     }
+    unsigned int getLength(){
+        return length;
+    }
     private:
     unsigned int length;
     char chunkType[5];
@@ -150,6 +153,53 @@ class PngData {
         delete[] binaryData;
         delete chunkList;
     }
+    unsigned int getWidth(){
+        return width;
+    }
+    unsigned int getHeight(){
+        return height;
+    }
+    unsigned int getBitDepth(){
+        return bitDepth;
+    }
+    const char* getColorType(){
+        return colorTypeToName();
+    }
+    unsigned char* getZlibData(){ // newを使うのでdeleteが必要
+        // 合計のサイズを取得
+        char dataChunkName[5] = "IDAT";
+        unsigned int legnth = 0;
+        for(int i=0;i<chunkList->len()){
+            char* typeName = (*chunkList)(i).type();
+            if(!strEqual(typeName,dataChunkName)){
+                delete typeName;
+                continue;
+            }
+            delete typeName;
+            length += (*chunkList)(i).getLength();
+        }
+
+        // 内容をコピー
+        unsigned char* zlibData = new unsigned char[length];
+        unsigned char* ptr = zlibData;
+        for(int i=0;i<chunkList->len()){
+            char* typeName = (*chunkList)(i).type();
+            if(!strEqual(typeName,dataChunkName)){
+                delete typeName;
+                continue;
+            }
+            delete typeName;
+            Chunk chunk = (*chunkList)(i)
+            unsigned char* chunkDataPtr = chunk.readData();
+            for(int j=0;j<chunk.len();j++){
+                *ptr = *chunkDataPtr;
+                ptr++;
+                chunkDataPtr++;
+            }
+        }
+
+        return zlibData;
+    }
     private:
     void readIHDRChunk(Chunk* ihdr){
         unsigned char* data = ihdr->readData();
@@ -177,6 +227,128 @@ class PngData {
     unsigned char colorType;
 };
 const unsigned char PngData::SIGNATURE[8] = {0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A}; 
+
+class ZlibDecoder{ 
+    // ヘッダーは無視、DEFLATEデータのみ読む
+    ZlibDecoder(unsigned char* zlibData, unsigned int imgWidth, unsigned int imgHeight, unsigned int bitDepth,unsigned int isRGBA) :
+     data(zlibData + 2),width(imgWidth),height(imgHeight),isFullColor(bitDepth==8),haveAlpha(isRGBA) {}
+    unsigned char* decode(){
+        decoderInit();
+        decoded = new unsigned char[(width+1)*height*(isFullColor?1:2)*(haveAlpha?4:3)]; // フィルタ付き画像データの分だけ確保
+        bool BFINAL = false;
+        while (!BFINAL){ // DEFLATEブロックごとにループ
+            BFINAL = nextBit();
+            unsigned char BTYPE = (nextBit()?1:0)*2 + (nextBit()?1:0);
+            if (BTYPE==0) { // 非圧縮ブロック
+                readAsNonpress();
+            }
+            if (BTYPE==1) { // 固定ハフマンブロック
+                readAsFixedHuffman();
+            }
+            if (BTYPE==2) { // 動的ハフマンブロック
+                readAsDynamicHuffman();
+            }
+        }
+        return decoded;
+    }
+    private:
+    void readAsNonpress(){}
+    void readAsFixedHuffman(){}
+    void readAsDynamicHuffman(){}
+    unsigned char* docoderInit(){
+        ptr = data;
+        bitCount = 0;
+    }
+    bool nextBit(){
+        if(bitCount>=8){
+            bitCount = 0;
+            ptr++;
+        }
+        bool answer = ((*ptr) & (1<<bitCount) == 0) ? false : true;
+        bitCount++;
+        return answer;
+    }
+    void padding(){
+        if(bitCount==0) return;
+        bitCount = 0;
+        ptr++;
+    }
+    unsigned char* data;
+    unsigned char* decoded;
+    unsigned int width;
+    unsigned int height;
+    bool isFullColor;
+    bool haveAlpha;
+    unsigned char* ptr;
+    unsigned char bitCount;
+}
+
+class Pixel{ // カラータイプはRGBもしくはRGBA , 深度は1バイトまたは2バイト
+    public:
+    Pixel(unsigned char* head,unsigned char depth,bool isRGBA) : data(head),bitDepth(depth),haveAlpha(isRGBA) {}
+    unsigned int R(){
+        unsigned int answer = 0;
+        if (bitDepth == 8) {
+            answer = static_cast<unsigned int>(data);
+        }
+        else {
+            answer = (static_cast<unsigned int>(data)) << 8;
+            answer += static_cast<unsigned int>(data + 1);
+        }
+        return answer;
+    }
+    unsigned int G(){
+        unsigned int answer = 0;
+        if (bitDepth == 8) {
+            answer = static_cast<unsigned int>(data + 1);
+        }
+        else {
+            answer = (static_cast<unsigned int>(data + 2)) << 8;
+            answer += static_cast<unsigned int>(data + 2 + 1);
+        }
+        return answer;
+    }
+    unsigned int B(){
+        unsigned int answer = 0;
+        if (bitDepth == 8) {
+            answer = static_cast<unsigned int>(data + 2);
+        }
+        else {
+            answer = (static_cast<unsigned int>(data + 4)) << 8;
+            answer += static_cast<unsigned int>(data + 4 + 1);
+        }
+        return answer;
+    }
+    unsigned int A(){
+        if (!haveAlpha) {
+            return (bitDepth==8 ? 0xff : 0xffff);
+        }
+        unsigned int answer = 0;
+        if (bitDepth == 8) {
+            answer = static_cast<unsigned int>(data + 3);
+        }
+        else {
+            answer = (static_cast<unsigned int>(data + 6)) << 8;
+            answer += static_cast<unsigned int>(data + 6 + 1);
+        }
+        return answer;
+    }
+    ~Pixel() {}
+    private:
+    unsigned char* data;
+    unsigned char bitDepth;
+    bool haveAlpha;
+};
+
+class Image{
+    public:
+    Image() : data(nullptr){}
+    void readFromFilter(unsigned char* filter){}
+    private:
+    List<Pixel>* data;
+    unsigned int width;
+    unsigned int height;
+};
 
 class PngDecoder {
     public:
