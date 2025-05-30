@@ -273,7 +273,7 @@ class ZlibDecoder{
         bool BFINAL = false;
         while (!BFINAL){ // DEFLATEブロックごとにループ
             BFINAL = nextBit();
-            unsigned char BTYPE = (nextBit()?1:0)*2 + (nextBit()?1:0);
+            unsigned char BTYPE = (nextBit()?1:0) + ((nextBit()?1:0)<<1);
             if (BTYPE==0) { // 非圧縮ブロック
                 readAsNonpress();
             }
@@ -299,9 +299,7 @@ class ZlibDecoder{
     }
     void readAsFixedHuffman(){
         Tree<unsigned short>* tree = getFixedHuffmanTree();
-        cout << tree->getLeft()->getLeft()->getLeft()->getLeft()->getRight()->getLeft()->getLeft()->getValue() << endl;
-        cout << tree->getLeft()->getLeft()->getLeft()->getLeft()->getRight()->getLeft()->getLeft()->getRight()->getRight()->getValue() << endl;
-        cout << endl;
+
         Tree<unsigned short>* head = tree;
         while(true){
             // コードで木をたどる
@@ -330,17 +328,14 @@ class ZlibDecoder{
             // 距離コード
             unsigned short distanceCode = 0;
             for(int i=0;i<5;i++){
-                distanceCode = distanceCode << 1;
-                if (nextBit()) distanceCode++;
+                if (nextBit()) distanceCode += (1 << (4-i));
             }
             unsigned int distance = readDistanceCode(distanceCode);
 
             // データの繰り返しを行う
             for(unsigned int i=0;i<length;i++){
-                for(unsigned int j=0;j<distance;j++){
-                    *decodedHeader = *(decodedHeader-distance); // 書き込み場所が移動するから読み込むのは常に距離だけ前
-                    decodedHeader++;
-                }
+                *decodedHeader = *(decodedHeader-distance);
+                decodedHeader++;
             }
         }
         padding();
@@ -374,16 +369,16 @@ class ZlibDecoder{
         for(int i=0;i<=143;i++){
             Tree<unsigned short>* head = fixedHuffmanTree;
             for(int j=0;j<7;j++){
-                if ((base&(1<<(j))) == 0){ // 0は左
+                if ((base&(1<<(7-j))) == 0){ // 0は左
                     if (head->getLeft()==nullptr) head->setLeft(INVALID);
                     head = head->getLeft();
                 }
-                else if ((base&(1<<(j))) != 0){ // 1は右
+                else if ((base&(1<<(7-j))) != 0){ // 1は右
                     if (head->getRight()==nullptr) head->setRight(INVALID);
                     head = head->getRight();
                 }
             }
-            if ((base&(1<<7)) == 0) {
+            if ((base&1) == 0) {
                 head->setLeft(static_cast<unsigned short>(i));
             }
             else {
@@ -397,16 +392,16 @@ class ZlibDecoder{
         for(int i=144;i<=255;i++){
             Tree<unsigned short>* head = fixedHuffmanTree;
             for(int j=0;j<8;j++){
-                if ((base&(1<<(j))) == 0){
+                if ((base&(1<<(8-j))) == 0){
                     if (head->getLeft()==nullptr) head->setLeft(INVALID);
                     head = head->getLeft();
                 }
-                else if ((base&(1<<(j))) != 0){
+                else if ((base&(1<<(8-j))) != 0){
                     if (head->getRight()==nullptr) head->setRight(INVALID);
                     head = head->getRight();
                 }
             }
-            if ((base&(1<<8)) == 0) {
+            if ((base&1) == 0) {
                 head->setLeft(static_cast<unsigned short>(i));
             }
             else {
@@ -420,16 +415,16 @@ class ZlibDecoder{
         for(int i=256;i<=279;i++){
             Tree<unsigned short>* head = fixedHuffmanTree;
             for(int j=0;j<6;j++){
-                if ((base&(1<<(j))) == 0){
+                if ((base&(1<<(6-j))) == 0){
                     if (head->getLeft()==nullptr) head->setLeft(INVALID);
                     head = head->getLeft();
                 }
-                else if ((base&(1<<(j))) != 0){
+                else if ((base&(1<<(6-j))) != 0){
                     if (head->getRight()==nullptr) head->setRight(INVALID);
                     head = head->getRight();
                 }
             }
-            if ((base&(1<<6))==0) {
+            if ((base&1)==0) {
                 head->setLeft(static_cast<unsigned short>(i));
             }
             else {
@@ -443,16 +438,16 @@ class ZlibDecoder{
         for(int i=280;i<=287;i++){
             Tree<unsigned short>* head = fixedHuffmanTree;
             for(int j=0;j<7;j++){
-                if ((base&(1<<(j))) == 0){
+                if ((base&(1<<(7-j))) == 0){
                     if (head->getLeft()==nullptr) head->setLeft(INVALID);
                     head = head->getLeft();
                 }
-                else if ((base&(1<<(j))) != 0){
+                else if ((base&(1<<(7-j))) != 0){
                     if (head->getRight()==nullptr) head->setRight(INVALID);
                     head = head->getRight();
                 }
             }
-            if ((base&(1<<7))==0) {
+            if ((base&1)==0) {
                 head->setLeft(static_cast<unsigned short>(i));
             }
             else {
@@ -594,10 +589,10 @@ class PngDecoder {
 
 int main(){
     // PngDecoder decoder("test.png");
-    unsigned char data[] = {0x00,0x00,0xFD,0x8D,0x89,0x09,0x04,0x00}; // 101 11111,101 10001,100 10001,100 10000,00 10000 0,000000 00
+    unsigned char data[] = {0x00,0x00,0xeb,0x67,0x64,0x04,0x22,0x00}; // 1 10 10111111 00110001 00110001 0000001 00010 0000000 00
     ZlibDecoder decoder(data,10,10,8,false);
     unsigned char* decoded = decoder.decode();
-    for (int i=0;i<13;i++){
+    for (int i=0;i<6;i++){
         cout << static_cast<unsigned int>(*(decoded+i)) << endl;
     }
 }
